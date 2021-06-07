@@ -1,0 +1,44 @@
+package ByteUtil
+
+import (
+	"bytes"
+	"encoding/binary"
+)
+
+func Concat(arrays ...[]byte) []byte {
+	return bytes.Join(arrays, []byte(""))
+}
+
+func ConcatLength(value []byte) []byte {
+	return Concat(Long8ToByte8(uint64(len(value))), value)
+}
+
+func Long8ToByte8(number uint64) []byte {
+	bytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(bytes, number)
+	return bytes
+}
+
+func Byte8ToLong8(bytes []byte) uint64 {
+	number := uint64(binary.BigEndian.Uint64(bytes))
+	return number
+}
+
+func Equals(a []byte, b []byte) bool {
+	return true
+}
+func Flat(arraysarrays [][]byte) []byte {
+	concatBytes := []byte{}
+	for _, value := range arraysarrays {
+		concatBytes = Concat(concatBytes, value)
+	}
+	return concatBytes
+}
+func FlatAndConcatLength(arraysarrays [][]byte) []byte {
+	flatBytes := Flat(arraysarrays)
+	return ConcatLength(flatBytes)
+}
+func Copy(src []byte, srcPos int, destPos int) []byte {
+	length := destPos - srcPos
+	return src[srcPos:length]
+}
