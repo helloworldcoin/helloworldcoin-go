@@ -5,6 +5,15 @@ import (
 	"encoding/binary"
 )
 
+func StringToUtf8Bytes(stringValue string) []byte {
+	//TODO is utf8?
+	return []byte(stringValue)
+}
+func Utf8BytesToString(bytesValue []byte) string {
+	//TODO is utf8?
+	return string(bytesValue)
+}
+
 func Concat(arrays ...[]byte) []byte {
 	return bytes.Join(arrays, []byte(""))
 }

@@ -1,17 +1,16 @@
 package AccountUtil
 
 import (
-	"../Base58Util"
-	"../ByteUtil"
-	"../HexUtil"
-	"../Ripemd160Util"
-	"../Sha256Util"
-	"./Model"
+	"helloworldcoin-go/crypto/Base58Util"
+	"helloworldcoin-go/crypto/ByteUtil"
+	"helloworldcoin-go/crypto/HexUtil"
+	"helloworldcoin-go/crypto/Ripemd160Util"
+	"helloworldcoin-go/crypto/Sha256Util"
 
 	"github.com/btcsuite/btcd/btcec"
 )
 
-func RandomAccount() Model.Account {
+func RandomAccount() Account {
 	privateKey, err := btcec.NewPrivateKey(btcec.S256())
 	if err != nil {
 		panic(err)
@@ -22,7 +21,7 @@ func RandomAccount() Model.Account {
 	stringPublicKey := encodePublicKey(publicKey)
 	stringPublicKeyHash := publicKeyHashFromStringPublicKey(stringPublicKey)
 	stringAddress := addressFromStringPublicKey(stringPublicKey)
-	account := Model.Account{PrivateKey: stringPrivateKey, PublicKey: stringPublicKey, PublicKeyHash: stringPublicKeyHash, Address: stringAddress}
+	account := Account{PrivateKey: stringPrivateKey, PublicKey: stringPublicKey, PublicKeyHash: stringPublicKeyHash, Address: stringAddress}
 	return account
 }
 func encodePrivateKey(privateKey *btcec.PrivateKey) string {
