@@ -4,6 +4,7 @@ import (
 	"helloworldcoin-go/core/tool/EncodeDecodeTool"
 	"helloworldcoin-go/crypto/AccountUtil"
 	"helloworldcoin-go/crypto/ByteUtil"
+	"helloworldcoin-go/util/FileUtil"
 	"helloworldcoin-go/util/KvDbUtil"
 )
 
@@ -38,7 +39,7 @@ func (w *Wallet) DeleteAccountByAddress(address string) {
 }
 
 func (w *Wallet) GetWalletDatabasePath() string {
-	return w.CoreConfiguration.getCorePath() + "/" + WALLET_DATABASE_NAME
+	return FileUtil.NewPath(w.CoreConfiguration.getCorePath(), WALLET_DATABASE_NAME)
 }
 func getKeyByAddress(address string) []byte {
 	return ByteUtil.StringToUtf8Bytes(address)

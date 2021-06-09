@@ -34,3 +34,8 @@ func CalculateBlockMerkleTreeRoot(block Model.Block) string {
 	}
 	return HexUtil.BytesToHexString(MerkleTreeUtil.CalculateMerkleTreeRoot(bytesTransactionHashs))
 }
+
+func GetTransactionCount(block *Model.Block) int {
+	transactions := block.Transactions
+	return len(transactions)
+}
