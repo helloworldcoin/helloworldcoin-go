@@ -3,6 +3,7 @@ package ByteUtil
 import (
 	"bytes"
 	"encoding/binary"
+	"helloworldcoin-go/crypto/HexUtil"
 )
 
 func StringToUtf8Bytes(stringValue string) []byte {
@@ -50,4 +51,7 @@ func FlatAndConcatLength(arraysarrays [][]byte) []byte {
 func Copy(src []byte, srcPos int, destPos int) []byte {
 	length := destPos - srcPos
 	return src[srcPos:length]
+}
+func Long8ToHexString8(number uint64) string {
+	return HexUtil.BytesToHexString(Long8ToByte8(number))
 }

@@ -1,22 +1,21 @@
-package TransactionUtil
+package TransactionDtoTool
 
 import (
 	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/crypto/HexUtil"
 	"helloworldcoin-go/crypto/Sha256Util"
+	"helloworldcoin-go/dto"
 
-	"helloworldcoin-go/core/Model"
 	"helloworldcoin-go/core/tool/ScriptTool"
 )
 
-func CalculateTransactionHash(transaction Model.Transaction) string {
+func CalculateTransactionHash(transaction *dto.TransactionDto) string {
 	bytesTransaction := BytesTransaction(transaction, false)
 	sha256Digest := Sha256Util.DoubleDigest(bytesTransaction)
 	return HexUtil.BytesToHexString(sha256Digest)
 }
 
-func BytesTransaction(transaction Model.Transaction, omitInputScript bool) []byte {
-
+func BytesTransaction(transaction *dto.TransactionDto, omitInputScript bool) []byte {
 	bytesUnspentTransactionOutputs := [][]byte{}
 	inputs := transaction.Inputs
 	for _, input := range inputs {

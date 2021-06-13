@@ -2,6 +2,8 @@ package EncodeDecodeTool
 
 import (
 	"bytes"
+	"helloworldcoin-go/core/Model"
+	"helloworldcoin-go/dto"
 
 	"encoding/gob"
 	"helloworldcoin-go/crypto/AccountUtil"
@@ -25,4 +27,83 @@ func DecodeToAccount(bytesAccount []byte) AccountUtil.Account {
 		panic(err)
 	}
 	return account
+}
+func EncodeBlock(block *Model.Block) []byte {
+	var buffer bytes.Buffer
+	encoder := gob.NewEncoder(&buffer)
+	err := encoder.Encode(&block)
+	if err != nil {
+		panic(err)
+	}
+	return buffer.Bytes()
+}
+
+func DecodeToBlock(bytesBlock []byte) *Model.Block {
+	decoder := gob.NewDecoder(bytes.NewReader(bytesBlock))
+	var block *Model.Block
+	err := decoder.Decode(&block)
+	if err != nil {
+		panic(err)
+	}
+	return block
+}
+
+func EncodeTransaction(transaction *Model.Transaction) []byte {
+	var buffer bytes.Buffer
+	encoder := gob.NewEncoder(&buffer)
+	err := encoder.Encode(&transaction)
+	if err != nil {
+		panic(err)
+	}
+	return buffer.Bytes()
+}
+
+func DecodeToTransaction(bytesTransaction []byte) *Model.Transaction {
+	decoder := gob.NewDecoder(bytes.NewReader(bytesTransaction))
+	var transaction *Model.Transaction
+	err := decoder.Decode(&transaction)
+	if err != nil {
+		panic(err)
+	}
+	return transaction
+}
+
+func EncodeTransactionOutput(transactionOutput *Model.TransactionOutput) []byte {
+	var buffer bytes.Buffer
+	encoder := gob.NewEncoder(&buffer)
+	err := encoder.Encode(&transactionOutput)
+	if err != nil {
+		panic(err)
+	}
+	return buffer.Bytes()
+}
+
+func DecodeToTransactionOutput(bytesTransactionOutput []byte) *Model.TransactionOutput {
+	decoder := gob.NewDecoder(bytes.NewReader(bytesTransactionOutput))
+	var transactionOutput *Model.TransactionOutput
+	err := decoder.Decode(&transactionOutput)
+	if err != nil {
+		panic(err)
+	}
+	return transactionOutput
+}
+
+func EncodeTransactionDto(transactionDto *dto.TransactionDto) []byte {
+	var buffer bytes.Buffer
+	encoder := gob.NewEncoder(&buffer)
+	err := encoder.Encode(&transactionDto)
+	if err != nil {
+		panic(err)
+	}
+	return buffer.Bytes()
+}
+
+func DecodeToTransactionDto(bytesTransactionDto []byte) *dto.TransactionDto {
+	decoder := gob.NewDecoder(bytes.NewReader(bytesTransactionDto))
+	var transactionDto *dto.TransactionDto
+	err := decoder.Decode(&transactionDto)
+	if err != nil {
+		panic(err)
+	}
+	return transactionDto
 }

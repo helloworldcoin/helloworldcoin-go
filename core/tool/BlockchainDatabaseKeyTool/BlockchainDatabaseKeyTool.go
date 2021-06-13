@@ -1,9 +1,8 @@
 package BlockchainDatabaseKeyTool
 
 import (
-	"helloworldcoin-go/core/Model"
 	"helloworldcoin-go/crypto/ByteUtil"
-	"strconv"
+	"helloworldcoin-go/util/StringUtil"
 )
 
 const (
@@ -26,6 +25,7 @@ const (
 	ADDRESS_TO_UNSPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG               = "Q"
 	ADDRESS_TO_SPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG                 = "R"
 	END_FLAG                                                               = "#"
+	VERTICAL_LINE_FLAG                                                     = "|"
 )
 
 //拼装数据库Key的值
@@ -42,7 +42,7 @@ func BuildAddressKey(address string) []byte {
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildBlockHeightToBlockKey(blockHeight uint64) []byte {
-	stringKey := BLOCK_HEIGHT_TO_BLOCK_PREFIX_FLAG + strconv.FormatUint(blockHeight, 10) + END_FLAG
+	stringKey := BLOCK_HEIGHT_TO_BLOCK_PREFIX_FLAG + ByteUtil.Long8ToHexString8(blockHeight) + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildBlockHashToBlockHeightKey(blockHash string) []byte {
@@ -54,23 +54,27 @@ func BuildTransactionHashToTransactionHeightKey(transactionHash string) []byte {
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildTransactionOutputHeightToTransactionOutputKey(transactionOutputHeight uint64) []byte {
-	stringKey := TRANSACTION_OUTPUT_HEIGHT_TO_TRANSACTION_OUTPUT_PREFIX_FLAG + strconv.FormatUint(transactionOutputHeight, 10) + END_FLAG
+	stringKey := TRANSACTION_OUTPUT_HEIGHT_TO_TRANSACTION_OUTPUT_PREFIX_FLAG + ByteUtil.Long8ToHexString8(transactionOutputHeight) + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
-func BuildTransactionOutputIdToTransactionOutputHeightKey(transactionOutputId Model.TransactionOutputId) []byte {
-	stringKey := TRANSACTION_OUTPUT_ID_TO_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId.GetTransactionOutputId() + END_FLAG
+func BuildTransactionOutputIdToTransactionOutputHeightKey(transactionHash string, transactionOutputIndex uint64) []byte {
+	transactionOutputId := buildTransactionOutputId(transactionHash, transactionOutputIndex)
+	stringKey := TRANSACTION_OUTPUT_ID_TO_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
-func BuildTransactionOutputIdToUnspentTransactionOutputHeightKey(transactionOutputId Model.TransactionOutputId) []byte {
-	stringKey := TRANSACTION_OUTPUT_ID_TO_UNSPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId.GetTransactionOutputId() + END_FLAG
+func BuildTransactionOutputIdToUnspentTransactionOutputHeightKey(transactionHash string, transactionOutputIndex uint64) []byte {
+	transactionOutputId := buildTransactionOutputId(transactionHash, transactionOutputIndex)
+	stringKey := TRANSACTION_OUTPUT_ID_TO_UNSPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
-func BuildTransactionOutputIdToSourceTransactionHeightKey(transactionOutputId Model.TransactionOutputId) []byte {
-	stringKey := TRANSACTION_OUTPUT_ID_TO_SOURCE_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionOutputId.GetTransactionOutputId() + END_FLAG
+func BuildTransactionOutputIdToSourceTransactionHeightKey(transactionHash string, transactionOutputIndex uint64) []byte {
+	transactionOutputId := buildTransactionOutputId(transactionHash, transactionOutputIndex)
+	stringKey := TRANSACTION_OUTPUT_ID_TO_SOURCE_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
-func BuildTransactionOutputIdToDestinationTransactionHeightKey(transactionOutputId Model.TransactionOutputId) []byte {
-	stringKey := TRANSACTION_OUTPUT_ID_TO_DESTINATION_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionOutputId.GetTransactionOutputId() + END_FLAG
+func BuildTransactionOutputIdToDestinationTransactionHeightKey(transactionHash string, transactionOutputIndex uint64) []byte {
+	transactionOutputId := buildTransactionOutputId(transactionHash, transactionOutputIndex)
+	stringKey := TRANSACTION_OUTPUT_ID_TO_DESTINATION_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildAddressToTransactionOutputHeightKey(address string) []byte {
@@ -94,11 +98,16 @@ func BuildBlockchainTransactionOutputHeightKey() []byte {
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildTransactionHeightToTransactionKey(transactionHeight uint64) []byte {
-	stringKey := TRANSACTION_HEIGHT_TO_TRANSACTION_PREFIX_FLAG + strconv.FormatUint(transactionHeight, 10) + END_FLAG
+	stringKey := TRANSACTION_HEIGHT_TO_TRANSACTION_PREFIX_FLAG + ByteUtil.Long8ToHexString8(transactionHeight) + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 
-func BuildTransactionOutputIdToSpentTransactionOutputHeightKey(transactionOutputId Model.TransactionOutputId) []byte {
-	stringKey := TRANSACTION_OUTPUT_ID_TO_SPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId.GetTransactionOutputId() + END_FLAG
+func BuildTransactionOutputIdToSpentTransactionOutputHeightKey(transactionHash string, transactionOutputIndex uint64) []byte {
+	transactionOutputId := buildTransactionOutputId(transactionHash, transactionOutputIndex)
+	stringKey := TRANSACTION_OUTPUT_ID_TO_SPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
+}
+func buildTransactionOutputId(transactionHash string, transactionOutputIndex uint64) string {
+	transactionOutputId := StringUtil.Concat3(transactionHash, VERTICAL_LINE_FLAG, ByteUtil.Long8ToHexString8(transactionOutputIndex))
+	return transactionOutputId
 }

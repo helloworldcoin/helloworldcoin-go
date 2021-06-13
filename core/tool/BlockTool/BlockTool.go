@@ -1,41 +1,34 @@
 package BlockTool
 
 import (
-	"helloworldcoin-go/crypto/ByteUtil"
-	"helloworldcoin-go/crypto/HexUtil"
-	"helloworldcoin-go/crypto/MerkleTreeUtil"
-	"helloworldcoin-go/crypto/Sha256Util"
+	"helloworldcoin-go/core/tool/BlockDtoTool"
+	"helloworldcoin-go/core/tool/Model2DtoTool"
+	"helloworldcoin-go/core/tool/TransactionTool"
 
 	"helloworldcoin-go/core/Model"
-	"helloworldcoin-go/core/tool/TransactionUtil"
 )
 
 func CalculateBlockHash(block Model.Block) string {
-
-	bytesTimestamp := ByteUtil.Long8ToByte8(block.Timestamp)
-	bytesPreviousBlockHash := HexUtil.HexStringToBytes(block.PreviousBlockHash)
-	bytesMerkleTreeRoot := HexUtil.HexStringToBytes(CalculateBlockMerkleTreeRoot(block))
-	bytesNonce := HexUtil.HexStringToBytes(block.Nonce)
-
-	bytes := ByteUtil.Concat(bytesTimestamp, bytesPreviousBlockHash, bytesMerkleTreeRoot, bytesNonce)
-	hash := Sha256Util.DoubleDigest(bytes)
-	hexHash := HexUtil.BytesToHexString(hash)
-	return hexHash
+	blockDto := Model2DtoTool.Block2BlockDto(&block)
+	return BlockDtoTool.CalculateBlockHash(blockDto)
 }
 
 func CalculateBlockMerkleTreeRoot(block Model.Block) string {
-
-	transactions := block.Transactions
-	var bytesTransactionHashs [][]byte
-	for _, transaction := range transactions {
-		transactionHash := TransactionUtil.CalculateTransactionHash(transaction)
-		bytesTransactionHash := HexUtil.HexStringToBytes(transactionHash)
-		bytesTransactionHashs = append(bytesTransactionHashs, bytesTransactionHash)
-	}
-	return HexUtil.BytesToHexString(MerkleTreeUtil.CalculateMerkleTreeRoot(bytesTransactionHashs))
+	blockDto := Model2DtoTool.Block2BlockDto(&block)
+	return BlockDtoTool.CalculateBlockMerkleTreeRoot(blockDto)
 }
 
-func GetTransactionCount(block *Model.Block) int {
+func GetTransactionCount(block *Model.Block) uint64 {
 	transactions := block.Transactions
-	return len(transactions)
+	return uint64(len(transactions))
+}
+func GetTransactionOutputCount(block *Model.Block) uint64 {
+	transactionOutputCount := uint64(0)
+	transactions := block.Transactions
+	if transactions != nil {
+		for _, transaction := range transactions {
+			transactionOutputCount = transactionOutputCount + TransactionTool.GetTransactionOutputCount(&transaction)
+		}
+	}
+	return transactionOutputCount
 }

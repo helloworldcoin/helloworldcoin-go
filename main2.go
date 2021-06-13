@@ -5,7 +5,7 @@ import (
 	"helloworldcoin-go/core"
 )
 
-func main() {
+func main2() {
 	coreConfiguration := core.CoreConfiguration{CorePath: "d://abcd"}
 	fmt.Println("11111111111111111")
 	fmt.Println(coreConfiguration)
