@@ -1,5 +1,9 @@
 package Model
 
+import (
+	"helloworldcoin-go/core/Model/TransactionType"
+)
+
 type Block struct {
 	Timestamp         uint64
 	PreviousBlockHash string
@@ -11,6 +15,7 @@ type Block struct {
 	Hash                      string
 	TransactionCount          uint64
 	PreviousTransactionHeight uint64
+	Difficulty                string
 }
 type Transaction struct {
 	TransactionHash string
@@ -20,6 +25,8 @@ type Transaction struct {
 	TransactionIndex  uint64
 	TransactionHeight uint64
 	BlockHeight       uint64
+
+	TransactionType TransactionType.TransactionType
 }
 type TransactionInput struct {
 	UnspentTransactionOutput TransactionOutput

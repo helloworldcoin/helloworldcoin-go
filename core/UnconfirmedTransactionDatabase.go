@@ -1,7 +1,6 @@
 package core
 
 import (
-	"container/list"
 	"helloworldcoin-go/core/tool/EncodeDecodeTool"
 	"helloworldcoin-go/core/tool/TransactionDtoTool"
 	"helloworldcoin-go/crypto/HexUtil"
@@ -22,8 +21,16 @@ func (u *UnconfirmedTransactionDatabase) insertTransaction(transactionDto *dto.T
 
 }
 
-func (u *UnconfirmedTransactionDatabase) selectTransactions(from uint64, size uint64) *list.List {
-	return nil
+func (u *UnconfirmedTransactionDatabase) selectTransactions(from uint64, size uint64) []dto.TransactionDto {
+	var transactionDtoList []dto.TransactionDto
+	bytesTransactionDtos := KvDbUtil.Gets(u.getUnconfirmedTransactionDatabasePath(), from, size)
+	if bytesTransactionDtos != nil {
+		for e := bytesTransactionDtos.Front(); e != nil; e = e.Next() {
+			transactionDto := EncodeDecodeTool.DecodeToTransactionDto(e.Value.([]byte))
+			transactionDtoList = append(transactionDtoList, *transactionDto)
+		}
+	}
+	return transactionDtoList
 }
 
 func (u *UnconfirmedTransactionDatabase) deleteByTransactionHash(transactionHash string) {

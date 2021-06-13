@@ -27,15 +27,15 @@ func Get(dbPath string, bytesKey []byte) []byte {
 	bytesValue, _ := getDb(dbPath).Get(bytesKey, nil)
 	return bytesValue
 }
-func Gets(dbPath string, from int, size int) *list.List {
+func Gets(dbPath string, from uint64, size uint64) *list.List {
 	bytes := list.New()
 	iter := getDb(dbPath).NewIterator(nil, nil)
 	i := 1
 	for iter.Next() {
-		if i < from {
+		if i < int(from) {
 			continue
 		}
-		if i > from+size {
+		if i > int(from+size) {
 			break
 		}
 		bytes.PushBack(iter.Value())
