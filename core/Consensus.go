@@ -1,23 +1,65 @@
 package core
 
 import (
+	"fmt"
 	"helloworldcoin-go/core/Model"
+	"helloworldcoin-go/core/tool/BlockTool"
+	"helloworldcoin-go/crypto/HexUtil"
+	"helloworldcoin-go/setting/GenesisBlockSetting"
+	"helloworldcoin-go/setting/IncentiveSetting"
+	"helloworldcoin-go/util/StringUtil"
 	"math/big"
 )
 
 type Consensus struct {
 }
 
-func (c *Consensus) checkConsensus(blockchainDataBase *BlockchainDatabase, block *Model.Block) bool {
-        difficulty := block.Difficulty
-        if StringUtil.isNullOrEmpty(difficulty) {
-            difficulty = calculateDifficult(blockchainDataBase,block) 
-            block.setDifficulty(difficulty) 
-        }
+func (c *Consensus) CheckConsensus(blockchainDataBase *BlockchainDatabase, block *Model.Block) bool {
+	difficulty := block.Difficulty
+	if StringUtil.IsNullOrEmpty(difficulty) {
+		difficulty = c.CalculateDifficult(blockchainDataBase, block)
+		block.Difficulty = difficulty
+	}
 
-         hash := block. Hash
-        if StringUtil.isNullOrEmpty(hash) {
-            hash = BlockTool.calculateBlockHash(block)
-        }
-        return new BigInteger(difficulty,16).compareTo(new BigInteger(hash,16)) > 0
+	hash := block.Hash
+	if StringUtil.IsNullOrEmpty(hash) {
+		hash = BlockTool.CalculateBlockHash(block)
+	}
+
+	bigIntDifficulty := new(big.Int).SetBytes(HexUtil.HexStringToBytes(difficulty))
+	bigIntHash := new(big.Int).SetBytes(HexUtil.HexStringToBytes(hash))
+	return bigIntDifficulty.Cmp(bigIntHash) > 0
+}
+
+func (c *Consensus) CalculateDifficult(blockchainDataBase *BlockchainDatabase, targetBlock *Model.Block) string {
+
+	targetDifficult := ""
+	targetBlockHeight := targetBlock.Height
+	if targetBlockHeight <= IncentiveSetting.INTERVAL_BLOCK_COUNT*uint64(2) {
+		targetDifficult = GenesisBlockSetting.DIFFICULTY
+		return targetDifficult
+	}
+
+	targetBlockPreviousBlock := blockchainDataBase.QueryBlockByBlockHeight(targetBlockHeight - uint64(1))
+	if targetBlockPreviousBlock.Height%IncentiveSetting.INTERVAL_BLOCK_COUNT != 0 {
+		targetDifficult = targetBlockPreviousBlock.Difficulty
+		return targetDifficult
+	}
+
+	previousIntervalLastBlock := targetBlockPreviousBlock
+	previousPreviousIntervalLastBlock := blockchainDataBase.QueryBlockByBlockHeight(previousIntervalLastBlock.Height - IncentiveSetting.INTERVAL_BLOCK_COUNT)
+	previousIntervalActualTimespan := previousIntervalLastBlock.Timestamp - previousPreviousIntervalLastBlock.Timestamp
+
+	fmt.Println(previousIntervalActualTimespan)
+
+	bigIntPreviousIntervalDifficulty := new(big.Int).SetBytes(HexUtil.HexStringToBytes(previousIntervalLastBlock.Difficulty))
+	bigIntPreviousIntervalActualTimespan := new(big.Int).SetUint64(previousIntervalActualTimespan)
+	bigIntIntervalTime := new(big.Int).SetUint64(IncentiveSetting.INTERVAL_TIME)
+
+	bigIntegerMul := new(big.Int)
+	bigIntegerMul.Mul(bigIntPreviousIntervalDifficulty, bigIntPreviousIntervalActualTimespan)
+
+	bigIntegerTargetDifficult := new(big.Int)
+	bigIntegerTargetDifficult.Div(bigIntegerMul, bigIntIntervalTime)
+	return HexUtil.BytesToHexString(bigIntegerTargetDifficult.Bytes())
 }

@@ -9,13 +9,13 @@ import (
 	"helloworldcoin-go/core/Model"
 )
 
-func CalculateBlockHash(block Model.Block) string {
-	blockDto := Model2DtoTool.Block2BlockDto(&block)
+func CalculateBlockHash(block *Model.Block) string {
+	blockDto := Model2DtoTool.Block2BlockDto(block)
 	return BlockDtoTool.CalculateBlockHash(blockDto)
 }
 
-func CalculateBlockMerkleTreeRoot(block Model.Block) string {
-	blockDto := Model2DtoTool.Block2BlockDto(&block)
+func CalculateBlockMerkleTreeRoot(block *Model.Block) string {
+	blockDto := Model2DtoTool.Block2BlockDto(block)
 	return BlockDtoTool.CalculateBlockMerkleTreeRoot(blockDto)
 }
 

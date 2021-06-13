@@ -6,7 +6,9 @@ import (
 	"helloworldcoin-go/core/tool/BlockTool"
 	"helloworldcoin-go/core/tool/BlockchainDatabaseKeyTool"
 	"helloworldcoin-go/core/tool/EncodeDecodeTool"
+	"helloworldcoin-go/core/tool/Model2DtoTool"
 	"helloworldcoin-go/crypto/ByteUtil"
+	"helloworldcoin-go/dto"
 	"helloworldcoin-go/util/FileUtil"
 	"helloworldcoin-go/util/KvDbUtil"
 	"sync"
@@ -20,9 +22,10 @@ type BlockchainDatabase struct {
 	CoreConfiguration CoreConfiguration
 }
 
-func (blockchainDatabase *BlockchainDatabase) AddBlock(block *Model.Block) bool {
+func (blockchainDatabase *BlockchainDatabase) AddBlockDto(blockDto *dto.BlockDto) bool {
 	var lock = sync.Mutex{}
 	lock.Lock()
+	block := Model2DtoTool.Block2BlockDto(blockDto)
 	checkBlock := blockchainDatabase.CheckBlock(block)
 	if !checkBlock {
 		return false
@@ -58,7 +61,7 @@ func (blockchainDatabase *BlockchainDatabase) QueryBlockchainTransactionOutputHe
 func (blockchainDatabase *BlockchainDatabase) QueryTailBlock() *Model.Block {
 	return nil
 }
-func (blockchainDatabase *BlockchainDatabase) QueryBlockByBlockHeight(blockHeight int) *Model.Block {
+func (blockchainDatabase *BlockchainDatabase) QueryBlockByBlockHeight(blockHeight uint64) *Model.Block {
 	return nil
 }
 func (blockchainDatabase *BlockchainDatabase) QueryBlockByBlockHash(blockHash string) *Model.Block {

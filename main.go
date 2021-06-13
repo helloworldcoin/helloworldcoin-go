@@ -8,7 +8,7 @@ import (
 	"helloworldcoin-go/core/tool/BlockTool"
 )
 
-func main() {
+func main0() {
 	var Inputs0 []Model.TransactionInput
 	var Outputs0 []Model.TransactionOutput
 	Outputs0 = append(Outputs0, Model.TransactionOutput{Value: 5000000000, OutputScript: []string{"01", "02", "00", "c80fe6d25b78f94c370e852226026f2d35833a9d", "03", "04"}})
@@ -72,7 +72,7 @@ func main() {
 	block1.Nonce = "d63852382edbec3b79de31e58b34c8a703a2f3715efb7c5f2dd52c9ae27250b6"
 	block1.Transactions = transactions
 
-	fmt.Println(BlockTool.CalculateBlockHash(block1))
+	fmt.Println(BlockTool.CalculateBlockHash(&block1))
 
 	consensus := core.Consensus{}
 	incentive := core.Incentive{}
