@@ -31,3 +31,6 @@ func BytesScript(script []string) []byte {
 
 	return bytesScript
 }
+func GetPublicKeyHashByPayToPublicKeyHashOutputScript(outputScript []string) string {
+	return outputScript[3]
+}
