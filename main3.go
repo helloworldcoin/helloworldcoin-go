@@ -8,7 +8,7 @@ import (
 	"helloworldcoin-go/util/JsonUtil"
 )
 
-func main() {
+func main3() {
 
 	transactionOutputDto := dto.TransactionOutputDto{OutputScript: []string{"01", "02", "00", "82f46bdbb4550d3c552f1764b53fd0005c81ad3d", "03", "04"}, Value: uint64(5000000000)}
 	outputs := []dto.TransactionOutputDto{}

@@ -29,6 +29,9 @@ func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockD
 	blockHash := BlockTool.CalculateBlockHash(block)
 	block.Hash = blockHash
 
+	difficult := blockchainDatabase.Consensus.CalculateDifficult(blockchainDatabase, block)
+	block.Difficulty = difficult
+
 	fillBlockProperty(blockchainDatabase, block)
 
 	if !blockchainDatabase.Consensus.CheckConsensus(blockchainDatabase, block) {

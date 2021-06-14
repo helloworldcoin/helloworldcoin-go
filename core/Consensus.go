@@ -18,7 +18,6 @@ func (c *Consensus) CheckConsensus(blockchainDatabase *BlockchainDatabase, block
 	difficulty := block.Difficulty
 	if StringUtil.IsNullOrEmpty(difficulty) {
 		difficulty = c.CalculateDifficult(blockchainDatabase, block)
-		block.Difficulty = difficulty
 	}
 
 	hash := block.Hash

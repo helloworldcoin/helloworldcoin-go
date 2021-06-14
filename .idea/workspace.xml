@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0a78a21b-4449-4102-9ce3-1909c88cf352" name="Default Changelist" comment="2021061403">
-      <change beforePath="$PROJECT_DIR$/core/Consensus.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Consensus.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Dto2ModelTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Dto2ModelTool.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Incentive.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Incentive.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Miner.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Miner.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/MinerTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/MinerTool.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helloworldcoin-go.exe" beforeDir="false" afterPath="$PROJECT_DIR$/helloworldcoin-go.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main3.go" beforeDir="false" afterPath="$PROJECT_DIR$/main3.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,8 +20,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="100">
-              <caret line="4" column="28" lean-forward="true" selection-start-line="4" selection-start-column="28" selection-end-line="4" selection-end-column="28" />
+            <state relative-caret-position="300">
+              <caret line="12" column="38" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -189,8 +186,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="4" column="28" lean-forward="true" selection-start-line="4" selection-start-column="28" selection-end-line="4" selection-end-column="28" />
+        <state relative-caret-position="300">
+          <caret line="12" column="38" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
         </state>
       </provider>
     </entry>

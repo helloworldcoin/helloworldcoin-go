@@ -1,6 +1,7 @@
 package AccountUtil
 
 import (
+	"fmt"
 	"helloworldcoin-go/crypto/Base58Util"
 	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/crypto/HexUtil"
@@ -82,4 +83,11 @@ func publicKeyFrom(stringPublicKey string) *btcec.PublicKey {
 func AddressFromStringPublicKeyHash(stringPublicKeyHash string) string {
 	bytesPublicKeyHash := HexUtil.HexStringToBytes(stringPublicKeyHash)
 	return base58AddressFromBytesPublicKeyHash(bytesPublicKeyHash)
+}
+func PublicKeyHashFromStringAddress(stringAddress string) string {
+	bytesAddress := Base58Util.Decode(stringAddress)
+	fmt.Println(bytesAddress)
+	var bytesPublicKeyHash []byte
+	ByteUtil.CopyTo(bytesAddress, 1, bytesPublicKeyHash, 0, 20)
+	return HexUtil.BytesToHexString(bytesPublicKeyHash)
 }
