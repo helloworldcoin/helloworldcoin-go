@@ -78,3 +78,8 @@ func publicKeyFrom(stringPublicKey string) *btcec.PublicKey {
 	publicKey, _ := btcec.ParsePubKey(bytesPublicKey, btcec.S256())
 	return publicKey
 }
+
+func AddressFromStringPublicKeyHash(stringPublicKeyHash string) string {
+	bytesPublicKeyHash := HexUtil.HexStringToBytes(stringPublicKeyHash)
+	return base58AddressFromBytesPublicKeyHash(bytesPublicKeyHash)
+}

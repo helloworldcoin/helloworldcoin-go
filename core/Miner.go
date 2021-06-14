@@ -23,7 +23,7 @@ func (i *Miner) start() {
 			continue
 		}
 		minerAccount := i.wallet.CreateAccount()
-		block := BuildMiningBlock(i.blockchainDataBase, i.unconfirmedTransactionDataBase, minerAccount)
+		block := BuildMiningBlock(&i.blockchainDataBase, &i.unconfirmedTransactionDataBase, &minerAccount)
 		startTimestamp := TimeUtil.CurrentMillisecondTimestamp()
 		for {
 			if !i.isActive() {
