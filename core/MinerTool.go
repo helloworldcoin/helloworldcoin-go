@@ -5,6 +5,6 @@ import (
 	"helloworldcoin-go/crypto/AccountUtil"
 )
 
-func BuildMiningBlock(blockchainDataBase *BlockchainDatabase, unconfirmedTransactionDataBase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *model.Block {
+func BuildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *model.Block {
 	return nil
 }

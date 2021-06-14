@@ -14,10 +14,10 @@ import (
 type Consensus struct {
 }
 
-func (c *Consensus) CheckConsensus(blockchainDataBase *BlockchainDatabase, block *model.Block) bool {
+func (c *Consensus) CheckConsensus(blockchainDatabase *BlockchainDatabase, block *model.Block) bool {
 	difficulty := block.Difficulty
 	if StringUtil.IsNullOrEmpty(difficulty) {
-		difficulty = c.CalculateDifficult(blockchainDataBase, block)
+		difficulty = c.CalculateDifficult(blockchainDatabase, block)
 		block.Difficulty = difficulty
 	}
 
@@ -31,7 +31,7 @@ func (c *Consensus) CheckConsensus(blockchainDataBase *BlockchainDatabase, block
 	return bigIntDifficulty.Cmp(bigIntHash) > 0
 }
 
-func (c *Consensus) CalculateDifficult(blockchainDataBase *BlockchainDatabase, targetBlock *model.Block) string {
+func (c *Consensus) CalculateDifficult(blockchainDatabase *BlockchainDatabase, targetBlock *model.Block) string {
 
 	targetDifficult := ""
 	targetBlockHeight := targetBlock.Height
@@ -40,14 +40,14 @@ func (c *Consensus) CalculateDifficult(blockchainDataBase *BlockchainDatabase, t
 		return targetDifficult
 	}
 
-	targetBlockPreviousBlock := blockchainDataBase.QueryBlockByBlockHeight(targetBlockHeight - uint64(1))
+	targetBlockPreviousBlock := blockchainDatabase.QueryBlockByBlockHeight(targetBlockHeight - uint64(1))
 	if targetBlockPreviousBlock.Height%IncentiveSetting.INTERVAL_BLOCK_COUNT != 0 {
 		targetDifficult = targetBlockPreviousBlock.Difficulty
 		return targetDifficult
 	}
 
 	previousIntervalLastBlock := targetBlockPreviousBlock
-	previousPreviousIntervalLastBlock := blockchainDataBase.QueryBlockByBlockHeight(previousIntervalLastBlock.Height - IncentiveSetting.INTERVAL_BLOCK_COUNT)
+	previousPreviousIntervalLastBlock := blockchainDatabase.QueryBlockByBlockHeight(previousIntervalLastBlock.Height - IncentiveSetting.INTERVAL_BLOCK_COUNT)
 	previousIntervalActualTimespan := previousIntervalLastBlock.Timestamp - previousPreviousIntervalLastBlock.Timestamp
 
 	fmt.Println(previousIntervalActualTimespan)

@@ -9,15 +9,15 @@ import (
 type Incentive struct {
 }
 
-func (incentive *Incentive) IncentiveValue(blockchainDataBase *BlockchainDatabase, block *model.Block) uint64 {
+func (incentive *Incentive) IncentiveValue(blockchainDatabase *BlockchainDatabase, block *model.Block) uint64 {
 	minerSubsidy := getMinerSubsidy(block)
 	minerFee := BlockTool.GetBlockFee(block)
 	return minerSubsidy + minerFee
 }
 
-func (incentive *Incentive) checkIncentive(blockchainDataBase *BlockchainDatabase, block *model.Block) bool {
+func (incentive *Incentive) checkIncentive(blockchainDatabase *BlockchainDatabase, block *model.Block) bool {
 	writeIncentiveValue := BlockTool.GetWritedIncentiveValue(block)
-	targetIncentiveValue := incentive.IncentiveValue(blockchainDataBase, block)
+	targetIncentiveValue := incentive.IncentiveValue(blockchainDatabase, block)
 	if writeIncentiveValue != targetIncentiveValue {
 		return false
 	}

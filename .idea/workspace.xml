@@ -2,23 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0a78a21b-4449-4102-9ce3-1909c88cf352" name="Default Changelist" comment="2021061403">
-      <change beforePath="$PROJECT_DIR$/core/BlockchainDatabase.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/BlockchainDatabase.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/Consensus.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Consensus.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/Dto2ModelTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Dto2ModelTool.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/Incentive.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Incentive.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/Miner.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Miner.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/MinerTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/MinerTool.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Wallet.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Wallet.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/tool/BlockTool/BlockTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/tool/BlockTool/BlockTool.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/tool/EncodeDecodeTool/EncodeDecodeTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/tool/EncodeDecodeTool/EncodeDecodeTool.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/tool/Model2DtoTool/Model2DtoTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/tool/Model2DtoTool/Model2DtoTool.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/tool/ScriptTool/ScriptTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/tool/ScriptTool/ScriptTool.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/tool/TransactionTool/TransactionTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/tool/TransactionTool/TransactionTool.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crypto/AccountUtil/AccountUtil.go" beforeDir="false" afterPath="$PROJECT_DIR$/crypto/AccountUtil/AccountUtil.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helloworldcoin-go.exe" beforeDir="false" afterPath="$PROJECT_DIR$/helloworldcoin-go.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main2.go" beforeDir="false" afterPath="$PROJECT_DIR$/main2.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/JsonUtil/JsonUtil.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/JsonUtil/JsonUtil.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,12 +19,12 @@
     <option name="delegatedBuild" value="true" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="250">
-              <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+            <state relative-caret-position="100">
+              <caret line="4" column="28" lean-forward="true" selection-start-line="4" selection-start-column="28" selection-end-line="4" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -48,10 +36,15 @@
       <find>Model</find>
       <find>Model2DtoTool</find>
       <find>Dto2</find>
+      <find>blockchainDataBase</find>
+      <find>DataBase</find>
+      <find>ataBase</find>
     </findStrings>
     <replaceStrings>
       <replace>model</replace>
       <replace>Model2DtoTool</replace>
+      <replace>blockchainDatabase</replace>
+      <replace>Database</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -86,7 +79,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -99,6 +91,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -156,7 +149,7 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2533512" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25670242" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -196,8 +189,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+        <state relative-caret-position="100">
+          <caret line="4" column="28" lean-forward="true" selection-start-line="4" selection-start-column="28" selection-end-line="4" selection-end-column="28" />
         </state>
       </provider>
     </entry>

@@ -12,8 +12,8 @@ import (
 type Miner struct {
 	coreConfiguration              *CoreConfiguration
 	wallet                         *Wallet
-	blockchainDataBase             *BlockchainDatabase
-	unconfirmedTransactionDataBase *UnconfirmedTransactionDatabase
+	blockchainDatabase             *BlockchainDatabase
+	unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase
 }
 
 func (i *Miner) start() {
@@ -23,7 +23,7 @@ func (i *Miner) start() {
 			continue
 		}
 		minerAccount := i.wallet.CreateAccount()
-		block := BuildMiningBlock(i.blockchainDataBase, i.unconfirmedTransactionDataBase, minerAccount)
+		block := BuildMiningBlock(i.blockchainDatabase, i.unconfirmedTransactionDatabase, minerAccount)
 		startTimestamp := TimeUtil.CurrentMillisecondTimestamp()
 		for {
 			if !i.isActive() {
@@ -37,10 +37,10 @@ func (i *Miner) start() {
 			block.Nonce = HexUtil.BytesToHexString(RandomUtil.Random32Bytes())
 			block.Hash = BlockTool.CalculateBlockHash(block)
 			//挖矿成功
-			if i.blockchainDataBase.Consensus.CheckConsensus(i.blockchainDataBase, block) {
+			if i.blockchainDatabase.Consensus.CheckConsensus(i.blockchainDatabase, block) {
 				i.wallet.SaveAccount(minerAccount)
 				blockDto := Model2DtoTool.Block2BlockDto(block)
-				isAddBlockToBlockchainSuccess := i.blockchainDataBase.AddBlockDto(blockDto)
+				isAddBlockToBlockchainSuccess := i.blockchainDatabase.AddBlockDto(blockDto)
 				if !isAddBlockToBlockchainSuccess {
 					//LogUtil.debug("挖矿成功，但是区块放入区块链失败。")
 				}
