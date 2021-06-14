@@ -8,6 +8,7 @@ import (
 	"helloworldcoin-go/core/tool/EncodeDecodeTool"
 	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/dto"
+	"helloworldcoin-go/setting/GenesisBlockSetting"
 	"helloworldcoin-go/util/FileUtil"
 	"helloworldcoin-go/util/KvDbUtil"
 	"sync"
@@ -58,7 +59,11 @@ func (blockchainDatabase *BlockchainDatabase) QueryBlockchainTransactionOutputHe
 }
 
 func (blockchainDatabase *BlockchainDatabase) QueryTailBlock() *model.Block {
-	return nil
+	blockchainHeight := blockchainDatabase.QueryBlockchainHeight()
+	if blockchainHeight <= GenesisBlockSetting.HEIGHT {
+		return nil
+	}
+	return blockchainDatabase.QueryBlockByBlockHeight(blockchainHeight)
 }
 func (blockchainDatabase *BlockchainDatabase) QueryBlockByBlockHeight(blockHeight uint64) *model.Block {
 	bytesBlock := KvDbUtil.Get(blockchainDatabase.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildBlockHeightToBlockKey(blockHeight))

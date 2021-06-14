@@ -1,6 +1,7 @@
 package ScriptTool
 
 import (
+	"fmt"
 	"helloworldcoin-go/core/model/OperationCodeEnum"
 	"helloworldcoin-go/crypto/AccountUtil"
 	"helloworldcoin-go/crypto/ByteUtil"
@@ -42,6 +43,7 @@ func CreatePayToPublicKeyHashOutputScript(address string) []string {
 	script = append(script, HexUtil.BytesToHexString(OperationCodeEnum.OP_HASH160.Code))
 	script = append(script, HexUtil.BytesToHexString(OperationCodeEnum.OP_PUSHDATA.Code))
 	publicKeyHash := AccountUtil.PublicKeyHashFromStringAddress(address)
+	fmt.Println("publicKeyHash:" + publicKeyHash)
 	script = append(script, publicKeyHash)
 	script = append(script, HexUtil.BytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.Code))
 	script = append(script, HexUtil.BytesToHexString(OperationCodeEnum.OP_CHECKSIG.Code))

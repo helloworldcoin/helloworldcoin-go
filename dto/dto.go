@@ -2,7 +2,7 @@ package dto
 
 type BlockDto struct {
 	Timestamp    uint64           `json:"timestamp"`
-	PreviousHash string           `json:"previousBlockHash"`
+	PreviousHash string           `json:"previousHash"`
 	Transactions []TransactionDto `json:"transactions"`
 	Nonce        string           `json:"nonce"`
 }

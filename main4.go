@@ -12,7 +12,7 @@ func myHandle(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(string(con))
 	w.Write([]byte("Hello World"))
 }
-func main() {
+func main4() {
 	http.HandleFunc("/", myHandle)
 	http.ListenAndServe(":8888", nil)
 }

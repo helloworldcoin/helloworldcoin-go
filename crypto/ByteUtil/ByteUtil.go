@@ -52,12 +52,12 @@ func Copy(src []byte, srcPos int, destPos int) []byte {
 	length := destPos - srcPos
 	return src[srcPos:length]
 }
-func CopyTo(src []byte, srcPos int, dest []byte, destPos int, length int) {
-	for len(dest) < destPos+length {
-		dest = append(dest, byte(0x00))
+func CopyTo(src []byte, srcPos int, dest *[]byte, destPos int, length int) {
+	for len(*dest) < destPos+length {
+		*dest = append(*dest, byte(0x00))
 	}
 	for i := 0; i < length; i = i + 1 {
-		dest[destPos+i] = src[srcPos+i]
+		(*dest)[destPos+i] = src[srcPos+i]
 	}
 }
 func Long8ToHexString8(number uint64) string {

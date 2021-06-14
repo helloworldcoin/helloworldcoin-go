@@ -88,6 +88,7 @@ func PublicKeyHashFromStringAddress(stringAddress string) string {
 	bytesAddress := Base58Util.Decode(stringAddress)
 	fmt.Println(bytesAddress)
 	var bytesPublicKeyHash []byte
-	ByteUtil.CopyTo(bytesAddress, 1, bytesPublicKeyHash, 0, 20)
+	ByteUtil.CopyTo(bytesAddress, 1, &bytesPublicKeyHash, 0, 20)
+	fmt.Println(HexUtil.BytesToHexString(bytesPublicKeyHash))
 	return HexUtil.BytesToHexString(bytesPublicKeyHash)
 }

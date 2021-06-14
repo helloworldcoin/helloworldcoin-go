@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"helloworldcoin-go/core/model"
 	"helloworldcoin-go/core/model/TransactionType"
 	"helloworldcoin-go/core/tool/BlockTool"
@@ -8,6 +9,7 @@ import (
 	"helloworldcoin-go/core/tool/TransactionTool"
 	"helloworldcoin-go/crypto/AccountUtil"
 	"helloworldcoin-go/setting/GenesisBlockSetting"
+	"helloworldcoin-go/util/JsonUtil"
 	"helloworldcoin-go/util/TimeUtil"
 )
 
@@ -26,7 +28,6 @@ func BuildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfirmedTransac
 		nonNonceBlock.PreviousHash = tailBlock.Hash
 	}
 	var packingTransactions []model.Transaction
-	nonNonceBlock.Transactions = packingTransactions
 
 	incentive := blockchainDatabase.Incentive
 	incentiveValue := incentive.IncentiveValue(blockchainDatabase, &nonNonceBlock)
@@ -36,9 +37,12 @@ func BuildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfirmedTransac
 	mineAwardTransactions = append(mineAwardTransactions, *mineAwardTransaction)
 
 	packingTransactions = append(mineAwardTransactions, packingTransactions...)
+	nonNonceBlock.Transactions = packingTransactions
 
+	fmt.Println(JsonUtil.ToJsonStringBlock(&nonNonceBlock))
 	merkleTreeRoot := BlockTool.CalculateBlockMerkleTreeRoot(&nonNonceBlock)
 	nonNonceBlock.MerkleTreeRoot = merkleTreeRoot
+	fmt.Println(JsonUtil.ToJsonStringBlock(&nonNonceBlock))
 
 	//计算挖矿难度
 	nonNonceBlock.Difficulty = blockchainDatabase.Consensus.CalculateDifficult(blockchainDatabase, &nonNonceBlock)
@@ -53,6 +57,7 @@ func buildIncentiveTransaction(address string, incentiveValue uint64) *model.Tra
 	var output model.TransactionOutput
 	output.Address = address
 	output.Value = incentiveValue
+	fmt.Println("address:" + address)
 	output.OutputScript = ScriptTool.CreatePayToPublicKeyHashOutputScript(address)
 	outputs = append(outputs, output)
 
