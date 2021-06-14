@@ -1,7 +1,7 @@
 package ScriptTool
 
 import (
-	"helloworldcoin-go/core/Model/OperationCodeEnum"
+	"helloworldcoin-go/core/model/OperationCodeEnum"
 	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/crypto/HexUtil"
 )

@@ -10,10 +10,10 @@ import (
 )
 
 type Miner struct {
-	coreConfiguration              CoreConfiguration
-	wallet                         Wallet
-	blockchainDataBase             BlockchainDatabase
-	unconfirmedTransactionDataBase UnconfirmedTransactionDatabase
+	coreConfiguration              *CoreConfiguration
+	wallet                         *Wallet
+	blockchainDataBase             *BlockchainDatabase
+	unconfirmedTransactionDataBase *UnconfirmedTransactionDatabase
 }
 
 func (i *Miner) start() {
@@ -23,7 +23,7 @@ func (i *Miner) start() {
 			continue
 		}
 		minerAccount := i.wallet.CreateAccount()
-		block := BuildMiningBlock(&i.blockchainDataBase, &i.unconfirmedTransactionDataBase, &minerAccount)
+		block := BuildMiningBlock(i.blockchainDataBase, i.unconfirmedTransactionDataBase, minerAccount)
 		startTimestamp := TimeUtil.CurrentMillisecondTimestamp()
 		for {
 			if !i.isActive() {
@@ -37,8 +37,8 @@ func (i *Miner) start() {
 			block.Nonce = HexUtil.BytesToHexString(RandomUtil.Random32Bytes())
 			block.Hash = BlockTool.CalculateBlockHash(block)
 			//挖矿成功
-			if i.blockchainDataBase.Consensus.CheckConsensus(&i.blockchainDataBase, block) {
-				i.wallet.SaveAccount(&minerAccount)
+			if i.blockchainDataBase.Consensus.CheckConsensus(i.blockchainDataBase, block) {
+				i.wallet.SaveAccount(minerAccount)
 				blockDto := Model2DtoTool.Block2BlockDto(block)
 				isAddBlockToBlockchainSuccess := i.blockchainDataBase.AddBlockDto(blockDto)
 				if !isAddBlockToBlockchainSuccess {

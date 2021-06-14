@@ -10,7 +10,7 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 )
 
-func RandomAccount() Account {
+func RandomAccount() *Account {
 	privateKey, err := btcec.NewPrivateKey(btcec.S256())
 	if err != nil {
 		panic(err)
@@ -22,7 +22,7 @@ func RandomAccount() Account {
 	stringPublicKeyHash := publicKeyHashFromStringPublicKey(stringPublicKey)
 	stringAddress := addressFromStringPublicKey(stringPublicKey)
 	account := Account{PrivateKey: stringPrivateKey, PublicKey: stringPublicKey, PublicKeyHash: stringPublicKeyHash, Address: stringAddress}
-	return account
+	return &account
 }
 func encodePrivateKey(privateKey *btcec.PrivateKey) string {
 	return HexUtil.BytesToHexString(privateKey.D.Bytes())

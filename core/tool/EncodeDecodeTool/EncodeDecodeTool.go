@@ -2,7 +2,7 @@ package EncodeDecodeTool
 
 import (
 	"bytes"
-	"helloworldcoin-go/core/Model"
+	"helloworldcoin-go/core/model"
 	"helloworldcoin-go/dto"
 
 	"encoding/gob"
@@ -19,16 +19,16 @@ func EncodeAccount(account *AccountUtil.Account) []byte {
 	return buffer.Bytes()
 }
 
-func DecodeToAccount(bytesAccount []byte) AccountUtil.Account {
+func DecodeToAccount(bytesAccount []byte) *AccountUtil.Account {
 	decoder := gob.NewDecoder(bytes.NewReader(bytesAccount))
 	var account AccountUtil.Account
 	err := decoder.Decode(&account)
 	if err != nil {
 		panic(err)
 	}
-	return account
+	return &account
 }
-func EncodeBlock(block *Model.Block) []byte {
+func EncodeBlock(block *model.Block) []byte {
 	var buffer bytes.Buffer
 	encoder := gob.NewEncoder(&buffer)
 	err := encoder.Encode(&block)
@@ -38,9 +38,9 @@ func EncodeBlock(block *Model.Block) []byte {
 	return buffer.Bytes()
 }
 
-func DecodeToBlock(bytesBlock []byte) *Model.Block {
+func DecodeToBlock(bytesBlock []byte) *model.Block {
 	decoder := gob.NewDecoder(bytes.NewReader(bytesBlock))
-	var block *Model.Block
+	var block *model.Block
 	err := decoder.Decode(&block)
 	if err != nil {
 		panic(err)
@@ -48,7 +48,7 @@ func DecodeToBlock(bytesBlock []byte) *Model.Block {
 	return block
 }
 
-func EncodeTransaction(transaction *Model.Transaction) []byte {
+func EncodeTransaction(transaction *model.Transaction) []byte {
 	var buffer bytes.Buffer
 	encoder := gob.NewEncoder(&buffer)
 	err := encoder.Encode(&transaction)
@@ -58,9 +58,9 @@ func EncodeTransaction(transaction *Model.Transaction) []byte {
 	return buffer.Bytes()
 }
 
-func DecodeToTransaction(bytesTransaction []byte) *Model.Transaction {
+func DecodeToTransaction(bytesTransaction []byte) *model.Transaction {
 	decoder := gob.NewDecoder(bytes.NewReader(bytesTransaction))
-	var transaction *Model.Transaction
+	var transaction *model.Transaction
 	err := decoder.Decode(&transaction)
 	if err != nil {
 		panic(err)
@@ -68,7 +68,7 @@ func DecodeToTransaction(bytesTransaction []byte) *Model.Transaction {
 	return transaction
 }
 
-func EncodeTransactionOutput(transactionOutput *Model.TransactionOutput) []byte {
+func EncodeTransactionOutput(transactionOutput *model.TransactionOutput) []byte {
 	var buffer bytes.Buffer
 	encoder := gob.NewEncoder(&buffer)
 	err := encoder.Encode(&transactionOutput)
@@ -78,9 +78,9 @@ func EncodeTransactionOutput(transactionOutput *Model.TransactionOutput) []byte 
 	return buffer.Bytes()
 }
 
-func DecodeToTransactionOutput(bytesTransactionOutput []byte) *Model.TransactionOutput {
+func DecodeToTransactionOutput(bytesTransactionOutput []byte) *model.TransactionOutput {
 	decoder := gob.NewDecoder(bytes.NewReader(bytesTransactionOutput))
-	var transactionOutput *Model.TransactionOutput
+	var transactionOutput *model.TransactionOutput
 	err := decoder.Decode(&transactionOutput)
 	if err != nil {
 		panic(err)
@@ -106,4 +106,23 @@ func DecodeToTransactionDto(bytesTransactionDto []byte) *dto.TransactionDto {
 		panic(err)
 	}
 	return transactionDto
+}
+func EncodeBlockDto(blockDto *dto.BlockDto) []byte {
+	var buffer bytes.Buffer
+	encoder := gob.NewEncoder(&buffer)
+	err := encoder.Encode(&blockDto)
+	if err != nil {
+		panic(err)
+	}
+	return buffer.Bytes()
+}
+
+func DecodeToBlockDto(bytesBlockDto []byte) *dto.BlockDto {
+	decoder := gob.NewDecoder(bytes.NewReader(bytesBlockDto))
+	var blockDto *dto.BlockDto
+	err := decoder.Decode(blockDto)
+	if err != nil {
+		panic(err)
+	}
+	return blockDto
 }

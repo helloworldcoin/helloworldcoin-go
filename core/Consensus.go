@@ -2,7 +2,7 @@ package core
 
 import (
 	"fmt"
-	"helloworldcoin-go/core/Model"
+	"helloworldcoin-go/core/model"
 	"helloworldcoin-go/core/tool/BlockTool"
 	"helloworldcoin-go/crypto/HexUtil"
 	"helloworldcoin-go/setting/GenesisBlockSetting"
@@ -14,7 +14,7 @@ import (
 type Consensus struct {
 }
 
-func (c *Consensus) CheckConsensus(blockchainDataBase *BlockchainDatabase, block *Model.Block) bool {
+func (c *Consensus) CheckConsensus(blockchainDataBase *BlockchainDatabase, block *model.Block) bool {
 	difficulty := block.Difficulty
 	if StringUtil.IsNullOrEmpty(difficulty) {
 		difficulty = c.CalculateDifficult(blockchainDataBase, block)
@@ -31,7 +31,7 @@ func (c *Consensus) CheckConsensus(blockchainDataBase *BlockchainDatabase, block
 	return bigIntDifficulty.Cmp(bigIntHash) > 0
 }
 
-func (c *Consensus) CalculateDifficult(blockchainDataBase *BlockchainDatabase, targetBlock *Model.Block) string {
+func (c *Consensus) CalculateDifficult(blockchainDataBase *BlockchainDatabase, targetBlock *model.Block) string {
 
 	targetDifficult := ""
 	targetBlockHeight := targetBlock.Height

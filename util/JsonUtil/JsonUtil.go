@@ -2,14 +2,20 @@ package JsonUtil
 
 import (
 	"encoding/json"
-	"fmt"
+	"helloworldcoin-go/core/model"
+	"helloworldcoin-go/dto"
 )
 
-func toJson(object interface{}) string {
-	jsonStu, err := json.Marshal(object)
-	return jsonStu
+func ToJson(blockDto *dto.BlockDto) string {
+	jsonString, _ := json.Marshal(blockDto)
+	return string(jsonString)
 }
 
 func fromJson() {
 
+}
+
+func ToJsonStringBlock(block *model.Block) string {
+	jsonString, _ := json.Marshal(block)
+	return string(jsonString)
 }

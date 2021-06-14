@@ -1,15 +1,15 @@
-package Model
+package model
 
 import (
-	"helloworldcoin-go/core/Model/TransactionType"
+	"helloworldcoin-go/core/model/TransactionType"
 )
 
 type Block struct {
-	Timestamp         uint64
-	PreviousBlockHash string
-	MerkleTreeRoot    string
-	Nonce             string
-	Transactions      []Transaction
+	Timestamp      uint64
+	PreviousHash   string
+	MerkleTreeRoot string
+	Nonce          string
+	Transactions   []Transaction
 
 	Height                    uint64
 	Hash                      string

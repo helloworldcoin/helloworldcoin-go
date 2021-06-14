@@ -11,11 +11,11 @@ import (
 const WALLET_DATABASE_NAME = "WalletDatabase"
 
 type Wallet struct {
-	CoreConfiguration CoreConfiguration
+	CoreConfiguration *CoreConfiguration
 }
 
-func (w *Wallet) GetAllAccounts() []AccountUtil.Account {
-	var accounts []AccountUtil.Account
+func (w *Wallet) GetAllAccounts() []*AccountUtil.Account {
+	var accounts []*AccountUtil.Account
 	list := KvDbUtil.Gets(w.GetWalletDatabasePath(), 1, 11)
 	for e := list.Front(); e != nil; e = e.Next() {
 		account := EncodeDecodeTool.DecodeToAccount(e.Value.([]byte))
@@ -23,12 +23,12 @@ func (w *Wallet) GetAllAccounts() []AccountUtil.Account {
 	}
 	return accounts
 }
-func (w *Wallet) CreateAccount() AccountUtil.Account {
+func (w *Wallet) CreateAccount() *AccountUtil.Account {
 	return AccountUtil.RandomAccount()
 }
-func (w *Wallet) CreateAndSaveAccount() AccountUtil.Account {
+func (w *Wallet) CreateAndSaveAccount() *AccountUtil.Account {
 	account := AccountUtil.RandomAccount()
-	w.SaveAccount(&account)
+	w.SaveAccount(account)
 	return account
 }
 func (w *Wallet) SaveAccount(account *AccountUtil.Account) {

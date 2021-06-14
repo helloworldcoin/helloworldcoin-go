@@ -1,21 +1,21 @@
 package dto
 
 type BlockDto struct {
-	Timestamp    uint64
-	PreviousHash string
-	Transactions []TransactionDto
-	Nonce        string
+	Timestamp    uint64           `json:"timestamp"`
+	PreviousHash string           `json:"previousBlockHash"`
+	Transactions []TransactionDto `json:"transactions"`
+	Nonce        string           `json:"nonce"`
 }
 type TransactionDto struct {
-	Inputs  []TransactionInputDto
-	Outputs []TransactionOutputDto
+	Inputs  []TransactionInputDto  `json:"inputs"`
+	Outputs []TransactionOutputDto `json:"outputs"`
 }
 type TransactionInputDto struct {
-	TransactionHash        string
-	TransactionOutputIndex uint64
-	InputScript            []string
+	TransactionHash        string   `json:"transactionHash"`
+	TransactionOutputIndex uint64   `json:"transactionOutputIndex"`
+	InputScript            []string `json:"inputScript"`
 }
 type TransactionOutputDto struct {
-	OutputScript []string
-	Value        uint64
+	OutputScript []string `json:"outputScript"`
+	Value        uint64   `json:"value"`
 }

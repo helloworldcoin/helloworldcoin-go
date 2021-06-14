@@ -1,30 +1,30 @@
 package BlockTool
 
 import (
-	"helloworldcoin-go/core/Model/TransactionType"
+	"helloworldcoin-go/core/model/TransactionType"
 	"helloworldcoin-go/core/tool/BlockDtoTool"
 	"helloworldcoin-go/core/tool/Model2DtoTool"
 	"helloworldcoin-go/core/tool/TransactionTool"
 	"helloworldcoin-go/setting/GenesisBlockSetting"
 
-	"helloworldcoin-go/core/Model"
+	"helloworldcoin-go/core/model"
 )
 
-func CalculateBlockHash(block *Model.Block) string {
+func CalculateBlockHash(block *model.Block) string {
 	blockDto := Model2DtoTool.Block2BlockDto(block)
 	return BlockDtoTool.CalculateBlockHash(blockDto)
 }
 
-func CalculateBlockMerkleTreeRoot(block *Model.Block) string {
+func CalculateBlockMerkleTreeRoot(block *model.Block) string {
 	blockDto := Model2DtoTool.Block2BlockDto(block)
 	return BlockDtoTool.CalculateBlockMerkleTreeRoot(blockDto)
 }
 
-func GetTransactionCount(block *Model.Block) uint64 {
+func GetTransactionCount(block *model.Block) uint64 {
 	transactions := block.Transactions
 	return uint64(len(transactions))
 }
-func GetTransactionOutputCount(block *Model.Block) uint64 {
+func GetTransactionOutputCount(block *model.Block) uint64 {
 	transactionOutputCount := uint64(0)
 	transactions := block.Transactions
 	if transactions != nil {
@@ -34,7 +34,7 @@ func GetTransactionOutputCount(block *Model.Block) uint64 {
 	}
 	return transactionOutputCount
 }
-func GetBlockFee(block *Model.Block) uint64 {
+func GetBlockFee(block *model.Block) uint64 {
 	blockFee := uint64(0)
 	transactions := block.Transactions
 	if transactions != nil {
@@ -50,10 +50,10 @@ func GetBlockFee(block *Model.Block) uint64 {
 	}
 	return blockFee
 }
-func GetWritedIncentiveValue(block *Model.Block) uint64 {
+func GetWritedIncentiveValue(block *model.Block) uint64 {
 	return block.Transactions[0].Outputs[0].Value
 }
-func GetNextBlockHeight(currentBlock *Model.Block) uint64 {
+func GetNextBlockHeight(currentBlock *model.Block) uint64 {
 	var nextBlockHeight uint64
 	if currentBlock == nil {
 		nextBlockHeight = GenesisBlockSetting.HEIGHT + uint64(1)

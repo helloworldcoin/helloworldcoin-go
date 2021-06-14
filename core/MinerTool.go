@@ -1,10 +1,10 @@
 package core
 
 import (
-	"helloworldcoin-go/core/Model"
+	"helloworldcoin-go/core/model"
 	"helloworldcoin-go/crypto/AccountUtil"
 )
 
-func BuildMiningBlock(blockchainDataBase *BlockchainDatabase, unconfirmedTransactionDataBase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *Model.Block {
+func BuildMiningBlock(blockchainDataBase *BlockchainDatabase, unconfirmedTransactionDataBase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *model.Block {
 	return nil
 }
