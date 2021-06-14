@@ -6,7 +6,6 @@ import (
 	"helloworldcoin-go/core/tool/BlockTool"
 	"helloworldcoin-go/core/tool/BlockchainDatabaseKeyTool"
 	"helloworldcoin-go/core/tool/EncodeDecodeTool"
-	"helloworldcoin-go/core/tool/Model2DtoTool"
 	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/dto"
 	"helloworldcoin-go/util/FileUtil"
@@ -25,7 +24,7 @@ type BlockchainDatabase struct {
 func (blockchainDatabase *BlockchainDatabase) AddBlockDto(blockDto *dto.BlockDto) bool {
 	var lock = sync.Mutex{}
 	lock.Lock()
-	block := Model2DtoTool.Block2BlockDto(blockDto)
+	block := BlockDto2Block(blockchainDatabase, blockDto)
 	checkBlock := blockchainDatabase.CheckBlock(block)
 	if !checkBlock {
 		return false

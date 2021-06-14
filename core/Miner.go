@@ -19,15 +19,14 @@ type Miner struct {
 func (i *Miner) start() {
 	for {
 		SleepUtil.Sleep(10)
-		if !isActive() {
+		if !i.isActive() {
 			continue
 		}
 		minerAccount := i.wallet.CreateAccount()
-		block := MinerTool.buildMiningBlock(i.blockchainDataBase, i.unconfirmedTransactionDataBase, minerAccount)
+		block := BuildMiningBlock(i.blockchainDataBase, i.unconfirmedTransactionDataBase, minerAccount)
 		startTimestamp := TimeUtil.CurrentMillisecondTimestamp()
 		for {
-
-			if !isActive() {
+			if !i.isActive() {
 				break
 			}
 			//在挖矿的期间，可能收集到新的交易。每隔一定的时间，重新组装挖矿中的区块，这样新收集到交易就可以被放进挖矿中的区块了。
@@ -49,4 +48,8 @@ func (i *Miner) start() {
 			}
 		}
 	}
+}
+func (i *Miner) isActive() bool {
+	//TODO
+	return true
 }

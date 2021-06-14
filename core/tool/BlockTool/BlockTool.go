@@ -5,6 +5,7 @@ import (
 	"helloworldcoin-go/core/tool/BlockDtoTool"
 	"helloworldcoin-go/core/tool/Model2DtoTool"
 	"helloworldcoin-go/core/tool/TransactionTool"
+	"helloworldcoin-go/setting/GenesisBlockSetting"
 
 	"helloworldcoin-go/core/Model"
 )
@@ -51,4 +52,13 @@ func GetBlockFee(block *Model.Block) uint64 {
 }
 func GetWritedIncentiveValue(block *Model.Block) uint64 {
 	return block.Transactions[0].Outputs[0].Value
+}
+func GetNextBlockHeight(currentBlock *Model.Block) uint64 {
+	var nextBlockHeight uint64
+	if currentBlock == nil {
+		nextBlockHeight = GenesisBlockSetting.HEIGHT + uint64(1)
+	} else {
+		nextBlockHeight = currentBlock.Height + uint64(1)
+	}
+	return nextBlockHeight
 }
