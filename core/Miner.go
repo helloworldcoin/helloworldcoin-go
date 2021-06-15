@@ -2,10 +2,16 @@ package core
 
 import (
 	"fmt"
+	"helloworldcoin-go/core/model"
+	"helloworldcoin-go/core/model/TransactionType"
 	"helloworldcoin-go/core/tool/BlockTool"
 	"helloworldcoin-go/core/tool/Model2DtoTool"
+	"helloworldcoin-go/core/tool/ScriptTool"
+	"helloworldcoin-go/core/tool/TransactionTool"
+	"helloworldcoin-go/crypto/AccountUtil"
 	"helloworldcoin-go/crypto/HexUtil"
 	"helloworldcoin-go/crypto/RandomUtil"
+	"helloworldcoin-go/setting/GenesisBlockSetting"
 	"helloworldcoin-go/util/JsonUtil"
 	"helloworldcoin-go/util/SleepUtil"
 	"helloworldcoin-go/util/TimeUtil"
@@ -25,7 +31,7 @@ func (i *Miner) Start() {
 			continue
 		}
 		minerAccount := i.Wallet.CreateAccount()
-		block := BuildMiningBlock(i.BlockchainDatabase, i.UnconfirmedTransactionDatabase, minerAccount)
+		block := i.buildMiningBlock(i.BlockchainDatabase, i.UnconfirmedTransactionDatabase, minerAccount)
 		startTimestamp := TimeUtil.CurrentMillisecondTimestamp()
 		for {
 			if !i.isActive() {
@@ -55,4 +61,57 @@ func (i *Miner) Start() {
 func (i *Miner) isActive() bool {
 	//TODO
 	return true
+}
+
+func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *model.Block {
+	timestamp := TimeUtil.CurrentMillisecondTimestamp()
+
+	tailBlock := blockchainDatabase.QueryTailBlock()
+	var nonNonceBlock model.Block
+	nonNonceBlock.Timestamp = timestamp
+
+	if tailBlock == nil {
+		nonNonceBlock.Height = GenesisBlockSetting.HEIGHT + uint64(1)
+		nonNonceBlock.PreviousHash = GenesisBlockSetting.HASH
+	} else {
+		nonNonceBlock.Height = tailBlock.Height + uint64(1)
+		nonNonceBlock.PreviousHash = tailBlock.Hash
+	}
+	var packingTransactions []model.Transaction
+
+	incentive := blockchainDatabase.Incentive
+	incentiveValue := incentive.IncentiveValue(blockchainDatabase, &nonNonceBlock)
+
+	mineAwardTransaction := i.buildIncentiveTransaction(minerAccount.Address, incentiveValue)
+	var mineAwardTransactions []model.Transaction
+	mineAwardTransactions = append(mineAwardTransactions, *mineAwardTransaction)
+
+	packingTransactions = append(mineAwardTransactions, packingTransactions...)
+	nonNonceBlock.Transactions = packingTransactions
+
+	fmt.Println(JsonUtil.ToJsonStringBlock(&nonNonceBlock))
+	merkleTreeRoot := BlockTool.CalculateBlockMerkleTreeRoot(&nonNonceBlock)
+	nonNonceBlock.MerkleTreeRoot = merkleTreeRoot
+	fmt.Println(JsonUtil.ToJsonStringBlock(&nonNonceBlock))
+
+	//计算挖矿难度
+	nonNonceBlock.Difficulty = blockchainDatabase.Consensus.CalculateDifficult(blockchainDatabase, &nonNonceBlock)
+	return &nonNonceBlock
+}
+
+func (i *Miner) buildIncentiveTransaction(address string, incentiveValue uint64) *model.Transaction {
+	var transaction model.Transaction
+	transaction.TransactionType = TransactionType.GENESIS_TRANSACTION
+
+	var outputs []model.TransactionOutput
+	var output model.TransactionOutput
+	output.Address = address
+	output.Value = incentiveValue
+	fmt.Println("address:" + address)
+	output.OutputScript = ScriptTool.CreatePayToPublicKeyHashOutputScript(address)
+	outputs = append(outputs, output)
+
+	transaction.Outputs = outputs
+	transaction.TransactionHash = TransactionTool.CalculateTransactionHash(transaction)
+	return &transaction
 }
