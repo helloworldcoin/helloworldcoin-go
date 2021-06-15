@@ -12,7 +12,7 @@ import (
 const UNCONFIRMED_TRANSACTION_DATABASE_NAME = "UnconfirmedTransactionDatabase"
 
 type UnconfirmedTransactionDatabase struct {
-	CoreConfiguration CoreConfiguration
+	CoreConfiguration *CoreConfiguration
 }
 
 func (u *UnconfirmedTransactionDatabase) insertTransaction(transactionDto *dto.TransactionDto) {
