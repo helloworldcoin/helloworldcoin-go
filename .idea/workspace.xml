@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0a78a21b-4449-4102-9ce3-1909c88cf352" name="Default Changelist" comment="2021061403" />
+    <list default="true" id="0a78a21b-4449-4102-9ce3-1909c88cf352" name="Default Changelist" comment="2021061403">
+      <change beforePath="$PROJECT_DIR$/core/BlockchainDatabase.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/BlockchainDatabase.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/Wallet.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Wallet.go" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,8 +38,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/BlockchainDatabase.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="124">
-              <caret line="61" column="48" selection-start-line="61" selection-start-column="48" selection-end-line="61" selection-end-column="48" />
+            <state relative-caret-position="100">
+              <caret line="25" column="24" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -162,10 +165,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="7" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2600536" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2600536" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -184,7 +187,7 @@
       <window_info anchor="bottom" id="SOQL Query" order="9" />
       <window_info anchor="bottom" id="Log Analyzer" order="10" />
       <window_info anchor="bottom" id="Terminal" order="11" />
-      <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" visible="true" weight="0.3286119" />
+      <window_info active="true" anchor="bottom" id="Event Log" order="12" side_tool="true" visible="true" weight="0.16147308" />
       <window_info anchor="bottom" id="Anonymous Apex" order="13" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -219,8 +222,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/BlockchainDatabase.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="61" column="48" selection-start-line="61" selection-start-column="48" selection-end-line="61" selection-end-column="48" />
+        <state relative-caret-position="100">
+          <caret line="25" column="24" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="24" />
         </state>
       </provider>
     </entry>

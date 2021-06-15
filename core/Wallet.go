@@ -11,12 +11,13 @@ import (
 const WALLET_DATABASE_NAME = "WalletDatabase"
 
 type Wallet struct {
-	CoreConfiguration *CoreConfiguration
+	CoreConfiguration  *CoreConfiguration
+	BlockchainDatabase *BlockchainDatabase
 }
 
 func (w *Wallet) GetAllAccounts() []*AccountUtil.Account {
 	var accounts []*AccountUtil.Account
-	list := KvDbUtil.Gets(w.GetWalletDatabasePath(), 1, 11)
+	list := KvDbUtil.Gets(w.getWalletDatabasePath(), 1, 11)
 	for e := list.Front(); e != nil; e = e.Next() {
 		account := EncodeDecodeTool.DecodeToAccount(e.Value.([]byte))
 		accounts = append(accounts, account)
@@ -32,18 +33,24 @@ func (w *Wallet) CreateAndSaveAccount() *AccountUtil.Account {
 	return account
 }
 func (w *Wallet) SaveAccount(account *AccountUtil.Account) {
-	KvDbUtil.Put(w.GetWalletDatabasePath(), getKeyByAccount(account), EncodeDecodeTool.EncodeAccount(account))
+	KvDbUtil.Put(w.getWalletDatabasePath(), w.getKeyByAccount(account), EncodeDecodeTool.EncodeAccount(account))
 }
 func (w *Wallet) DeleteAccountByAddress(address string) {
-	KvDbUtil.Delete(w.GetWalletDatabasePath(), getKeyByAddress(address))
+	KvDbUtil.Delete(w.getWalletDatabasePath(), w.getKeyByAddress(address))
 }
-
-func (w *Wallet) GetWalletDatabasePath() string {
+func (w *Wallet) GetBalanceByAddress(address string) uint64 {
+	utxo := w.BlockchainDatabase.QueryUnspentTransactionOutputByAddress(address)
+	if utxo != nil {
+		return utxo.Value
+	}
+	return uint64(0)
+}
+func (w *Wallet) getWalletDatabasePath() string {
 	return FileUtil.NewPath(w.CoreConfiguration.getCorePath(), WALLET_DATABASE_NAME)
 }
-func getKeyByAddress(address string) []byte {
+func (w *Wallet) getKeyByAddress(address string) []byte {
 	return ByteUtil.StringToUtf8Bytes(address)
 }
-func getKeyByAccount(account *AccountUtil.Account) []byte {
+func (w *Wallet) getKeyByAccount(account *AccountUtil.Account) []byte {
 	return ByteUtil.StringToUtf8Bytes(account.Address)
 }
