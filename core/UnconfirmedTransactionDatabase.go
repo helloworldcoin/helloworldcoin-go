@@ -15,13 +15,13 @@ type UnconfirmedTransactionDatabase struct {
 	CoreConfiguration *CoreConfiguration
 }
 
-func (u *UnconfirmedTransactionDatabase) insertTransaction(transactionDto *dto.TransactionDto) {
+func (u *UnconfirmedTransactionDatabase) InsertTransaction(transactionDto *dto.TransactionDto) {
 	transactionHash := TransactionDtoTool.CalculateTransactionHash(transactionDto)
 	KvDbUtil.Put(u.getUnconfirmedTransactionDatabasePath(), u.getKey(transactionHash), EncodeDecodeTool.EncodeTransactionDto(transactionDto))
 
 }
 
-func (u *UnconfirmedTransactionDatabase) selectTransactions(from uint64, size uint64) []dto.TransactionDto {
+func (u *UnconfirmedTransactionDatabase) SelectTransactions(from uint64, size uint64) []dto.TransactionDto {
 	var transactionDtoList []dto.TransactionDto
 	bytesTransactionDtos := KvDbUtil.Gets(u.getUnconfirmedTransactionDatabasePath(), from, size)
 	if bytesTransactionDtos != nil {
@@ -33,11 +33,11 @@ func (u *UnconfirmedTransactionDatabase) selectTransactions(from uint64, size ui
 	return transactionDtoList
 }
 
-func (u *UnconfirmedTransactionDatabase) deleteByTransactionHash(transactionHash string) {
+func (u *UnconfirmedTransactionDatabase) DeleteByTransactionHash(transactionHash string) {
 	KvDbUtil.Delete(u.getUnconfirmedTransactionDatabasePath(), u.getKey(transactionHash))
 }
 
-func (u *UnconfirmedTransactionDatabase) selectTransactionByTransactionHash(transactionHash string) *dto.TransactionDto {
+func (u *UnconfirmedTransactionDatabase) SelectTransactionByTransactionHash(transactionHash string) *dto.TransactionDto {
 	byteTransactionDto := KvDbUtil.Get(u.getUnconfirmedTransactionDatabasePath(), u.getKey(transactionHash))
 	if byteTransactionDto == nil {
 		return nil

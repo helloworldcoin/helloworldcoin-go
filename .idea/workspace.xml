@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0a78a21b-4449-4102-9ce3-1909c88cf352" name="Default Changelist" comment="2021061403">
-      <change beforePath="$PROJECT_DIR$/core/BlockchainDatabase.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/BlockchainDatabase.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Wallet.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Wallet.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/Dto2ModelTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Dto2ModelTool.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/Miner.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Miner.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/UnconfirmedTransactionDatabase.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/UnconfirmedTransactionDatabase.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/tool/ScriptTool/ScriptTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/tool/ScriptTool/ScriptTool.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crypto/AccountUtil/AccountUtil.go" beforeDir="false" afterPath="$PROJECT_DIR$/crypto/AccountUtil/AccountUtil.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,34 +15,15 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="DefaultGradleProjectSettings">
-    <option name="testRunner" value="GRADLE" />
-    <option name="delegatedBuild" value="true" />
+    <option name="isMigrated" value="true" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="9" column="1" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/Consensus.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="274">
-              <caret line="41" column="28" selection-start-line="41" selection-start-column="28" selection-end-line="41" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/core/BlockchainDatabase.go">
+        <entry file="file://$PROJECT_DIR$/crypto/AccountUtil/AccountUtil.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="100">
-              <caret line="25" column="24" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="24" />
+            <state relative-caret-position="-1490">
+              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
             </state>
           </provider>
         </entry>
@@ -57,12 +41,19 @@
       <find>&lt;=</find>
       <find>&gt;=</find>
       <find>==</find>
+      <find>publicKeyHashFromPublicKey</find>
+      <find>publicKeyHashFromStringPublicKey</find>
+      <find>addressFromStringPublicKey</find>
+      <find>PublicKeyHashFromStringAddress</find>
     </findStrings>
     <replaceStrings>
       <replace>model</replace>
       <replace>Model2DtoTool</replace>
       <replace>blockchainDatabase</replace>
       <replace>Database</replace>
+      <replace>publicKeyHashFromPublicKey</replace>
+      <replace>AddressFromPublicKey</replace>
+      <replace>PublicKeyHashFromAddress</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -75,6 +66,7 @@
         <option value="$PROJECT_DIR$/core/tool/TransactionTool/TransactionTool.go" />
         <option value="$PROJECT_DIR$/main.go" />
         <option value="$PROJECT_DIR$/core/BlockchainDatabase.go" />
+        <option value="$PROJECT_DIR$/crypto/AccountUtil/AccountUtil.go" />
       </list>
     </option>
   </component>
@@ -98,6 +90,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -105,12 +98,22 @@
               <item name="helloworldcoin-go" type="b2602c69:ProjectViewProjectNode" />
               <item name="helloworldcoin-go" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="helloworldcoin-go" type="b2602c69:ProjectViewProjectNode" />
+              <item name="helloworldcoin-go" type="462c0819:PsiDirectoryNode" />
+              <item name="crypto" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="helloworldcoin-go" type="b2602c69:ProjectViewProjectNode" />
+              <item name="helloworldcoin-go" type="462c0819:PsiDirectoryNode" />
+              <item name="crypto" type="462c0819:PsiDirectoryNode" />
+              <item name="AccountUtil" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -168,7 +171,7 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2600536" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1621984" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -187,7 +190,7 @@
       <window_info anchor="bottom" id="SOQL Query" order="9" />
       <window_info anchor="bottom" id="Log Analyzer" order="10" />
       <window_info anchor="bottom" id="Terminal" order="11" />
-      <window_info active="true" anchor="bottom" id="Event Log" order="12" side_tool="true" visible="true" weight="0.16147308" />
+      <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" visible="true" weight="0.16147308" />
       <window_info anchor="bottom" id="Anonymous Apex" order="13" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -206,10 +209,24 @@
     <option name="LAST_COMMIT_MESSAGE" value="2021061403" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/util/NumberUtil/NumberUtil.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="298">
+          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
           <caret line="9" column="1" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/BlockchainDatabase.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="25" column="24" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="7" />
         </state>
       </provider>
     </entry>
@@ -220,17 +237,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/BlockchainDatabase.go">
+    <entry file="file://$PROJECT_DIR$/crypto/AccountUtil/AccountUtil.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="25" column="24" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/NumberUtil/NumberUtil.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+        <state relative-caret-position="-1490">
+          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
         </state>
       </provider>
     </entry>

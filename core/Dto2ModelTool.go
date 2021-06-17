@@ -44,13 +44,13 @@ func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transa
 	var transactions []model.Transaction
 	if transactionDtoList != nil {
 		for _, transactionDto := range transactionDtoList {
-			transaction := transactionDto2Transaction(blockchainDatabase, &transactionDto)
+			transaction := TransactionDto2Transaction(blockchainDatabase, &transactionDto)
 			transactions = append(transactions, *transaction)
 		}
 	}
 	return transactions
 }
-func transactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transactionDto *dto.TransactionDto) *model.Transaction {
+func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transactionDto *dto.TransactionDto) *model.Transaction {
 	var inputs []model.TransactionInput
 	transactionInputDtos := transactionDto.Inputs
 	if transactionInputDtos != nil {
@@ -88,7 +88,7 @@ func transactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 func transactionOutputDto2TransactionOutput(transactionOutputDto dto.TransactionOutputDto) *model.TransactionOutput {
 	var transactionOutput model.TransactionOutput
 	publicKeyHash := ScriptTool.GetPublicKeyHashByPayToPublicKeyHashOutputScript(transactionOutputDto.OutputScript)
-	address := AccountUtil.AddressFromStringPublicKeyHash(publicKeyHash)
+	address := AccountUtil.AddressFromPublicKeyHash(publicKeyHash)
 	transactionOutput.Address = address
 	transactionOutput.Value = transactionOutputDto.Value
 	transactionOutput.OutputScript = transactionOutputDto.OutputScript

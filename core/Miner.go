@@ -77,7 +77,7 @@ func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfi
 		nonNonceBlock.Height = tailBlock.Height + uint64(1)
 		nonNonceBlock.PreviousHash = tailBlock.Hash
 	}
-	var packingTransactions []model.Transaction
+	packingTransactions := i.packingTransactions(blockchainDatabase, unconfirmedTransactionDatabase)
 
 	incentive := blockchainDatabase.Incentive
 	incentiveValue := incentive.IncentiveValue(blockchainDatabase, &nonNonceBlock)
@@ -114,4 +114,17 @@ func (i *Miner) buildIncentiveTransaction(address string, incentiveValue uint64)
 	transaction.Outputs = outputs
 	transaction.TransactionHash = TransactionTool.CalculateTransactionHash(transaction)
 	return &transaction
+}
+func (i *Miner) packingTransactions(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase) []model.Transaction {
+	forMineBlockTransactionDtos := unconfirmedTransactionDatabase.SelectTransactions(uint64(1), uint64(10000))
+
+	transactions := []model.Transaction{}
+	if forMineBlockTransactionDtos != nil {
+		for _, transactionDto := range forMineBlockTransactionDtos {
+			//TODO exception
+			transaction := TransactionDto2Transaction(blockchainDatabase, &transactionDto)
+			transactions = append(transactions, *transaction)
+		}
+	}
+	return transactions
 }
