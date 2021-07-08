@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0a78a21b-4449-4102-9ce3-1909c88cf352" name="Default Changelist" comment="2021061403">
-      <change beforePath="$PROJECT_DIR$/core/Dto2ModelTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Dto2ModelTool.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/Miner.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/Miner.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/UnconfirmedTransactionDatabase.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/UnconfirmedTransactionDatabase.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/tool/ScriptTool/ScriptTool.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/tool/ScriptTool/ScriptTool.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crypto/AccountUtil/AccountUtil.go" beforeDir="false" afterPath="$PROJECT_DIR$/crypto/AccountUtil/AccountUtil.go" afterDir="false" />
+    <list default="true" id="0a78a21b-4449-4102-9ce3-1909c88cf352" name="Default Changelist" comment="20210708">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,19 +11,6 @@
   </component>
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/crypto/AccountUtil/AccountUtil.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1490">
-              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -56,8 +38,12 @@
       <replace>PublicKeyHashFromAddress</replace>
     </replaceStrings>
   </component>
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../Program Files (x86)/Go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -85,6 +71,7 @@
     <option name="width" value="1750" />
     <option name="height" value="980" />
   </component>
+  <component name="ProjectId" id="1ukWeuliuef4LFIvwPIUqTqvSFb" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -116,22 +103,46 @@
       <pane id="PackagesPane" />
     </panes>
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
+  <component name="RunManager" selected="Go Build.go build helloworldcoin-go">
+    <configuration name="go build helloworldcoin-go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="helloworldcoin-go" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="helloworldcoin-go" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/main5.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build main2.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="helloworldcoin-go" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <package value="helloworldcoin-go" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/main2.go" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
       <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
+        <item itemvalue="Go Build.go build helloworldcoin-go" />
+        <item itemvalue="Go Build.go build main2.go" />
       </list>
-    </option>
+    </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -202,11 +213,35 @@
       <window_info anchor="right" id="Palette&#9;" order="7" />
     </layout>
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="2021061401" />
     <MESSAGE value="2021061402" />
     <MESSAGE value="2021061403" />
-    <option name="LAST_COMMIT_MESSAGE" value="2021061403" />
+    <MESSAGE value="20210708" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210708" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+    <environment>
+      <map>
+        <entry key="GOPROXY" value="https://goproxy.io" />
+      </map>
+    </environment>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/util/NumberUtil/NumberUtil.go">
