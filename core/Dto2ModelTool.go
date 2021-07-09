@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"helloworldcoin-go/core/model"
 	"helloworldcoin-go/core/model/TransactionType"
 	"helloworldcoin-go/core/tool/BlockTool"
@@ -43,7 +44,12 @@ func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockD
 func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transactionDtoList []dto.TransactionDto) []model.Transaction {
 	var transactions []model.Transaction
 	if transactionDtoList != nil {
+		fmt.Println(transactionDtoList)
 		for _, transactionDto := range transactionDtoList {
+			fmt.Println(8888)
+			fmt.Println(transactionDto)
+			fmt.Println(88888)
+
 			transaction := TransactionDto2Transaction(blockchainDatabase, &transactionDto)
 			transactions = append(transactions, *transaction)
 		}
@@ -66,7 +72,7 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 			inputs = append(inputs, transactionInput)
 		}
 	}
-
+	fmt.Println(inputs)
 	var outputs []model.TransactionOutput
 	transactionOutputDtos := transactionDto.Outputs
 	if transactionOutputDtos != nil {
@@ -75,13 +81,15 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 			outputs = append(outputs, *transactionOutput)
 		}
 	}
-
+	fmt.Println(outputs)
 	transaction := new(model.Transaction)
 	transactionType := obtainTransactionDto(transactionDto)
 	transaction.TransactionType = transactionType
 	transaction.TransactionHash = TransactionDtoTool.CalculateTransactionHash(transactionDto)
 	transaction.Inputs = inputs
 	transaction.Outputs = outputs
+	fmt.Println(111111111)
+	fmt.Println(transaction)
 	return transaction
 }
 
