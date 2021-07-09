@@ -55,10 +55,7 @@ func (c *Consensus) CalculateDifficult(blockchainDatabase *BlockchainDatabase, t
 	bigIntPreviousIntervalActualTimespan := new(big.Int).SetUint64(previousIntervalActualTimespan)
 	bigIntIntervalTime := new(big.Int).SetUint64(IncentiveSetting.INTERVAL_TIME)
 
-	bigIntegerMul := new(big.Int)
-	bigIntegerMul.Mul(bigIntPreviousIntervalDifficulty, bigIntPreviousIntervalActualTimespan)
-
-	bigIntegerTargetDifficult := new(big.Int)
-	bigIntegerTargetDifficult.Div(bigIntegerMul, bigIntIntervalTime)
+	bigIntegerMul := new(big.Int).Mul(bigIntPreviousIntervalDifficulty, bigIntPreviousIntervalActualTimespan)
+	bigIntegerTargetDifficult := new(big.Int).Div(bigIntegerMul, bigIntIntervalTime)
 	return HexUtil.BytesToHexString(bigIntegerTargetDifficult.Bytes())
 }
