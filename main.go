@@ -9,7 +9,7 @@ import (
 	"helloworldcoin-go/core/tool/BlockTool"
 )
 
-func main0() {
+func main() {
 	var Inputs0 []model.TransactionInput
 	var Outputs0 []model.TransactionOutput
 	Outputs0 = append(Outputs0, model.TransactionOutput{Value: 5000000000, OutputScript: []string{"01", "02", "00", "c80fe6d25b78f94c370e852226026f2d35833a9d", "03", "04"}})

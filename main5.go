@@ -5,7 +5,7 @@ import (
 	"helloworldcoin-go/core"
 )
 
-func main() {
+func main5() {
 
 	consensus := &core.Consensus{}
 	incentive := &core.Incentive{}
