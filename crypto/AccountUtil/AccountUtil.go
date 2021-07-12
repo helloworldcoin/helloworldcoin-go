@@ -31,16 +31,14 @@ func AddressFromPublicKey(publicKey string) string {
 	bytesPublicKey := ByteUtil.HexStringToBytes(publicKey)
 	return base58AddressFromPublicKey0(bytesPublicKey)
 }
-func Signature(privateKey string, message string) string {
+func Signature(privateKey string, bytesMessage []byte) string {
 	privateKey0 := decodePrivateKey0(privateKey)
-	bytesMessage := ByteUtil.HexStringToBytes(message)
 	bytesSignature := signature0(privateKey0, bytesMessage)
 	return ByteUtil.BytesToHexString(bytesSignature)
 }
-func VerifySignature(publicKey string, message string, signature string) bool {
+func VerifySignature(publicKey string, bytesMessage []byte, bytesSignature []byte) bool {
 	publicKey0 := decodePublicKey0(publicKey)
-	bytesMessage := ByteUtil.HexStringToBytes(message)
-	signature0, _ := btcec.ParseDERSignature(ByteUtil.HexStringToBytes(signature), btcec.S256())
+	signature0, _ := btcec.ParseDERSignature(bytesSignature, btcec.S256())
 	return signature0.Verify(bytesMessage, publicKey0)
 }
 func AddressFromPublicKeyHash(publicKeyHash string) string {
