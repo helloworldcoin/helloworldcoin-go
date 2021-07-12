@@ -9,7 +9,7 @@ import (
 	"helloworldcoin-go/core/tool/ScriptTool"
 	"helloworldcoin-go/core/tool/TransactionTool"
 	"helloworldcoin-go/crypto/AccountUtil"
-	"helloworldcoin-go/crypto/HexUtil"
+	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/crypto/RandomUtil"
 	"helloworldcoin-go/setting/GenesisBlockSetting"
 	"helloworldcoin-go/util/JsonUtil"
@@ -42,7 +42,7 @@ func (i *Miner) Start() {
 				break
 			}
 			//随机数
-			block.Nonce = HexUtil.BytesToHexString(RandomUtil.Random32Bytes())
+			block.Nonce = ByteUtil.BytesToHexString(RandomUtil.Random32Bytes())
 			block.Hash = BlockTool.CalculateBlockHash(block)
 			//挖矿成功
 			if i.BlockchainDatabase.Consensus.CheckConsensus(i.BlockchainDatabase, block) {

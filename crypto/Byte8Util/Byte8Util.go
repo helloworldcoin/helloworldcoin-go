@@ -2,7 +2,7 @@ package Byte8Util
 
 import (
 	"encoding/binary"
-	"helloworldcoin-go/crypto/HexUtil"
+	"helloworldcoin-go/crypto/ByteUtil"
 )
 
 func Uint64ToByte8(number uint64) []byte {
@@ -12,5 +12,5 @@ func Uint64ToByte8(number uint64) []byte {
 }
 
 func Uint64ToHexString64(number uint64) string {
-	return HexUtil.BytesToHexString(Uint64ToByte8(number))
+	return ByteUtil.BytesToHexString(Uint64ToByte8(number))
 }

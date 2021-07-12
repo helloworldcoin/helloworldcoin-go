@@ -3,7 +3,7 @@ package core
 import (
 	"helloworldcoin-go/core/tool/EncodeDecodeTool"
 	"helloworldcoin-go/core/tool/TransactionDtoTool"
-	"helloworldcoin-go/crypto/HexUtil"
+	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/dto"
 	"helloworldcoin-go/util/FileUtil"
 	"helloworldcoin-go/util/KvDbUtil"
@@ -50,5 +50,5 @@ func (u *UnconfirmedTransactionDatabase) getUnconfirmedTransactionDatabasePath()
 }
 
 func (u *UnconfirmedTransactionDatabase) getKey(transactionHash string) []byte {
-	return HexUtil.HexStringToBytes(transactionHash)
+	return ByteUtil.HexStringToBytes(transactionHash)
 }

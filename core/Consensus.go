@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"helloworldcoin-go/core/model"
 	"helloworldcoin-go/core/tool/BlockTool"
-	"helloworldcoin-go/crypto/HexUtil"
+	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/setting/GenesisBlockSetting"
 	"helloworldcoin-go/setting/IncentiveSetting"
 	"helloworldcoin-go/util/StringUtil"
@@ -25,8 +25,8 @@ func (c *Consensus) CheckConsensus(blockchainDatabase *BlockchainDatabase, block
 		hash = BlockTool.CalculateBlockHash(block)
 	}
 
-	bigIntDifficulty := new(big.Int).SetBytes(HexUtil.HexStringToBytes(difficulty))
-	bigIntHash := new(big.Int).SetBytes(HexUtil.HexStringToBytes(hash))
+	bigIntDifficulty := new(big.Int).SetBytes(ByteUtil.HexStringToBytes(difficulty))
+	bigIntHash := new(big.Int).SetBytes(ByteUtil.HexStringToBytes(hash))
 	return bigIntDifficulty.Cmp(bigIntHash) > 0
 }
 
@@ -51,11 +51,11 @@ func (c *Consensus) CalculateDifficult(blockchainDatabase *BlockchainDatabase, t
 
 	fmt.Println(previousIntervalActualTimespan)
 
-	bigIntPreviousIntervalDifficulty := new(big.Int).SetBytes(HexUtil.HexStringToBytes(previousIntervalLastBlock.Difficulty))
+	bigIntPreviousIntervalDifficulty := new(big.Int).SetBytes(ByteUtil.HexStringToBytes(previousIntervalLastBlock.Difficulty))
 	bigIntPreviousIntervalActualTimespan := new(big.Int).SetUint64(previousIntervalActualTimespan)
 	bigIntIntervalTime := new(big.Int).SetUint64(IncentiveSetting.INTERVAL_TIME)
 
 	bigIntegerMul := new(big.Int).Mul(bigIntPreviousIntervalDifficulty, bigIntPreviousIntervalActualTimespan)
 	bigIntegerTargetDifficult := new(big.Int).Div(bigIntegerMul, bigIntIntervalTime)
-	return HexUtil.BytesToHexString(bigIntegerTargetDifficult.Bytes())
+	return ByteUtil.BytesToHexString(bigIntegerTargetDifficult.Bytes())
 }
