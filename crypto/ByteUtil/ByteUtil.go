@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
+	"math/rand"
 )
 
 func HexStringToBytes(hexString string) []byte {
@@ -71,4 +72,11 @@ func CopyTo(src []byte, srcPos int, dest *[]byte, destPos int, length int) {
 }
 func Long8ToHexString8(number uint64) string {
 	return BytesToHexString(Long8ToByte8(number))
+}
+func Random32Bytes() []byte {
+	token := make([]byte, 32)
+	if _, err := rand.Read(token); err != nil {
+		// Handle err
+	}
+	return token
 }
