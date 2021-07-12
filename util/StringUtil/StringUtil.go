@@ -1,6 +1,9 @@
 package StringUtil
 
-import "strconv"
+import (
+	"strconv"
+	"unicode/utf8"
+)
 
 func Concat(value1 string, value2 string) string {
 	return value1 + value2
@@ -13,4 +16,11 @@ func IsNullOrEmpty(value1 string) bool {
 }
 func ValueOfUint64(number uint64) string {
 	return strconv.FormatUint(number, 10)
+}
+func PrefixPadding(rawValue string, targetLength int, paddingValue string) string {
+	target := rawValue
+	for utf8.RuneCountInString(target) < targetLength {
+		target = paddingValue + target
+	}
+	return target
 }

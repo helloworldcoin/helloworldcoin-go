@@ -63,17 +63,16 @@ func Equals(bytes1 []byte, bytes2 []byte) bool {
 	return bytes.Equal(bytes1, bytes2)
 }
 
-func Copy(src []byte, srcPos int, destPos int) []byte {
-	length := destPos - srcPos
-	return src[srcPos:length]
+func Copy(sourceBytes []byte, startPosition int, length int) []byte {
+	return sourceBytes[startPosition : startPosition+length]
 }
 
-func CopyTo(src []byte, srcPos int, dest *[]byte, destPos int, length int) {
-	for len(*dest) < destPos+length {
-		*dest = append(*dest, byte(0x00))
+func CopyTo(sourceBytes []byte, sourceStartPosition int, length int, destinationBytes *[]byte, destinationStartPosition int) {
+	for len(*destinationBytes) < destinationStartPosition+length {
+		*destinationBytes = append(*destinationBytes, byte(0x00))
 	}
 	for i := 0; i < length; i = i + 1 {
-		(*dest)[destPos+i] = src[srcPos+i]
+		(*destinationBytes)[destinationStartPosition+i] = sourceBytes[sourceStartPosition+i]
 	}
 }
 

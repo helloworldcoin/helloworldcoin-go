@@ -5,6 +5,7 @@ import (
 	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/crypto/Ripemd160Util"
 	"helloworldcoin-go/crypto/Sha256Util"
+	"helloworldcoin-go/util/StringUtil"
 
 	"github.com/btcsuite/btcd/btcec"
 )
@@ -23,14 +24,36 @@ func RandomAccount() *Account {
 	account := Account{PrivateKey: privateKey, PublicKey: publicKey, PublicKeyHash: publicKeyHash, Address: address}
 	return &account
 }
-func PublicKeyHashFromPublicKey(publicKey string) string {
-	publicKeyHash := Ripemd160Util.Digest(Sha256Util.Digest(ByteUtil.HexStringToBytes(publicKey)))
-	return ByteUtil.BytesToHexString(publicKeyHash)
+func AccountFromPrivateKey(privateKey string) *Account {
+	privateKey0, _ := btcec.PrivKeyFromBytes(btcec.S256(), []byte(privateKey))
+	publicKey0 := privateKey0.PubKey().SerializeCompressed()
+
+	publicKey := encodePublicKey0(publicKey0)
+	publicKeyHash := PublicKeyHashFromPublicKey(publicKey)
+	address := AddressFromPublicKey(publicKey)
+	account := Account{PrivateKey: privateKey, PublicKey: publicKey, PublicKeyHash: publicKeyHash, Address: address}
+	return &account
 }
 func AddressFromPublicKey(publicKey string) string {
 	bytesPublicKey := ByteUtil.HexStringToBytes(publicKey)
 	return base58AddressFromPublicKey0(bytesPublicKey)
 }
+func AddressFromPublicKeyHash(publicKeyHash string) string {
+	bytesPublicKeyHash := ByteUtil.HexStringToBytes(publicKeyHash)
+	return base58AddressFromPublicKeyHash0(bytesPublicKeyHash)
+}
+
+func PublicKeyHashFromPublicKey(publicKey string) string {
+	publicKeyHash := Ripemd160Util.Digest(Sha256Util.Digest(ByteUtil.HexStringToBytes(publicKey)))
+	return ByteUtil.BytesToHexString(publicKeyHash)
+}
+func PublicKeyHashFromAddress(address string) string {
+	bytesAddress := Base58Util.Decode(address)
+	var bytesPublicKeyHash []byte
+	ByteUtil.CopyTo(bytesAddress, 1, 20, &bytesPublicKeyHash, 0)
+	return ByteUtil.BytesToHexString(bytesPublicKeyHash)
+}
+
 func Signature(privateKey string, bytesMessage []byte) string {
 	privateKey0 := decodePrivateKey0(privateKey)
 	bytesSignature := signature0(privateKey0, bytesMessage)
@@ -41,15 +64,17 @@ func VerifySignature(publicKey string, bytesMessage []byte, bytesSignature []byt
 	signature0, _ := btcec.ParseDERSignature(bytesSignature, btcec.S256())
 	return signature0.Verify(bytesMessage, publicKey0)
 }
-func AddressFromPublicKeyHash(publicKeyHash string) string {
-	bytesPublicKeyHash := ByteUtil.HexStringToBytes(publicKeyHash)
-	return base58AddressFromPublicKeyHash0(bytesPublicKeyHash)
+
+func FormatPrivateKey(privateKey string) string {
+	return StringUtil.PrefixPadding(privateKey, 64, "0")
 }
-func PublicKeyHashFromAddress(address string) string {
+
+func IsPayToPublicKeyHashAddress(address string) bool {
 	bytesAddress := Base58Util.Decode(address)
 	var bytesPublicKeyHash []byte
-	ByteUtil.CopyTo(bytesAddress, 1, &bytesPublicKeyHash, 0, 20)
-	return ByteUtil.BytesToHexString(bytesPublicKeyHash)
+	ByteUtil.CopyTo(bytesAddress, 1, 20, &bytesPublicKeyHash, 0)
+	base58Address := AddressFromPublicKeyHash(ByteUtil.BytesToHexString(bytesPublicKeyHash))
+	return base58Address == address
 }
 
 func encodePrivateKey0(privateKey0 *btcec.PrivateKey) string {
@@ -80,7 +105,7 @@ func publicKeyHashFromPublicKey0(publicKey []byte) []byte {
 }
 func base58AddressFromPublicKeyHash0(bytesPublicKeyHash []byte) string {
 	bytesCheckCode := ByteUtil.Copy(Sha256Util.DoubleDigest(append([]byte{0x00}, bytesPublicKeyHash...)), 0, 4)
-	bytesAddress := []byte{}
+	var bytesAddress []byte
 	bytesAddress = append([]byte{0x00}, bytesPublicKeyHash...)
 	bytesAddress = append(bytesAddress, bytesCheckCode...)
 	base58Address := Base58Util.Encode(bytesAddress)
