@@ -1,15 +1,11 @@
-package main
+package BlockTool
 
 import (
-	"fmt"
-	"helloworldcoin-go/core"
-	"helloworldcoin-go/core/tool/Model2DtoTool"
-
 	"helloworldcoin-go/core/model"
-	"helloworldcoin-go/core/tool/BlockTool"
+	"testing"
 )
 
-func main0() {
+func TestCalculateBlockHash(t *testing.T) {
 	var Inputs0 []model.TransactionInput
 	var Outputs0 []model.TransactionOutput
 	Outputs0 = append(Outputs0, model.TransactionOutput{Value: 5000000000, OutputScript: []string{"01", "02", "00", "c80fe6d25b78f94c370e852226026f2d35833a9d", "03", "04"}})
@@ -66,20 +62,21 @@ func main0() {
 
 	var transactions []model.Transaction = []model.Transaction{t0, t1}
 
-	block1 := new(model.Block)
-	block1.Timestamp = 1622928126312
-	block1.PreviousHash = "52ae3991310d52ff43e530b7c69c25abf7ce60667f77a3b19231da904f21648e"
-	//block1.MerkleTreeRoot = "87bbd24191ebe280407698467e51ac4b2738841d14cb3f5fe3e8bd57201a9e01"
-	block1.Nonce = "d63852382edbec3b79de31e58b34c8a703a2f3715efb7c5f2dd52c9ae27250b6"
-	block1.Transactions = transactions
+	block := new(model.Block)
+	block.Timestamp = 1622928126312
+	block.PreviousHash = "52ae3991310d52ff43e530b7c69c25abf7ce60667f77a3b19231da904f21648e"
+	block.Nonce = "d63852382edbec3b79de31e58b34c8a703a2f3715efb7c5f2dd52c9ae27250b6"
+	block.Transactions = transactions
 
-	fmt.Println(BlockTool.CalculateBlockHash(block1))
+	if "87bbd24191ebe280407698467e51ac4b2738841d14cb3f5fe3e8bd57201a9e01" == CalculateBlockMerkleTreeRoot(block) {
+		t.Log("test pass")
+	} else {
+		t.Error("test failed")
+	}
 
-	consensus := core.Consensus{}
-	incentive := core.Incentive{}
-	coreConfiguration := core.CoreConfiguration{CorePath: "d:"}
-	blockchainDatabase := core.BlockchainDatabase{Consensus: &consensus, Incentive: &incentive, CoreConfiguration: &coreConfiguration}
-
-	blockDto := Model2DtoTool.Block2BlockDto(block1)
-	blockchainDatabase.AddBlockDto(blockDto)
+	if "4758aa769a5f0642cceb8fc7deb6a0102aa7faf28d2dff324b911b1a6650fbb4" == CalculateBlockHash(block) {
+		t.Log("test pass")
+	} else {
+		t.Error("test failed")
+	}
 }
