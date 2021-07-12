@@ -12,7 +12,7 @@ import (
 	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/setting/GenesisBlockSetting"
 	"helloworldcoin-go/util/JsonUtil"
-	"helloworldcoin-go/util/SleepUtil"
+	"helloworldcoin-go/util/ThreadUtil"
 	"helloworldcoin-go/util/TimeUtil"
 )
 
@@ -25,19 +25,19 @@ type Miner struct {
 
 func (i *Miner) Start() {
 	for {
-		SleepUtil.Sleep(10)
+		ThreadUtil.MillisecondSleep(10)
 		if !i.isActive() {
 			continue
 		}
 		minerAccount := i.Wallet.CreateAccount()
 		block := i.buildMiningBlock(i.BlockchainDatabase, i.UnconfirmedTransactionDatabase, minerAccount)
-		startTimestamp := TimeUtil.CurrentMillisecondTimestamp()
+		startTimestamp := TimeUtil.MillisecondTimestamp()
 		for {
 			if !i.isActive() {
 				break
 			}
 			//在挖矿的期间，可能收集到新的交易。每隔一定的时间，重新组装挖矿中的区块，这样新收集到交易就可以被放进挖矿中的区块了。
-			if TimeUtil.CurrentMillisecondTimestamp()-startTimestamp > i.CoreConfiguration.GetMinerMineTimeInterval() {
+			if TimeUtil.MillisecondTimestamp()-startTimestamp > i.CoreConfiguration.GetMinerMineTimeInterval() {
 				break
 			}
 			//随机数
@@ -63,7 +63,7 @@ func (i *Miner) isActive() bool {
 }
 
 func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *model.Block {
-	timestamp := TimeUtil.CurrentMillisecondTimestamp()
+	timestamp := TimeUtil.MillisecondTimestamp()
 
 	tailBlock := blockchainDatabase.QueryTailBlock()
 	var nonNonceBlock model.Block
