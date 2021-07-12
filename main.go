@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"helloworldcoin-go/core"
 )
 
-func main5() {
-
+func main() {
 	consensus := &core.Consensus{}
 	incentive := &core.Incentive{}
 	coreConfiguration := &core.CoreConfiguration{CorePath: "C:\\HelloworldBlockchainDataGo"}
@@ -14,6 +12,5 @@ func main5() {
 	wallet := &core.Wallet{CoreConfiguration: coreConfiguration}
 	unconfirmedTransactionDatabase := &core.UnconfirmedTransactionDatabase{CoreConfiguration: coreConfiguration}
 	miner := core.Miner{CoreConfiguration: coreConfiguration, Wallet: wallet, BlockchainDatabase: blockchainDatabase, UnconfirmedTransactionDatabase: unconfirmedTransactionDatabase}
-	fmt.Println(miner)
 	miner.Start()
 }
