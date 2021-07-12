@@ -13,7 +13,7 @@ func CalculateMerkleTreeRoot(dataList [][]byte) []byte {
 			right := min(left+1, levelSize-1)
 			leftBytes := tree[levelOffset+left]
 			rightBytes := tree[levelOffset+right]
-			tree = append(tree, Sha256Util.DoubleDigest(ByteUtil.Concat(leftBytes, rightBytes)))
+			tree = append(tree, Sha256Util.DoubleDigest(ByteUtil.Concatenate(leftBytes, rightBytes)))
 		}
 		levelOffset += levelSize
 	}

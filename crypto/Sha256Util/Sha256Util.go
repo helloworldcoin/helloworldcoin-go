@@ -7,8 +7,8 @@ import (
 func Digest(message []byte) []byte {
 	sha256 := sha256.New()
 	sha256.Write(message)
-	bytes := sha256.Sum(nil)
-	return bytes
+	sha256Digest := sha256.Sum(nil)
+	return sha256Digest
 }
 
 func DoubleDigest(message []byte) []byte {

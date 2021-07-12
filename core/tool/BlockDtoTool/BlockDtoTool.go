@@ -14,7 +14,7 @@ func CalculateBlockHash(block *dto.BlockDto) string {
 	bytesMerkleTreeRoot := ByteUtil.HexStringToBytes(CalculateBlockMerkleTreeRoot(block))
 	bytesNonce := ByteUtil.HexStringToBytes(block.Nonce)
 
-	bytes := ByteUtil.Concat(bytesTimestamp, bytesPreviousBlockHash, bytesMerkleTreeRoot, bytesNonce)
+	bytes := ByteUtil.Concatenate4(bytesTimestamp, bytesPreviousBlockHash, bytesMerkleTreeRoot, bytesNonce)
 	hash := Sha256Util.DoubleDigest(bytes)
 	hexHash := ByteUtil.BytesToHexString(hash)
 	return hexHash

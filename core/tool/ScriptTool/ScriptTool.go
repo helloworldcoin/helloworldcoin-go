@@ -7,7 +7,7 @@ import (
 )
 
 func BytesScript(script []string) []byte {
-	bytesScript := []byte{}
+	var bytesScript []byte
 	for i := 0; i < len(script); i++ {
 		operationCode := script[i]
 		bytesOperationCode := ByteUtil.HexStringToBytes(operationCode)
@@ -15,14 +15,12 @@ func BytesScript(script []string) []byte {
 			ByteUtil.Equals(OperationCodeEnum.OP_HASH160.Code, bytesOperationCode) ||
 			ByteUtil.Equals(OperationCodeEnum.OP_EQUALVERIFY.Code, bytesOperationCode) ||
 			ByteUtil.Equals(OperationCodeEnum.OP_CHECKSIG.Code, bytesOperationCode) {
-			bytesScript = ByteUtil.Concat(bytesScript, ByteUtil.ConcatLength(bytesOperationCode))
-
+			bytesScript = ByteUtil.Concatenate(bytesScript, ByteUtil.ConcatLength(bytesOperationCode))
 		} else if ByteUtil.Equals(OperationCodeEnum.OP_PUSHDATA.Code, bytesOperationCode) {
 			i = i + 1
 			operationData := script[i]
 			bytesOperationData := ByteUtil.HexStringToBytes(operationData)
-			bytesScript = ByteUtil.Concat(bytesScript, ByteUtil.ConcatLength(bytesOperationCode), ByteUtil.ConcatLength(bytesOperationData))
-
+			bytesScript = ByteUtil.Concatenate3(bytesScript, ByteUtil.ConcatLength(bytesOperationCode), ByteUtil.ConcatLength(bytesOperationData))
 		} else {
 
 		}

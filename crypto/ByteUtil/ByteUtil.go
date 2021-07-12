@@ -35,21 +35,26 @@ func Utf8BytesToString(bytesValue []byte) string {
 	return string(bytesValue)
 }
 
-func Concat(arrays ...[]byte) []byte {
-	return bytes.Join(arrays, []byte(""))
+func Concatenate(bytes1 []byte, bytes2 []byte) []byte {
+	return bytes.Join([][]byte{bytes1, bytes2}, []byte(""))
 }
-
+func Concatenate3(bytes1 []byte, bytes2 []byte, bytes3 []byte) []byte {
+	return bytes.Join([][]byte{bytes1, bytes2, bytes3}, []byte(""))
+}
+func Concatenate4(bytes1 []byte, bytes2 []byte, bytes3 []byte, bytes4 []byte) []byte {
+	return bytes.Join([][]byte{bytes1, bytes2, bytes3, bytes4}, []byte(""))
+}
 func ConcatLength(value []byte) []byte {
-	return Concat(Uint64ToBytes(uint64(len(value))), value)
+	return Concatenate(Uint64ToBytes(uint64(len(value))), value)
 }
 
-func Equals(a []byte, b []byte) bool {
-	return true
+func Equals(bytes1 []byte, bytes2 []byte) bool {
+	return bytes.Equal(bytes1, bytes2)
 }
 func Flat(arraysarrays [][]byte) []byte {
 	concatBytes := []byte{}
 	for _, value := range arraysarrays {
-		concatBytes = Concat(concatBytes, value)
+		concatBytes = Concatenate(concatBytes, value)
 	}
 	return concatBytes
 }
