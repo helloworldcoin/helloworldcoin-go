@@ -1,9 +1,7 @@
 package core
 
 import (
-	"fmt"
 	"helloworldcoin-go/dto"
-	"helloworldcoin-go/util/JsonUtil"
 	"testing"
 )
 
@@ -25,5 +23,10 @@ func TestQueryBlockByBlockHeight(t *testing.T) {
 	blockchainDatabase.AddBlockDto(blockDto)
 
 	block := blockchainDatabase.QueryBlockByBlockHeight(uint64(1))
-	fmt.Println(JsonUtil.ToJsonStringBlock(block))
+
+	if "80da32d24607e952599eb6dc2b550319ed2052f15009262dc7b5a84a3ca063e0" == block.Hash {
+		t.Log("test pass")
+	} else {
+		t.Error("test failed")
+	}
 }
