@@ -11,7 +11,6 @@ import (
 	"helloworldcoin-go/setting/GenesisBlockSetting"
 	"helloworldcoin-go/util/FileUtil"
 	"helloworldcoin-go/util/KvDbUtil"
-	"helloworldcoin-go/util/NumberUtil"
 	"sync"
 )
 
@@ -73,7 +72,7 @@ func (b *BlockchainDatabase) QueryBlockchainTransactionOutputHeight() uint64 {
 
 func (b *BlockchainDatabase) QueryTailBlock() *model.Block {
 	blockchainHeight := b.QueryBlockchainHeight()
-	if NumberUtil.IsLessEqualThan(blockchainHeight, GenesisBlockSetting.HEIGHT) {
+	if blockchainHeight <= GenesisBlockSetting.HEIGHT {
 		return nil
 	}
 	return b.QueryBlockByBlockHeight(blockchainHeight)
