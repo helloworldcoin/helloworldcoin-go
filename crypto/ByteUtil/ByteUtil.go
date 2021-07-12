@@ -16,6 +16,16 @@ func BytesToHexString(bytes []byte) string {
 	return hexString
 }
 
+func Uint64ToBytes(number uint64) []byte {
+	bytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(bytes, number)
+	return bytes
+}
+func BytesToUint64(bytes []byte) uint64 {
+	number := uint64(binary.BigEndian.Uint64(bytes))
+	return number
+}
+
 func StringToUtf8Bytes(stringValue string) []byte {
 	//TODO is utf8?
 	return []byte(stringValue)
@@ -30,18 +40,7 @@ func Concat(arrays ...[]byte) []byte {
 }
 
 func ConcatLength(value []byte) []byte {
-	return Concat(Long8ToByte8(uint64(len(value))), value)
-}
-
-func Long8ToByte8(number uint64) []byte {
-	bytes := make([]byte, 8)
-	binary.BigEndian.PutUint64(bytes, number)
-	return bytes
-}
-
-func Byte8ToLong8(bytes []byte) uint64 {
-	number := uint64(binary.BigEndian.Uint64(bytes))
-	return number
+	return Concat(Uint64ToBytes(uint64(len(value))), value)
 }
 
 func Equals(a []byte, b []byte) bool {
@@ -71,7 +70,7 @@ func CopyTo(src []byte, srcPos int, dest *[]byte, destPos int, length int) {
 	}
 }
 func Long8ToHexString8(number uint64) string {
-	return BytesToHexString(Long8ToByte8(number))
+	return BytesToHexString(Uint64ToBytes(number))
 }
 func Random32Bytes() []byte {
 	token := make([]byte, 32)

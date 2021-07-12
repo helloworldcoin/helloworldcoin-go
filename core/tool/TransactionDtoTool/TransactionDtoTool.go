@@ -19,7 +19,7 @@ func BytesTransaction(transaction *dto.TransactionDto, omitInputScript bool) []b
 	inputs := transaction.Inputs
 	for _, input := range inputs {
 		bytesTransactionHash := ByteUtil.HexStringToBytes(input.TransactionHash)
-		bytesTransactionOutputIndex := ByteUtil.Long8ToByte8(input.TransactionOutputIndex)
+		bytesTransactionOutputIndex := ByteUtil.Uint64ToBytes(input.TransactionOutputIndex)
 		bytesUnspentTransactionOutput := ByteUtil.Concat(ByteUtil.ConcatLength(bytesTransactionHash),
 			ByteUtil.ConcatLength(bytesTransactionOutputIndex))
 		if !omitInputScript {
@@ -33,7 +33,7 @@ func BytesTransaction(transaction *dto.TransactionDto, omitInputScript bool) []b
 	outputs := transaction.Outputs
 	for _, output := range outputs {
 		bytesOutputScript := ScriptTool.BytesScript(output.OutputScript)
-		bytesValue := ByteUtil.Long8ToByte8(output.Value)
+		bytesValue := ByteUtil.Uint64ToBytes(output.Value)
 		bytesTransactionOutput := ByteUtil.Concat(ByteUtil.ConcatLength(bytesOutputScript), ByteUtil.ConcatLength(bytesValue))
 		bytesTransactionOutputs = append(bytesTransactionOutputs, ByteUtil.ConcatLength(bytesTransactionOutput))
 	}

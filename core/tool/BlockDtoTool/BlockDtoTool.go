@@ -9,7 +9,7 @@ import (
 )
 
 func CalculateBlockHash(block *dto.BlockDto) string {
-	bytesTimestamp := ByteUtil.Long8ToByte8(block.Timestamp)
+	bytesTimestamp := ByteUtil.Uint64ToBytes(block.Timestamp)
 	bytesPreviousBlockHash := ByteUtil.HexStringToBytes(block.PreviousHash)
 	bytesMerkleTreeRoot := ByteUtil.HexStringToBytes(CalculateBlockMerkleTreeRoot(block))
 	bytesNonce := ByteUtil.HexStringToBytes(block.Nonce)
