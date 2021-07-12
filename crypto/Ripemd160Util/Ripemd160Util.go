@@ -5,8 +5,8 @@ import (
 )
 
 func Digest(input []byte) []byte {
-	hasher := ripemd160.New()
-	hasher.Write(input)
-	hashBytes := hasher.Sum(nil)
-	return hashBytes
+	ripemd160 := ripemd160.New()
+	ripemd160.Write(input)
+	bytes := ripemd160.Sum(nil)
+	return bytes
 }

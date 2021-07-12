@@ -42,7 +42,7 @@ func BuildAddressKey(address string) []byte {
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildBlockHeightToBlockKey(blockHeight uint64) []byte {
-	stringKey := BLOCK_HEIGHT_TO_BLOCK_PREFIX_FLAG + ByteUtil.Long8ToHexString8(blockHeight) + END_FLAG
+	stringKey := BLOCK_HEIGHT_TO_BLOCK_PREFIX_FLAG + StringUtil.ValueOfUint64(blockHeight) + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildBlockHashToBlockHeightKey(blockHash string) []byte {
@@ -54,7 +54,7 @@ func BuildTransactionHashToTransactionHeightKey(transactionHash string) []byte {
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildTransactionOutputHeightToTransactionOutputKey(transactionOutputHeight uint64) []byte {
-	stringKey := TRANSACTION_OUTPUT_HEIGHT_TO_TRANSACTION_OUTPUT_PREFIX_FLAG + ByteUtil.Long8ToHexString8(transactionOutputHeight) + END_FLAG
+	stringKey := TRANSACTION_OUTPUT_HEIGHT_TO_TRANSACTION_OUTPUT_PREFIX_FLAG + StringUtil.ValueOfUint64(transactionOutputHeight) + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildTransactionOutputIdToTransactionOutputHeightKey(transactionHash string, transactionOutputIndex uint64) []byte {
@@ -98,7 +98,7 @@ func BuildBlockchainTransactionOutputHeightKey() []byte {
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildTransactionHeightToTransactionKey(transactionHeight uint64) []byte {
-	stringKey := TRANSACTION_HEIGHT_TO_TRANSACTION_PREFIX_FLAG + ByteUtil.Long8ToHexString8(transactionHeight) + END_FLAG
+	stringKey := TRANSACTION_HEIGHT_TO_TRANSACTION_PREFIX_FLAG + StringUtil.ValueOfUint64(transactionHeight) + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 
@@ -108,6 +108,6 @@ func BuildTransactionOutputIdToSpentTransactionOutputHeightKey(transactionHash s
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func buildTransactionOutputId(transactionHash string, transactionOutputIndex uint64) string {
-	transactionOutputId := StringUtil.Concat3(transactionHash, VERTICAL_LINE_FLAG, ByteUtil.Long8ToHexString8(transactionOutputIndex))
+	transactionOutputId := StringUtil.Concat3(transactionHash, VERTICAL_LINE_FLAG, StringUtil.ValueOfUint64(transactionOutputIndex))
 	return transactionOutputId
 }

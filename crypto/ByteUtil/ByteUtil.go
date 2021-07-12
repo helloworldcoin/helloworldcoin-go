@@ -69,9 +69,6 @@ func CopyTo(src []byte, srcPos int, dest *[]byte, destPos int, length int) {
 		(*dest)[destPos+i] = src[srcPos+i]
 	}
 }
-func Long8ToHexString8(number uint64) string {
-	return BytesToHexString(Uint64ToBytes(number))
-}
 func Random32Bytes() []byte {
 	token := make([]byte, 32)
 	if _, err := rand.Read(token); err != nil {

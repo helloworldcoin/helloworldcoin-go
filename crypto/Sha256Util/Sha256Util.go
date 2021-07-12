@@ -5,9 +5,9 @@ import (
 )
 
 func Digest(message []byte) []byte {
-	hash := sha256.New()
-	hash.Write(message)
-	bytes := hash.Sum(nil)
+	sha256 := sha256.New()
+	sha256.Write(message)
+	bytes := sha256.Sum(nil)
 	return bytes
 }
 
