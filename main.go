@@ -11,6 +11,6 @@ func main() {
 	blockchainDatabase := &core.BlockchainDatabase{Consensus: consensus, Incentive: incentive, CoreConfiguration: coreConfiguration}
 	wallet := &core.Wallet{CoreConfiguration: coreConfiguration}
 	unconfirmedTransactionDatabase := &core.UnconfirmedTransactionDatabase{CoreConfiguration: coreConfiguration}
-	miner := core.Miner{CoreConfiguration: coreConfiguration, Wallet: wallet, BlockchainDatabase: blockchainDatabase, UnconfirmedTransactionDatabase: unconfirmedTransactionDatabase}
+	miner := &core.Miner{CoreConfiguration: coreConfiguration, Wallet: wallet, BlockchainDatabase: blockchainDatabase, UnconfirmedTransactionDatabase: unconfirmedTransactionDatabase}
 	miner.Start()
 }
