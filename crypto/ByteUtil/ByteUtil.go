@@ -7,13 +7,13 @@ import (
 	"math/rand"
 )
 
-func HexStringToBytes(hexString string) []byte {
-	bytes, _ := hex.DecodeString(hexString)
-	return bytes
-}
 func BytesToHexString(bytes []byte) string {
 	hexString := hex.EncodeToString(bytes)
 	return hexString
+}
+func HexStringToBytes(hexString string) []byte {
+	bytes, _ := hex.DecodeString(hexString)
+	return bytes
 }
 
 func Uint64ToBytes(number uint64) []byte {
@@ -27,11 +27,9 @@ func BytesToUint64(bytes []byte) uint64 {
 }
 
 func StringToUtf8Bytes(stringValue string) []byte {
-	//TODO is utf8?
 	return []byte(stringValue)
 }
 func Utf8BytesToString(bytesValue []byte) string {
-	//TODO is utf8?
 	return string(bytesValue)
 }
 
@@ -44,28 +42,32 @@ func Concatenate3(bytes1 []byte, bytes2 []byte, bytes3 []byte) []byte {
 func Concatenate4(bytes1 []byte, bytes2 []byte, bytes3 []byte, bytes4 []byte) []byte {
 	return bytes.Join([][]byte{bytes1, bytes2, bytes3, bytes4}, []byte(""))
 }
-func ConcatLength(value []byte) []byte {
+
+func ConcatenateLength(value []byte) []byte {
 	return Concatenate(Uint64ToBytes(uint64(len(value))), value)
+}
+
+func Flat(values [][]byte) []byte {
+	var concatBytes []byte
+	for _, value := range values {
+		concatBytes = Concatenate(concatBytes, value)
+	}
+	return concatBytes
+}
+func FlatAndConcatenateLength(values [][]byte) []byte {
+	flatBytes := Flat(values)
+	return ConcatenateLength(flatBytes)
 }
 
 func Equals(bytes1 []byte, bytes2 []byte) bool {
 	return bytes.Equal(bytes1, bytes2)
 }
-func Flat(arraysarrays [][]byte) []byte {
-	concatBytes := []byte{}
-	for _, value := range arraysarrays {
-		concatBytes = Concatenate(concatBytes, value)
-	}
-	return concatBytes
-}
-func FlatAndConcatLength(arraysarrays [][]byte) []byte {
-	flatBytes := Flat(arraysarrays)
-	return ConcatLength(flatBytes)
-}
+
 func Copy(src []byte, srcPos int, destPos int) []byte {
 	length := destPos - srcPos
 	return src[srcPos:length]
 }
+
 func CopyTo(src []byte, srcPos int, dest *[]byte, destPos int, length int) {
 	for len(*dest) < destPos+length {
 		*dest = append(*dest, byte(0x00))
@@ -74,6 +76,7 @@ func CopyTo(src []byte, srcPos int, dest *[]byte, destPos int, length int) {
 		(*dest)[destPos+i] = src[srcPos+i]
 	}
 }
+
 func Random32Bytes() []byte {
 	token := make([]byte, 32)
 	if _, err := rand.Read(token); err != nil {

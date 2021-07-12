@@ -20,13 +20,13 @@ func BytesTransaction(transaction *dto.TransactionDto, omitInputScript bool) []b
 	for _, input := range inputs {
 		bytesTransactionHash := ByteUtil.HexStringToBytes(input.TransactionHash)
 		bytesTransactionOutputIndex := ByteUtil.Uint64ToBytes(input.TransactionOutputIndex)
-		bytesUnspentTransactionOutput := ByteUtil.Concatenate(ByteUtil.ConcatLength(bytesTransactionHash),
-			ByteUtil.ConcatLength(bytesTransactionOutputIndex))
+		bytesUnspentTransactionOutput := ByteUtil.Concatenate(ByteUtil.ConcatenateLength(bytesTransactionHash),
+			ByteUtil.ConcatenateLength(bytesTransactionOutputIndex))
 		if !omitInputScript {
 			bytesInputScript := ScriptTool.BytesScript(input.InputScript)
-			bytesUnspentTransactionOutput = ByteUtil.Concatenate(bytesUnspentTransactionOutput, ByteUtil.ConcatLength(bytesInputScript))
+			bytesUnspentTransactionOutput = ByteUtil.Concatenate(bytesUnspentTransactionOutput, ByteUtil.ConcatenateLength(bytesInputScript))
 		}
-		bytesUnspentTransactionOutputs = append(bytesUnspentTransactionOutputs, ByteUtil.ConcatLength(bytesUnspentTransactionOutput))
+		bytesUnspentTransactionOutputs = append(bytesUnspentTransactionOutputs, ByteUtil.ConcatenateLength(bytesUnspentTransactionOutput))
 	}
 
 	var bytesTransactionOutputs [][]byte
@@ -34,11 +34,11 @@ func BytesTransaction(transaction *dto.TransactionDto, omitInputScript bool) []b
 	for _, output := range outputs {
 		bytesOutputScript := ScriptTool.BytesScript(output.OutputScript)
 		bytesValue := ByteUtil.Uint64ToBytes(output.Value)
-		bytesTransactionOutput := ByteUtil.Concatenate(ByteUtil.ConcatLength(bytesOutputScript), ByteUtil.ConcatLength(bytesValue))
-		bytesTransactionOutputs = append(bytesTransactionOutputs, ByteUtil.ConcatLength(bytesTransactionOutput))
+		bytesTransactionOutput := ByteUtil.Concatenate(ByteUtil.ConcatenateLength(bytesOutputScript), ByteUtil.ConcatenateLength(bytesValue))
+		bytesTransactionOutputs = append(bytesTransactionOutputs, ByteUtil.ConcatenateLength(bytesTransactionOutput))
 	}
 
-	data := ByteUtil.Concatenate(ByteUtil.FlatAndConcatLength(bytesUnspentTransactionOutputs),
-		ByteUtil.FlatAndConcatLength(bytesTransactionOutputs))
+	data := ByteUtil.Concatenate(ByteUtil.FlatAndConcatenateLength(bytesUnspentTransactionOutputs),
+		ByteUtil.FlatAndConcatenateLength(bytesTransactionOutputs))
 	return data
 }
