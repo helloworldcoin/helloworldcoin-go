@@ -108,6 +108,6 @@ func BuildTransactionOutputIdToSpentTransactionOutputHeightKey(transactionHash s
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func buildTransactionOutputId(transactionHash string, transactionOutputIndex uint64) string {
-	transactionOutputId := StringUtil.Concat3(transactionHash, VERTICAL_LINE_FLAG, StringUtil.ValueOfUint64(transactionOutputIndex))
+	transactionOutputId := StringUtil.Concatenate3(transactionHash, VERTICAL_LINE_FLAG, StringUtil.ValueOfUint64(transactionOutputIndex))
 	return transactionOutputId
 }
