@@ -5,7 +5,7 @@ import (
 	"unicode/utf8"
 )
 
-var BLANKSPACE string = " "
+const BLANKSPACE string = " "
 
 func IsEquals(value1 string, value2 string) bool {
 	return value1 == value2
