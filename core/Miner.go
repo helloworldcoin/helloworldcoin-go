@@ -117,7 +117,7 @@ func (i *Miner) buildIncentiveTransaction(address string, incentiveValue uint64)
 func (i *Miner) packingTransactions(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase) []model.Transaction {
 	forMineBlockTransactionDtos := unconfirmedTransactionDatabase.SelectTransactions(uint64(1), uint64(10000))
 
-	transactions := []model.Transaction{}
+	var transactions []model.Transaction
 	if forMineBlockTransactionDtos != nil {
 		for _, transactionDto := range forMineBlockTransactionDtos {
 			//TODO exception

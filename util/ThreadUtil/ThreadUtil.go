@@ -4,6 +4,6 @@ import (
 	"time"
 )
 
-func MillisecondSleep(millis uint64) {
-	time.Sleep(time.Duration(millis * 1000000))
+func MillisecondSleep(millisecond uint64) {
+	time.Sleep(time.Duration(millisecond * 1000000))
 }
