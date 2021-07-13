@@ -36,9 +36,31 @@ func (b *BlockchainDatabase) AddBlockDto(blockDto *dto.BlockDto) bool {
 	return true
 }
 func (b *BlockchainDatabase) DeleteTailBlock() {
-
+	var lock = sync.Mutex{}
+	lock.Lock()
+	tailBlock := b.QueryTailBlock()
+	if tailBlock == nil {
+		return
+	}
+	kvWriteBatch := b.createBlockWriteBatch(tailBlock, BlockchainActionEnum.DELETE_BLOCK)
+	KvDbUtil.Write(b.getBlockchainDatabasePath(), kvWriteBatch)
+	lock.Unlock()
 }
 func (b *BlockchainDatabase) DeleteBlocks(blockHeight uint64) {
+	var lock = sync.Mutex{}
+	lock.Lock()
+	for {
+		tailBlock := b.QueryTailBlock()
+		if tailBlock == nil {
+			return
+		}
+		if tailBlock.Height < blockHeight {
+			return
+		}
+		kvWriteBatch := b.createBlockWriteBatch(tailBlock, BlockchainActionEnum.DELETE_BLOCK)
+		KvDbUtil.Write(b.getBlockchainDatabasePath(), kvWriteBatch)
+	}
+	lock.Unlock()
 }
 
 func (b *BlockchainDatabase) CheckBlock(block *model.Block) bool {
