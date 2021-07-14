@@ -6,6 +6,7 @@ import (
 	"helloworldcoin-go/core/tool/Model2DtoTool"
 	"helloworldcoin-go/core/tool/TransactionTool"
 	"helloworldcoin-go/setting/GenesisBlockSetting"
+	"helloworldcoin-go/util/DataStructureUtil"
 	"helloworldcoin-go/util/StringUtil"
 	"helloworldcoin-go/util/TimeUtil"
 
@@ -87,4 +88,62 @@ func CheckBlockTimestamp(previousBlock *model.Block, currentBlock *model.Block) 
 	} else {
 		return currentBlock.Timestamp > previousBlock.Timestamp
 	}
+}
+
+/**
+ * 区块新产生的哈希是否存在重复
+ */
+func IsExistDuplicateNewHash(block *model.Block) bool {
+	var newHashs []string
+	blockHash := block.Hash
+	newHashs = append(newHashs, blockHash)
+	transactions := block.Transactions
+	if transactions != nil {
+		for _, transaction := range transactions {
+			transactionHash := transaction.TransactionHash
+			newHashs = append(newHashs, transactionHash)
+		}
+	}
+	return DataStructureUtil.IsExistDuplicateElement(&newHashs)
+}
+
+/**
+ * 区块新产生的地址是否存在重复
+ */
+func IsExistDuplicateNewAddress(block *model.Block) bool {
+	var newAddresss []string
+	transactions := block.Transactions
+	if transactions != nil {
+		for _, transaction := range transactions {
+			outputs := transaction.Outputs
+			if outputs != nil {
+				for _, output := range outputs {
+					address := output.Address
+					newAddresss = append(newAddresss, address)
+				}
+			}
+		}
+	}
+	return DataStructureUtil.IsExistDuplicateElement(&newAddresss)
+}
+
+/**
+ * 区块中是否存在重复的[未花费交易输出]
+ */
+func IsExistDuplicateUtxo(block *model.Block) bool {
+	var utxoIds []string
+	transactions := block.Transactions
+	if transactions != nil {
+		for _, transaction := range transactions {
+			inputs := transaction.Inputs
+			if inputs != nil {
+				for _, transactionInput := range inputs {
+					unspentTransactionOutput := transactionInput.UnspentTransactionOutput
+					utxoId := TransactionTool.GetTransactionOutputId(&unspentTransactionOutput)
+					utxoIds = append(utxoIds, utxoId)
+				}
+			}
+		}
+	}
+	return DataStructureUtil.IsExistDuplicateElement(&utxoIds)
 }

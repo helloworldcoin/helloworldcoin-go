@@ -8,6 +8,7 @@ import (
 	"helloworldcoin-go/core/tool/EncodeDecodeTool"
 	"helloworldcoin-go/core/tool/SizeTool"
 	"helloworldcoin-go/core/tool/StructureTool"
+	"helloworldcoin-go/core/tool/TransactionTool"
 	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/dto"
 	"helloworldcoin-go/setting/GenesisBlockSetting"
@@ -100,6 +101,24 @@ func (b *BlockchainDatabase) CheckBlock(block *model.Block) bool {
 		LogUtil.Debug("区块生成的时间太滞后。")
 		return false
 	}
+
+	//校验新产生的哈希
+	if !b.checkBlockNewHash(block) {
+		LogUtil.Debug("区块数据异常，区块中新产生的哈希异常。")
+		return false
+	}
+	//校验新产生的地址
+	if !b.checkBlockNewAddress(block) {
+		LogUtil.Debug("区块数据异常，区块中新产生的哈希异常。")
+		return false
+	}
+
+	//校验双花
+	if !b.checkBlockDoubleSpend(block) {
+		LogUtil.Debug("区块数据异常，检测到双花攻击。")
+		return false
+	}
+
 	return true
 }
 func (b *BlockchainDatabase) CheckTransaction(block *model.Transaction) bool {
@@ -610,3 +629,162 @@ func (b *BlockchainDatabase) storeAddressToSpentTransactionOutputHeight(kvWriteB
 		}
 	}
 }
+
+/**
+ * 校验区块新产生的哈希
+ */
+func (b *BlockchainDatabase) checkBlockNewHash(block *model.Block) bool {
+	//校验哈希作为主键的正确性
+	//新产生的哈希不能有重复
+	if BlockTool.IsExistDuplicateNewHash(block) {
+		LogUtil.Debug("区块数据异常，区块中新产生的哈希有重复。")
+		return false
+	}
+
+	//新产生的哈希不能被区块链使用过了
+	//校验区块Hash是否已经被使用了
+	blockHash := block.Hash
+	if b.isHashUsed(blockHash) {
+		LogUtil.Debug("区块数据异常，区块Hash已经被使用了。")
+		return false
+	}
+	//校验每一笔交易新产生的Hash是否正确
+	blockTransactions := block.Transactions
+	if blockTransactions != nil {
+		for _, transaction := range blockTransactions {
+			if b.checkTransactionNewHash(transaction) {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+/**
+ * 区块中校验新产生的哈希
+ */
+func (b *BlockchainDatabase) checkTransactionNewHash(transaction model.Transaction) bool {
+	//校验哈希作为主键的正确性
+	//校验交易Hash是否已经被使用了
+	transactionHash := transaction.TransactionHash
+	if b.isHashUsed(transactionHash) {
+		LogUtil.Debug("交易数据异常，交易Hash已经被使用了。")
+		return false
+	}
+	return true
+}
+
+/**
+ * 哈希是否已经被区块链系统使用了？
+ */
+func (b *BlockchainDatabase) isHashUsed(hash string) bool {
+	bytesHash := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildHashKey(hash))
+	return bytesHash != nil
+}
+
+/**
+ * 校验区块新产生的地址
+ */
+func (b *BlockchainDatabase) checkBlockNewAddress(block *model.Block) bool {
+	//校验地址作为主键的正确性
+	//新产生的地址不能有重复
+	if BlockTool.IsExistDuplicateNewAddress(block) {
+		LogUtil.Debug("区块数据异常，区块中新产生的地址有重复。")
+		return false
+	}
+	transactions := block.Transactions
+	if transactions != nil {
+		for _, transaction := range transactions {
+			if !b.checkTransactionNewAddress(&transaction) {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+/**
+ * 区块中校验新产生的哈希
+ */
+func (b *BlockchainDatabase) checkTransactionNewAddress(transaction *model.Transaction) bool {
+	//区块新产生的地址不能有重复
+	if TransactionTool.IsExistDuplicateNewAddress(transaction) {
+		return false
+	}
+	//区块新产生的地址不能被使用过了
+	outputs := transaction.Outputs
+	if outputs != nil {
+		for _, output := range outputs {
+			address := output.Address
+			if b.isAddressUsed(address) {
+				LogUtil.Debug("区块数据异常，地址[" + address + "]重复。")
+				return false
+			}
+		}
+	}
+	return true
+}
+func (b *BlockchainDatabase) isAddressUsed(address string) bool {
+	bytesAddress := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildAddressKey(address))
+	return bytesAddress != nil
+}
+
+//region 双花攻击
+/**
+ * 校验双花
+ * 双花指的是同一笔UTXO被花费两次或多次。
+ */
+func (b *BlockchainDatabase) checkBlockDoubleSpend(block *model.Block) bool {
+	//双花交易：区块内部存在重复的[未花费交易输出]
+	if BlockTool.IsExistDuplicateUtxo(block) {
+		LogUtil.Debug("区块数据异常：发生双花交易。")
+		return false
+	}
+	transactions := block.Transactions
+	if transactions != nil {
+		for _, transaction := range transactions {
+			if !b.checkTransactionDoubleSpend(&transaction) {
+				LogUtil.Debug("区块数据异常：发生双花交易。")
+				return false
+			}
+		}
+	}
+	return true
+}
+
+/**
+ * 校验双花
+ */
+func (b *BlockchainDatabase) checkTransactionDoubleSpend(transaction *model.Transaction) bool {
+	//双花交易：交易内部存在重复的[未花费交易输出]
+	if TransactionTool.IsExistDuplicateUtxo(transaction) {
+		LogUtil.Debug("交易数据异常，检测到双花攻击。")
+		return false
+	}
+	//双花交易：交易内部使用了[已经花费的[未花费交易输出]]
+	if !b.checkStxoIsUtxo(transaction) {
+		LogUtil.Debug("交易数据异常：发生双花交易。")
+		return false
+	}
+	return true
+}
+
+/**
+ * 检查[花费的交易输出]是否都是[未花费的交易输出]
+ */
+func (b *BlockchainDatabase) checkStxoIsUtxo(transaction *model.Transaction) bool {
+	inputs := transaction.Inputs
+	if inputs != nil {
+		for _, transactionInput := range inputs {
+			unspentTransactionOutput := transactionInput.UnspentTransactionOutput
+			transactionOutput := b.QueryUnspentTransactionOutputByTransactionOutputId(unspentTransactionOutput.TransactionHash, unspentTransactionOutput.TransactionOutputIndex)
+			if transactionOutput == nil {
+				LogUtil.Debug("交易数据异常：交易输入不是未花费交易输出。")
+				return false
+			}
+		}
+	}
+	return true
+}
+
+//endregion

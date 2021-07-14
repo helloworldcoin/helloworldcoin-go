@@ -58,22 +58,22 @@ func BuildTransactionOutputHeightToTransactionOutputKey(transactionOutputHeight 
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildTransactionOutputIdToTransactionOutputHeightKey(transactionHash string, transactionOutputIndex uint64) []byte {
-	transactionOutputId := buildTransactionOutputId(transactionHash, transactionOutputIndex)
+	transactionOutputId := BuildTransactionOutputId(transactionHash, transactionOutputIndex)
 	stringKey := TRANSACTION_OUTPUT_ID_TO_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildTransactionOutputIdToUnspentTransactionOutputHeightKey(transactionHash string, transactionOutputIndex uint64) []byte {
-	transactionOutputId := buildTransactionOutputId(transactionHash, transactionOutputIndex)
+	transactionOutputId := BuildTransactionOutputId(transactionHash, transactionOutputIndex)
 	stringKey := TRANSACTION_OUTPUT_ID_TO_UNSPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildTransactionOutputIdToSourceTransactionHeightKey(transactionHash string, transactionOutputIndex uint64) []byte {
-	transactionOutputId := buildTransactionOutputId(transactionHash, transactionOutputIndex)
+	transactionOutputId := BuildTransactionOutputId(transactionHash, transactionOutputIndex)
 	stringKey := TRANSACTION_OUTPUT_ID_TO_SOURCE_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
 func BuildTransactionOutputIdToDestinationTransactionHeightKey(transactionHash string, transactionOutputIndex uint64) []byte {
-	transactionOutputId := buildTransactionOutputId(transactionHash, transactionOutputIndex)
+	transactionOutputId := BuildTransactionOutputId(transactionHash, transactionOutputIndex)
 	stringKey := TRANSACTION_OUTPUT_ID_TO_DESTINATION_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
@@ -103,11 +103,11 @@ func BuildTransactionHeightToTransactionKey(transactionHeight uint64) []byte {
 }
 
 func BuildTransactionOutputIdToSpentTransactionOutputHeightKey(transactionHash string, transactionOutputIndex uint64) []byte {
-	transactionOutputId := buildTransactionOutputId(transactionHash, transactionOutputIndex)
+	transactionOutputId := BuildTransactionOutputId(transactionHash, transactionOutputIndex)
 	stringKey := TRANSACTION_OUTPUT_ID_TO_SPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG
 	return ByteUtil.StringToUtf8Bytes(stringKey)
 }
-func buildTransactionOutputId(transactionHash string, transactionOutputIndex uint64) string {
+func BuildTransactionOutputId(transactionHash string, transactionOutputIndex uint64) string {
 	transactionOutputId := StringUtil.Concatenate3(transactionHash, VERTICAL_LINE_FLAG, StringUtil.ValueOfUint64(transactionOutputIndex))
 	return transactionOutputId
 }
