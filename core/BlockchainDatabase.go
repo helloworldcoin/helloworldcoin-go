@@ -6,11 +6,15 @@ import (
 	"helloworldcoin-go/core/tool/BlockTool"
 	"helloworldcoin-go/core/tool/BlockchainDatabaseKeyTool"
 	"helloworldcoin-go/core/tool/EncodeDecodeTool"
+	"helloworldcoin-go/core/tool/SizeTool"
+	"helloworldcoin-go/core/tool/StructureTool"
 	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/dto"
 	"helloworldcoin-go/setting/GenesisBlockSetting"
+	"helloworldcoin-go/setting/SystemVersionSettingTool"
 	"helloworldcoin-go/util/FileUtil"
 	"helloworldcoin-go/util/KvDbUtil"
+	"helloworldcoin-go/util/LogUtil"
 	"sync"
 )
 
@@ -64,6 +68,38 @@ func (b *BlockchainDatabase) DeleteBlocks(blockHeight uint64) {
 }
 
 func (b *BlockchainDatabase) CheckBlock(block *model.Block) bool {
+	if !SystemVersionSettingTool.CheckSystemVersion(block.Height) {
+		LogUtil.Debug("系统版本过低，不支持校验区块，请尽快升级系统。")
+		return false
+	}
+
+	if !StructureTool.CheckBlockStructure(block) {
+		LogUtil.Debug("区块数据异常，请校验区块的结构。")
+		return false
+	}
+	//校验区块的大小
+	if !SizeTool.CheckBlockSize(block) {
+		LogUtil.Debug("区块数据异常，请校验区块的大小。")
+		return false
+	}
+
+	//校验业务
+	previousBlock := b.QueryTailBlock()
+	//校验区块高度的连贯性
+	if !BlockTool.CheckBlockHeight(previousBlock, block) {
+		LogUtil.Debug("区块写入的区块高度出错。")
+		return false
+	}
+	//校验区块的前区块哈希
+	if !BlockTool.CheckPreviousBlockHash(previousBlock, block) {
+		LogUtil.Debug("区块写入的前区块哈希出错。")
+		return false
+	}
+	//校验区块时间
+	if !BlockTool.CheckBlockTimestamp(previousBlock, block) {
+		LogUtil.Debug("区块生成的时间太滞后。")
+		return false
+	}
 	return true
 }
 func (b *BlockchainDatabase) CheckTransaction(block *model.Transaction) bool {

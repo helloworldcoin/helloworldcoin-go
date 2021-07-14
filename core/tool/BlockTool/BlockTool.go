@@ -6,6 +6,8 @@ import (
 	"helloworldcoin-go/core/tool/Model2DtoTool"
 	"helloworldcoin-go/core/tool/TransactionTool"
 	"helloworldcoin-go/setting/GenesisBlockSetting"
+	"helloworldcoin-go/util/StringUtil"
+	"helloworldcoin-go/util/TimeUtil"
 
 	"helloworldcoin-go/core/model"
 )
@@ -61,4 +63,28 @@ func GetNextBlockHeight(currentBlock *model.Block) uint64 {
 		nextBlockHeight = currentBlock.Height + uint64(1)
 	}
 	return nextBlockHeight
+}
+func CheckBlockHeight(previousBlock *model.Block, currentBlock *model.Block) bool {
+	if previousBlock == nil {
+		return (GenesisBlockSetting.HEIGHT + 1) == currentBlock.Height
+	} else {
+		return (previousBlock.Height + 1) == currentBlock.Height
+	}
+}
+func CheckPreviousBlockHash(previousBlock *model.Block, currentBlock *model.Block) bool {
+	if previousBlock == nil {
+		return StringUtil.IsEquals(GenesisBlockSetting.HASH, currentBlock.PreviousHash)
+	} else {
+		return StringUtil.IsEquals(previousBlock.Hash, currentBlock.PreviousHash)
+	}
+}
+func CheckBlockTimestamp(previousBlock *model.Block, currentBlock *model.Block) bool {
+	if currentBlock.Timestamp > TimeUtil.MillisecondTimestamp() {
+		return false
+	}
+	if previousBlock == nil {
+		return true
+	} else {
+		return currentBlock.Timestamp > previousBlock.Timestamp
+	}
 }
