@@ -2,7 +2,7 @@ package core
 
 import (
 	"fmt"
-	"helloworldcoin-go/core/model"
+	"helloworldcoin-go/core/Model"
 	"helloworldcoin-go/core/tool/BlockTool"
 	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/setting/GenesisBlockSetting"

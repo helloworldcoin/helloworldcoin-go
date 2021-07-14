@@ -6,7 +6,7 @@ import (
 	"helloworldcoin-go/core/tool/TransactionDtoTool"
 	"helloworldcoin-go/util/DataStructureUtil"
 
-	"helloworldcoin-go/core/model"
+	"helloworldcoin-go/core/Model"
 )
 
 func GetTransactionOutputCount(transaction *model.Transaction) uint64 {

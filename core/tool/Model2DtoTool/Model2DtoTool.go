@@ -1,7 +1,7 @@
 package Model2DtoTool
 
 import (
-	"helloworldcoin-go/core/model"
+	"helloworldcoin-go/core/Model"
 	"helloworldcoin-go/dto"
 )
 

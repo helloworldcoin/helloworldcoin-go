@@ -2,8 +2,8 @@ package core
 
 import (
 	"fmt"
-	"helloworldcoin-go/core/model"
-	"helloworldcoin-go/core/model/TransactionType"
+	"helloworldcoin-go/core/Model"
+	"helloworldcoin-go/core/Model/TransactionType"
 	"helloworldcoin-go/core/tool/BlockTool"
 	"helloworldcoin-go/core/tool/Model2DtoTool"
 	"helloworldcoin-go/core/tool/ScriptTool"

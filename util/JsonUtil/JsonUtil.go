@@ -2,7 +2,7 @@ package JsonUtil
 
 import (
 	"encoding/json"
-	"helloworldcoin-go/core/model"
+	"helloworldcoin-go/core/Model"
 	"helloworldcoin-go/dto"
 )
 

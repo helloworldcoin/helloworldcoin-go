@@ -2,7 +2,7 @@ package EncodeDecodeTool
 
 import (
 	"bytes"
-	"helloworldcoin-go/core/model"
+	"helloworldcoin-go/core/Model"
 	"helloworldcoin-go/dto"
 
 	"encoding/gob"

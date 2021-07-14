@@ -1,8 +1,8 @@
 package core
 
 import (
-	"helloworldcoin-go/core/model"
-	"helloworldcoin-go/core/model/BlockchainActionEnum"
+	"helloworldcoin-go/core/Model"
+	"helloworldcoin-go/core/Model/BlockchainActionEnum"
 	"helloworldcoin-go/core/tool/BlockTool"
 	"helloworldcoin-go/core/tool/BlockchainDatabaseKeyTool"
 	"helloworldcoin-go/core/tool/EncodeDecodeTool"

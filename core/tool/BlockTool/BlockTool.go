@@ -1,7 +1,7 @@
 package BlockTool
 
 import (
-	"helloworldcoin-go/core/model/TransactionType"
+	"helloworldcoin-go/core/Model/TransactionType"
 	"helloworldcoin-go/core/tool/BlockDtoTool"
 	"helloworldcoin-go/core/tool/Model2DtoTool"
 	"helloworldcoin-go/core/tool/TransactionTool"
@@ -10,7 +10,7 @@ import (
 	"helloworldcoin-go/util/StringUtil"
 	"helloworldcoin-go/util/TimeUtil"
 
-	"helloworldcoin-go/core/model"
+	"helloworldcoin-go/core/Model"
 )
 
 func CalculateBlockHash(block *model.Block) string {
