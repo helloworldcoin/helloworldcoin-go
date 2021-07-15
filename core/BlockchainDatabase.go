@@ -121,16 +121,16 @@ func (b *BlockchainDatabase) CheckBlock(block *Model.Block) bool {
 		LogUtil.Debug("区块数据异常，检测到双花攻击。")
 		return false
 	}
-	/*	//校验共识
-		if !b.Consensus.CheckConsensus(this, block) {
-			LogUtil.Debug("区块数据异常，未满足共识规则。")
-			return false
-		}
-		//校验激励
-		if !b.Incentive.CheckIncentive(this, block) {
-			LogUtil.Debug("区块数据异常，激励校验失败。")
-			return false
-		}*/
+	//校验共识
+	if !b.Consensus.CheckConsensus(b, block) {
+		LogUtil.Debug("区块数据异常，未满足共识规则。")
+		return false
+	}
+	//校验激励
+	if !b.Incentive.CheckIncentive(b, block) {
+		LogUtil.Debug("区块数据异常，激励校验失败。")
+		return false
+	}
 	//从交易角度校验每一笔交易
 	for _, transaction := range block.Transactions {
 		transactionCanAddToNextBlock := b.CheckTransaction(&transaction)
