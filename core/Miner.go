@@ -62,11 +62,11 @@ func (i *Miner) isActive() bool {
 	return true
 }
 
-func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *model.Block {
+func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *Model.Block {
 	timestamp := TimeUtil.MillisecondTimestamp()
 
 	tailBlock := blockchainDatabase.QueryTailBlock()
-	var nonNonceBlock model.Block
+	var nonNonceBlock Model.Block
 	nonNonceBlock.Timestamp = timestamp
 
 	if tailBlock == nil {
@@ -82,7 +82,7 @@ func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfi
 	incentiveValue := incentive.IncentiveValue(blockchainDatabase, &nonNonceBlock)
 
 	mineAwardTransaction := i.buildIncentiveTransaction(minerAccount.Address, incentiveValue)
-	var mineAwardTransactions []model.Transaction
+	var mineAwardTransactions []Model.Transaction
 	mineAwardTransactions = append(mineAwardTransactions, *mineAwardTransaction)
 
 	packingTransactions = append(mineAwardTransactions, packingTransactions...)
@@ -98,12 +98,12 @@ func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfi
 	return &nonNonceBlock
 }
 
-func (i *Miner) buildIncentiveTransaction(address string, incentiveValue uint64) *model.Transaction {
-	var transaction model.Transaction
+func (i *Miner) buildIncentiveTransaction(address string, incentiveValue uint64) *Model.Transaction {
+	var transaction Model.Transaction
 	transaction.TransactionType = TransactionType.GENESIS_TRANSACTION
 
-	var outputs []model.TransactionOutput
-	var output model.TransactionOutput
+	var outputs []Model.TransactionOutput
+	var output Model.TransactionOutput
 	output.Address = address
 	output.Value = incentiveValue
 	fmt.Println("address:" + address)
@@ -114,10 +114,10 @@ func (i *Miner) buildIncentiveTransaction(address string, incentiveValue uint64)
 	transaction.TransactionHash = TransactionTool.CalculateTransactionHash(transaction)
 	return &transaction
 }
-func (i *Miner) packingTransactions(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase) []model.Transaction {
+func (i *Miner) packingTransactions(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase) []Model.Transaction {
 	forMineBlockTransactionDtos := unconfirmedTransactionDatabase.SelectTransactions(uint64(1), uint64(10000))
 
-	var transactions []model.Transaction
+	var transactions []Model.Transaction
 	if forMineBlockTransactionDtos != nil {
 		for _, transactionDto := range forMineBlockTransactionDtos {
 			//TODO exception

@@ -12,22 +12,22 @@ import (
 	"helloworldcoin-go/core/Model"
 )
 
-func GetTransactionOutputCount(transaction *model.Transaction) uint64 {
+func GetTransactionOutputCount(transaction *Model.Transaction) uint64 {
 	outputs := transaction.Outputs
 	if outputs == nil {
 		return uint64(0)
 	}
 	return uint64(len(outputs))
 }
-func CalculateTransactionHash(transaction model.Transaction) string {
+func CalculateTransactionHash(transaction Model.Transaction) string {
 	transactionDto := Model2DtoTool.Transaction2TransactionDto(&transaction)
 	return TransactionDtoTool.CalculateTransactionHash(&transactionDto)
 }
-func GetTransactionFee(transaction *model.Transaction) uint64 {
+func GetTransactionFee(transaction *Model.Transaction) uint64 {
 	transactionFee := GetInputValue(transaction) - GetOutputValue(transaction)
 	return transactionFee
 }
-func GetInputValue(transaction *model.Transaction) uint64 {
+func GetInputValue(transaction *Model.Transaction) uint64 {
 	inputs := transaction.Inputs
 	total := uint64(0)
 	if inputs != nil {
@@ -37,7 +37,7 @@ func GetInputValue(transaction *model.Transaction) uint64 {
 	}
 	return total
 }
-func GetOutputValue(transaction *model.Transaction) uint64 {
+func GetOutputValue(transaction *Model.Transaction) uint64 {
 	outputs := transaction.Outputs
 	total := uint64(0)
 	if outputs != nil {
@@ -51,7 +51,7 @@ func GetOutputValue(transaction *model.Transaction) uint64 {
 /**
  * 区块新产生的地址是否存在重复
  */
-func IsExistDuplicateNewAddress(transaction *model.Transaction) bool {
+func IsExistDuplicateNewAddress(transaction *Model.Transaction) bool {
 	var newAddresss []string
 	outputs := transaction.Outputs
 	if outputs != nil {
@@ -62,14 +62,14 @@ func IsExistDuplicateNewAddress(transaction *model.Transaction) bool {
 	}
 	return DataStructureUtil.IsExistDuplicateElement(&newAddresss)
 }
-func GetTransactionOutputId(transactionOutput *model.TransactionOutput) string {
+func GetTransactionOutputId(transactionOutput *Model.TransactionOutput) string {
 	return BlockchainDatabaseKeyTool.BuildTransactionOutputId(transactionOutput.TransactionHash, transactionOutput.TransactionOutputIndex)
 }
 
 /**
  * 交易中是否存在重复的[未花费交易输出]
  */
-func IsExistDuplicateUtxo(transaction *model.Transaction) bool {
+func IsExistDuplicateUtxo(transaction *Model.Transaction) bool {
 	var utxoIds []string
 	inputs := transaction.Inputs
 	if inputs != nil {
@@ -85,7 +85,7 @@ func IsExistDuplicateUtxo(transaction *model.Transaction) bool {
 /**
  * 交易中的金额是否符合系统的约束
  */
-func CheckTransactionValue(transaction *model.Transaction) bool {
+func CheckTransactionValue(transaction *Model.Transaction) bool {
 	inputs := transaction.Inputs
 	if inputs != nil {
 		//校验交易输入的金额

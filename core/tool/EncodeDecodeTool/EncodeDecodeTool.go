@@ -28,7 +28,7 @@ func DecodeToAccount(bytesAccount []byte) *AccountUtil.Account {
 	}
 	return &account
 }
-func EncodeBlock(block *model.Block) []byte {
+func EncodeBlock(block *Model.Block) []byte {
 	var buffer bytes.Buffer
 	encoder := gob.NewEncoder(&buffer)
 	err := encoder.Encode(&block)
@@ -38,9 +38,9 @@ func EncodeBlock(block *model.Block) []byte {
 	return buffer.Bytes()
 }
 
-func DecodeToBlock(bytesBlock []byte) *model.Block {
+func DecodeToBlock(bytesBlock []byte) *Model.Block {
 	decoder := gob.NewDecoder(bytes.NewReader(bytesBlock))
-	var block *model.Block
+	var block *Model.Block
 	err := decoder.Decode(&block)
 	if err != nil {
 		panic(err)
@@ -48,7 +48,7 @@ func DecodeToBlock(bytesBlock []byte) *model.Block {
 	return block
 }
 
-func EncodeTransaction(transaction *model.Transaction) []byte {
+func EncodeTransaction(transaction *Model.Transaction) []byte {
 	var buffer bytes.Buffer
 	encoder := gob.NewEncoder(&buffer)
 	err := encoder.Encode(&transaction)
@@ -58,9 +58,9 @@ func EncodeTransaction(transaction *model.Transaction) []byte {
 	return buffer.Bytes()
 }
 
-func DecodeToTransaction(bytesTransaction []byte) *model.Transaction {
+func DecodeToTransaction(bytesTransaction []byte) *Model.Transaction {
 	decoder := gob.NewDecoder(bytes.NewReader(bytesTransaction))
-	var transaction *model.Transaction
+	var transaction *Model.Transaction
 	err := decoder.Decode(&transaction)
 	if err != nil {
 		panic(err)
@@ -68,7 +68,7 @@ func DecodeToTransaction(bytesTransaction []byte) *model.Transaction {
 	return transaction
 }
 
-func EncodeTransactionOutput(transactionOutput *model.TransactionOutput) []byte {
+func EncodeTransactionOutput(transactionOutput *Model.TransactionOutput) []byte {
 	var buffer bytes.Buffer
 	encoder := gob.NewEncoder(&buffer)
 	err := encoder.Encode(&transactionOutput)
@@ -78,9 +78,9 @@ func EncodeTransactionOutput(transactionOutput *model.TransactionOutput) []byte 
 	return buffer.Bytes()
 }
 
-func DecodeToTransactionOutput(bytesTransactionOutput []byte) *model.TransactionOutput {
+func DecodeToTransactionOutput(bytesTransactionOutput []byte) *Model.TransactionOutput {
 	decoder := gob.NewDecoder(bytes.NewReader(bytesTransactionOutput))
-	var transactionOutput *model.TransactionOutput
+	var transactionOutput *Model.TransactionOutput
 	err := decoder.Decode(&transactionOutput)
 	if err != nil {
 		panic(err)

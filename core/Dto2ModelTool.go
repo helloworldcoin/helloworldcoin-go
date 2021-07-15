@@ -10,10 +10,10 @@ import (
 	"helloworldcoin-go/dto"
 )
 
-func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockDto) *model.Block {
+func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockDto) *Model.Block {
 	previousHash := blockDto.PreviousHash
 	previousBlock := blockchainDatabase.QueryBlockByBlockHash(previousHash)
-	block := new(model.Block)
+	block := new(Model.Block)
 	block.Timestamp = blockDto.Timestamp
 	block.PreviousHash = previousHash
 	block.Nonce = blockDto.Nonce
@@ -40,8 +40,8 @@ func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockD
 	}
 	return block
 }
-func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transactionDtoList []dto.TransactionDto) []model.Transaction {
-	var transactions []model.Transaction
+func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transactionDtoList []dto.TransactionDto) []Model.Transaction {
+	var transactions []Model.Transaction
 	if transactionDtoList != nil {
 		for _, transactionDto := range transactionDtoList {
 			transaction := TransactionDto2Transaction(blockchainDatabase, &transactionDto)
@@ -50,8 +50,8 @@ func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transa
 	}
 	return transactions
 }
-func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transactionDto *dto.TransactionDto) *model.Transaction {
-	var inputs []model.TransactionInput
+func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transactionDto *dto.TransactionDto) *Model.Transaction {
+	var inputs []Model.TransactionInput
 	transactionInputDtos := transactionDto.Inputs
 	if transactionInputDtos != nil {
 		for _, transactionInputDto := range transactionInputDtos {
@@ -60,13 +60,13 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 				//throw new RuntimeException("非法交易。交易输入并不是一笔未花费交易输出。");
 				return nil
 			}
-			var transactionInput model.TransactionInput
+			var transactionInput Model.TransactionInput
 			transactionInput.UnspentTransactionOutput = *unspentTransactionOutput
 			transactionInput.InputScript = transactionInputDto.InputScript
 			inputs = append(inputs, transactionInput)
 		}
 	}
-	var outputs []model.TransactionOutput
+	var outputs []Model.TransactionOutput
 	transactionOutputDtos := transactionDto.Outputs
 	if transactionOutputDtos != nil {
 		for _, transactionOutputDto := range transactionOutputDtos {
@@ -74,7 +74,7 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 			outputs = append(outputs, *transactionOutput)
 		}
 	}
-	transaction := new(model.Transaction)
+	transaction := new(Model.Transaction)
 	transactionType := obtainTransactionDto(transactionDto)
 	transaction.TransactionType = transactionType
 	transaction.TransactionHash = TransactionDtoTool.CalculateTransactionHash(transactionDto)
@@ -83,8 +83,8 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 	return transaction
 }
 
-func transactionOutputDto2TransactionOutput(transactionOutputDto dto.TransactionOutputDto) *model.TransactionOutput {
-	var transactionOutput model.TransactionOutput
+func transactionOutputDto2TransactionOutput(transactionOutputDto dto.TransactionOutputDto) *Model.TransactionOutput {
+	var transactionOutput Model.TransactionOutput
 	publicKeyHash := ScriptTool.GetPublicKeyHashByPayToPublicKeyHashOutputScript(transactionOutputDto.OutputScript)
 	address := AccountUtil.AddressFromPublicKeyHash(publicKeyHash)
 	transactionOutput.Address = address
@@ -98,7 +98,7 @@ func obtainTransactionDto(transactionDto *dto.TransactionDto) TransactionType.Tr
 	}
 	return TransactionType.STANDARD_TRANSACTION
 }
-func fillBlockProperty(blockchainDatabase *BlockchainDatabase, block *model.Block) {
+func fillBlockProperty(blockchainDatabase *BlockchainDatabase, block *Model.Block) {
 	transactionIndex := uint64(0)
 	transactionHeight := blockchainDatabase.QueryBlockchainTransactionHeight()
 	transactionOutputHeight := blockchainDatabase.QueryBlockchainTransactionOutputHeight()

@@ -9,13 +9,13 @@ import (
 type Incentive struct {
 }
 
-func (incentive *Incentive) IncentiveValue(blockchainDatabase *BlockchainDatabase, block *model.Block) uint64 {
+func (incentive *Incentive) IncentiveValue(blockchainDatabase *BlockchainDatabase, block *Model.Block) uint64 {
 	minerSubsidy := getMinerSubsidy(block)
 	minerFee := BlockTool.GetBlockFee(block)
 	return minerSubsidy + minerFee
 }
 
-func (incentive *Incentive) CheckIncentive(blockchainDatabase *BlockchainDatabase, block *model.Block) bool {
+func (incentive *Incentive) CheckIncentive(blockchainDatabase *BlockchainDatabase, block *Model.Block) bool {
 	writeIncentiveValue := BlockTool.GetWritedIncentiveValue(block)
 	targetIncentiveValue := incentive.IncentiveValue(blockchainDatabase, block)
 	if writeIncentiveValue != targetIncentiveValue {
@@ -24,7 +24,7 @@ func (incentive *Incentive) CheckIncentive(blockchainDatabase *BlockchainDatabas
 	return true
 }
 
-func getMinerSubsidy(block *model.Block) uint64 {
+func getMinerSubsidy(block *Model.Block) uint64 {
 	initCoin := IncentiveSetting.BLOCK_INIT_INCENTIVE
 	multiple := (block.Height - uint64(1)) / IncentiveSetting.INCENTIVE_HALVING_INTERVAL
 

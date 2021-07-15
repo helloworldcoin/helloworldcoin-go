@@ -1,4 +1,4 @@
-package model
+package Model
 
 import (
 	"helloworldcoin-go/core/Model/TransactionType"

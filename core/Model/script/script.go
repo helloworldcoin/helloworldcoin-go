@@ -7,4 +7,4 @@ type VirtualMachine struct {
 type Script []string
 type InputScript Script
 type OutputScript Script
-type ScriptExecuteResult Stack.Stack
+type ScriptExecuteResult = Stack.Stack

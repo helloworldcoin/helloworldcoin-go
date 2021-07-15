@@ -1,7 +1,7 @@
 package StructureTool
 
 import (
-	model "helloworldcoin-go/core/Model"
+	"helloworldcoin-go/core/Model"
 	"helloworldcoin-go/core/Model/TransactionType"
 	"helloworldcoin-go/core/tool/BlockTool"
 	"helloworldcoin-go/setting/BlockSetting"
@@ -9,7 +9,7 @@ import (
 	"helloworldcoin-go/util/StringUtil"
 )
 
-func CheckBlockStructure(block *model.Block) bool {
+func CheckBlockStructure(block *Model.Block) bool {
 	transactions := block.Transactions
 	if transactions == nil || len(transactions) == 0 {
 		LogUtil.Debug("区块数据异常：区块中的交易数量为0。区块必须有一笔创世的交易。")
@@ -45,7 +45,7 @@ func CheckBlockStructure(block *model.Block) bool {
 	return true
 }
 
-func CheckTransactionStructure(transaction *model.Transaction) bool {
+func CheckTransactionStructure(transaction *Model.Transaction) bool {
 	if transaction.TransactionType == TransactionType.GENESIS_TRANSACTION {
 		inputs := transaction.Inputs
 		if inputs != nil && len(inputs) != 0 {

@@ -5,7 +5,7 @@ import (
 	"helloworldcoin-go/dto"
 )
 
-func Block2BlockDto(block *model.Block) *dto.BlockDto {
+func Block2BlockDto(block *Model.Block) *dto.BlockDto {
 	var transactionDtoList []dto.TransactionDto
 	transactionList := block.Transactions
 	if transactionList != nil {
@@ -23,7 +23,7 @@ func Block2BlockDto(block *model.Block) *dto.BlockDto {
 	return &blockDto
 }
 
-func Transaction2TransactionDto(transaction *model.Transaction) dto.TransactionDto {
+func Transaction2TransactionDto(transaction *Model.Transaction) dto.TransactionDto {
 	var inputs []dto.TransactionInputDto
 	transactionInputList := transaction.Inputs
 	if transactionInputList != nil {
@@ -50,7 +50,7 @@ func Transaction2TransactionDto(transaction *model.Transaction) dto.TransactionD
 	transactionDto.Outputs = outputs
 	return transactionDto
 }
-func TransactionOutput2TransactionOutputDto(transactionOutput *model.TransactionOutput) dto.TransactionOutputDto {
+func TransactionOutput2TransactionOutputDto(transactionOutput *Model.TransactionOutput) dto.TransactionOutputDto {
 	var transactionOutputDto dto.TransactionOutputDto
 	transactionOutputDto.Value = transactionOutput.Value
 	transactionOutputDto.OutputScript = transactionOutput.OutputScript

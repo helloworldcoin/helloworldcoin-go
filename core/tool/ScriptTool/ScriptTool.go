@@ -1,7 +1,7 @@
 package ScriptTool
 
 import (
-	"helloworldcoin-go/core/Model/OperationCodeEnum"
+	"helloworldcoin-go/core/Model/script/OperationCodeEnum"
 	"helloworldcoin-go/crypto/AccountUtil"
 	"helloworldcoin-go/crypto/ByteUtil"
 )
@@ -11,12 +11,12 @@ func BytesScript(script []string) []byte {
 	for i := 0; i < len(script); i++ {
 		operationCode := script[i]
 		bytesOperationCode := ByteUtil.HexStringToBytes(operationCode)
-		if ByteUtil.Equals(OperationCodeEnum.OP_DUP.Code, bytesOperationCode) ||
-			ByteUtil.Equals(OperationCodeEnum.OP_HASH160.Code, bytesOperationCode) ||
-			ByteUtil.Equals(OperationCodeEnum.OP_EQUALVERIFY.Code, bytesOperationCode) ||
-			ByteUtil.Equals(OperationCodeEnum.OP_CHECKSIG.Code, bytesOperationCode) {
+		if ByteUtil.IsEquals(OperationCodeEnum.OP_DUP.Code, bytesOperationCode) ||
+			ByteUtil.IsEquals(OperationCodeEnum.OP_HASH160.Code, bytesOperationCode) ||
+			ByteUtil.IsEquals(OperationCodeEnum.OP_EQUALVERIFY.Code, bytesOperationCode) ||
+			ByteUtil.IsEquals(OperationCodeEnum.OP_CHECKSIG.Code, bytesOperationCode) {
 			bytesScript = ByteUtil.Concatenate(bytesScript, ByteUtil.ConcatenateLength(bytesOperationCode))
-		} else if ByteUtil.Equals(OperationCodeEnum.OP_PUSHDATA.Code, bytesOperationCode) {
+		} else if ByteUtil.IsEquals(OperationCodeEnum.OP_PUSHDATA.Code, bytesOperationCode) {
 			i = i + 1
 			operationData := script[i]
 			bytesOperationData := ByteUtil.HexStringToBytes(operationData)

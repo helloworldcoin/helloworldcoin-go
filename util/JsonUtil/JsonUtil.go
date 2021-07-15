@@ -15,7 +15,7 @@ func fromJson() {
 
 }
 
-func ToJsonStringBlock(block *model.Block) string {
+func ToJsonStringBlock(block *Model.Block) string {
 	jsonString, _ := json.Marshal(block)
 	return string(jsonString)
 }

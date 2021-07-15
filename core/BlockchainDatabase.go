@@ -3,6 +3,7 @@ package core
 import (
 	"helloworldcoin-go/core/Model"
 	"helloworldcoin-go/core/Model/BlockchainActionEnum"
+	"helloworldcoin-go/core/Model/script/BooleanCodeEnum"
 	"helloworldcoin-go/core/tool/BlockTool"
 	"helloworldcoin-go/core/tool/BlockchainDatabaseKeyTool"
 	"helloworldcoin-go/core/tool/EncodeDecodeTool"
@@ -25,6 +26,7 @@ const BLOCKCHAIN_DATABASE_NAME = "BlockchainDatabase"
 type BlockchainDatabase struct {
 	Consensus         *Consensus
 	Incentive         *Incentive
+	VirtualMachine    *VirtualMachine
 	CoreConfiguration *CoreConfiguration
 }
 
@@ -69,7 +71,7 @@ func (b *BlockchainDatabase) DeleteBlocks(blockHeight uint64) {
 	lock.Unlock()
 }
 
-func (b *BlockchainDatabase) CheckBlock(block *model.Block) bool {
+func (b *BlockchainDatabase) CheckBlock(block *Model.Block) bool {
 	if !SystemVersionSettingTool.CheckSystemVersion(block.Height) {
 		LogUtil.Debug("系统版本过低，不支持校验区块，请尽快升级系统。")
 		return false
@@ -139,7 +141,7 @@ func (b *BlockchainDatabase) CheckBlock(block *model.Block) bool {
 	}
 	return true
 }
-func (b *BlockchainDatabase) CheckTransaction(transaction *model.Transaction) bool {
+func (b *BlockchainDatabase) CheckTransaction(transaction *Model.Transaction) bool {
 	//校验交易的结构
 	if !StructureTool.CheckTransactionStructure(transaction) {
 		LogUtil.Debug("交易数据异常，请校验交易的结构。")
@@ -211,21 +213,21 @@ func (b *BlockchainDatabase) QueryBlockchainTransactionOutputHeight() uint64 {
 	return ByteUtil.BytesToUint64(byteTotalTransactionCount)
 }
 
-func (b *BlockchainDatabase) QueryTailBlock() *model.Block {
+func (b *BlockchainDatabase) QueryTailBlock() *Model.Block {
 	blockchainHeight := b.QueryBlockchainHeight()
 	if blockchainHeight <= GenesisBlockSetting.HEIGHT {
 		return nil
 	}
 	return b.QueryBlockByBlockHeight(blockchainHeight)
 }
-func (b *BlockchainDatabase) QueryBlockByBlockHeight(blockHeight uint64) *model.Block {
+func (b *BlockchainDatabase) QueryBlockByBlockHeight(blockHeight uint64) *Model.Block {
 	bytesBlock := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildBlockHeightToBlockKey(blockHeight))
 	if bytesBlock == nil {
 		return nil
 	}
 	return EncodeDecodeTool.DecodeToBlock(bytesBlock)
 }
-func (b *BlockchainDatabase) QueryBlockByBlockHash(blockHash string) *model.Block {
+func (b *BlockchainDatabase) QueryBlockByBlockHash(blockHash string) *Model.Block {
 	bytesBlockHeight := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildBlockHashToBlockHeightKey(blockHash))
 	if bytesBlockHeight == nil {
 		return nil
@@ -233,28 +235,28 @@ func (b *BlockchainDatabase) QueryBlockByBlockHash(blockHash string) *model.Bloc
 	return b.QueryBlockByBlockHeight(ByteUtil.BytesToUint64(bytesBlockHeight))
 }
 
-func (b *BlockchainDatabase) QueryTransactionByTransactionHeight(transactionHeight uint64) *model.Transaction {
+func (b *BlockchainDatabase) QueryTransactionByTransactionHeight(transactionHeight uint64) *Model.Transaction {
 	byteTransaction := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildTransactionHeightToTransactionKey(transactionHeight))
 	if byteTransaction == nil {
 		return nil
 	}
 	return EncodeDecodeTool.DecodeToTransaction(byteTransaction)
 }
-func (b *BlockchainDatabase) QueryTransactionByTransactionHash(transactionHash string) *model.Transaction {
+func (b *BlockchainDatabase) QueryTransactionByTransactionHash(transactionHash string) *Model.Transaction {
 	transactionHeight := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildTransactionHashToTransactionHeightKey(transactionHash))
 	if transactionHeight == nil {
 		return nil
 	}
 	return b.QueryTransactionByTransactionHeight(ByteUtil.BytesToUint64(transactionHeight))
 }
-func (b *BlockchainDatabase) QuerySourceTransactionByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *model.Transaction {
+func (b *BlockchainDatabase) QuerySourceTransactionByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *Model.Transaction {
 	sourceTransactionHeight := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildTransactionOutputIdToSourceTransactionHeightKey(transactionHash, transactionOutputIndex))
 	if sourceTransactionHeight == nil {
 		return nil
 	}
 	return b.QueryTransactionByTransactionHeight(ByteUtil.BytesToUint64(sourceTransactionHeight))
 }
-func (b *BlockchainDatabase) QueryDestinationTransactionByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *model.Transaction {
+func (b *BlockchainDatabase) QueryDestinationTransactionByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *Model.Transaction {
 	destinationTransactionHeight := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildTransactionOutputIdToDestinationTransactionHeightKey(transactionHash, transactionOutputIndex))
 	if destinationTransactionHeight == nil {
 		return nil
@@ -262,14 +264,14 @@ func (b *BlockchainDatabase) QueryDestinationTransactionByTransactionOutputId(tr
 	return b.QueryTransactionByTransactionHeight(ByteUtil.BytesToUint64(destinationTransactionHeight))
 }
 
-func (b *BlockchainDatabase) QueryTransactionOutputByTransactionOutputHeight(transactionOutputHeight uint64) *model.TransactionOutput {
+func (b *BlockchainDatabase) QueryTransactionOutputByTransactionOutputHeight(transactionOutputHeight uint64) *Model.TransactionOutput {
 	bytesTransactionOutput := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildTransactionOutputHeightToTransactionOutputKey(transactionOutputHeight))
 	if bytesTransactionOutput == nil {
 		return nil
 	}
 	return EncodeDecodeTool.DecodeToTransactionOutput(bytesTransactionOutput)
 }
-func (b *BlockchainDatabase) QueryTransactionOutputByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *model.TransactionOutput {
+func (b *BlockchainDatabase) QueryTransactionOutputByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *Model.TransactionOutput {
 	bytesTransactionOutputHeight := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildTransactionOutputIdToTransactionOutputHeightKey(transactionHash, transactionOutputIndex))
 	if bytesTransactionOutputHeight == nil {
 		return nil
@@ -277,14 +279,14 @@ func (b *BlockchainDatabase) QueryTransactionOutputByTransactionOutputId(transac
 	return b.QueryTransactionOutputByTransactionOutputHeight(ByteUtil.BytesToUint64(bytesTransactionOutputHeight))
 
 }
-func (b *BlockchainDatabase) QueryUnspentTransactionOutputByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *model.TransactionOutput {
+func (b *BlockchainDatabase) QueryUnspentTransactionOutputByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *Model.TransactionOutput {
 	bytesTransactionOutputHeight := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildTransactionOutputIdToUnspentTransactionOutputHeightKey(transactionHash, transactionOutputIndex))
 	if bytesTransactionOutputHeight == nil {
 		return nil
 	}
 	return b.QueryTransactionOutputByTransactionOutputHeight(ByteUtil.BytesToUint64(bytesTransactionOutputHeight))
 }
-func (b *BlockchainDatabase) QuerySpentTransactionOutputByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *model.TransactionOutput {
+func (b *BlockchainDatabase) QuerySpentTransactionOutputByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *Model.TransactionOutput {
 	bytesTransactionOutputHeight := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildTransactionOutputIdToSpentTransactionOutputHeightKey(transactionHash, transactionOutputIndex))
 	if bytesTransactionOutputHeight == nil {
 		return nil
@@ -292,21 +294,21 @@ func (b *BlockchainDatabase) QuerySpentTransactionOutputByTransactionOutputId(tr
 	return b.QueryTransactionOutputByTransactionOutputHeight(ByteUtil.BytesToUint64(bytesTransactionOutputHeight))
 }
 
-func (b *BlockchainDatabase) QueryTransactionOutputByAddress(address string) *model.TransactionOutput {
+func (b *BlockchainDatabase) QueryTransactionOutputByAddress(address string) *Model.TransactionOutput {
 	bytesTransactionOutputHeight := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildAddressToTransactionOutputHeightKey(address))
 	if bytesTransactionOutputHeight == nil {
 		return nil
 	}
 	return b.QueryTransactionOutputByTransactionOutputHeight(ByteUtil.BytesToUint64(bytesTransactionOutputHeight))
 }
-func (b *BlockchainDatabase) QueryUnspentTransactionOutputByAddress(address string) *model.TransactionOutput {
+func (b *BlockchainDatabase) QueryUnspentTransactionOutputByAddress(address string) *Model.TransactionOutput {
 	bytesTransactionOutputHeight := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildAddressToUnspentTransactionOutputHeightKey(address))
 	if bytesTransactionOutputHeight == nil {
 		return nil
 	}
 	return b.QueryTransactionOutputByTransactionOutputHeight(ByteUtil.BytesToUint64(bytesTransactionOutputHeight))
 }
-func (b *BlockchainDatabase) QuerySpentTransactionOutputByAddress(address string) *model.TransactionOutput {
+func (b *BlockchainDatabase) QuerySpentTransactionOutputByAddress(address string) *Model.TransactionOutput {
 	bytesTransactionOutputHeight := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildAddressToSpentTransactionOutputHeightKey(address))
 	if bytesTransactionOutputHeight == nil {
 		return nil
@@ -324,7 +326,7 @@ func (b *BlockchainDatabase) GetConsensus() *Consensus {
 func (b *BlockchainDatabase) getBlockchainDatabasePath() string {
 	return FileUtil.NewPath(b.CoreConfiguration.getCorePath(), BLOCKCHAIN_DATABASE_NAME)
 }
-func (b *BlockchainDatabase) createBlockWriteBatch(block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) *KvDbUtil.KvWriteBatch {
+func (b *BlockchainDatabase) createBlockWriteBatch(block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) *KvDbUtil.KvWriteBatch {
 	b.fillBlockProperty(block)
 	kvWriteBatch := new(KvDbUtil.KvWriteBatch)
 
@@ -353,7 +355,7 @@ func (b *BlockchainDatabase) createBlockWriteBatch(block *model.Block, blockchai
 	b.storeAddressToSpentTransactionOutputHeight(kvWriteBatch, block, blockchainActionEnum)
 	return kvWriteBatch
 }
-func (b *BlockchainDatabase) fillBlockProperty(block *model.Block) {
+func (b *BlockchainDatabase) fillBlockProperty(block *Model.Block) {
 	transactionIndex := uint64(0)
 	transactionHeight := b.QueryBlockchainTransactionHeight()
 	transactionOutputHeight := b.QueryBlockchainTransactionOutputHeight()
@@ -386,7 +388,7 @@ func (b *BlockchainDatabase) fillBlockProperty(block *model.Block) {
 	}
 }
 
-func (b *BlockchainDatabase) storeHash(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeHash(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	blockHashKey := BlockchainDatabaseKeyTool.BuildHashKey(block.Hash)
 
 	if BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum {
@@ -404,7 +406,7 @@ func (b *BlockchainDatabase) storeHash(kvWriteBatch *KvDbUtil.KvWriteBatch, bloc
 		}
 	}
 }
-func (b *BlockchainDatabase) storeAddress(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeAddress(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactions := block.Transactions
 	for _, transaction := range transactions {
 		outputs := transaction.Outputs
@@ -419,7 +421,7 @@ func (b *BlockchainDatabase) storeAddress(kvWriteBatch *KvDbUtil.KvWriteBatch, b
 
 	}
 }
-func (b *BlockchainDatabase) storeBlockchainHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeBlockchainHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	blockchainHeightKey := BlockchainDatabaseKeyTool.BuildBlockchainHeightKey()
 	if BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum {
 		kvWriteBatch.Put(blockchainHeightKey, ByteUtil.Uint64ToBytes(block.Height))
@@ -427,7 +429,7 @@ func (b *BlockchainDatabase) storeBlockchainHeight(kvWriteBatch *KvDbUtil.KvWrit
 		kvWriteBatch.Put(blockchainHeightKey, ByteUtil.Uint64ToBytes(block.Height-1))
 	}
 }
-func (b *BlockchainDatabase) storeBlockchainTransactionHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeBlockchainTransactionHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactionCount := b.QueryBlockchainTransactionHeight()
 	bytesBlockchainTransactionCountKey := BlockchainDatabaseKeyTool.BuildBlockchainTransactionHeightKey()
 	if BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum {
@@ -436,7 +438,7 @@ func (b *BlockchainDatabase) storeBlockchainTransactionHeight(kvWriteBatch *KvDb
 		kvWriteBatch.Put(bytesBlockchainTransactionCountKey, ByteUtil.Uint64ToBytes(transactionCount-BlockTool.GetTransactionCount(block)))
 	}
 }
-func (b *BlockchainDatabase) storeBlockchainTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeBlockchainTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactionOutputCount := b.QueryBlockchainTransactionOutputHeight()
 	bytesBlockchainTransactionOutputHeightKey := BlockchainDatabaseKeyTool.BuildBlockchainTransactionOutputHeightKey()
 	if BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum {
@@ -445,7 +447,7 @@ func (b *BlockchainDatabase) storeBlockchainTransactionOutputHeight(kvWriteBatch
 		kvWriteBatch.Put(bytesBlockchainTransactionOutputHeightKey, ByteUtil.Uint64ToBytes(transactionOutputCount-BlockTool.GetTransactionOutputCount(block)))
 	}
 }
-func (b *BlockchainDatabase) storeBlockHeightToBlock(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeBlockHeightToBlock(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	blockHeightKey := BlockchainDatabaseKeyTool.BuildBlockHeightToBlockKey(block.Height)
 	if BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum {
 		kvWriteBatch.Put(blockHeightKey, EncodeDecodeTool.EncodeBlock(block))
@@ -453,7 +455,7 @@ func (b *BlockchainDatabase) storeBlockHeightToBlock(kvWriteBatch *KvDbUtil.KvWr
 		kvWriteBatch.Delete(blockHeightKey)
 	}
 }
-func (b *BlockchainDatabase) storeBlockHashToBlockHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeBlockHashToBlockHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	blockHashBlockHeightKey := BlockchainDatabaseKeyTool.BuildBlockHashToBlockHeightKey(block.Hash)
 	if BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum {
 		kvWriteBatch.Put(blockHashBlockHeightKey, ByteUtil.Uint64ToBytes(block.Height))
@@ -461,7 +463,7 @@ func (b *BlockchainDatabase) storeBlockHashToBlockHeight(kvWriteBatch *KvDbUtil.
 		kvWriteBatch.Delete(blockHashBlockHeightKey)
 	}
 }
-func (b *BlockchainDatabase) storeTransactionHeightToTransaction(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeTransactionHeightToTransaction(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
@@ -474,7 +476,7 @@ func (b *BlockchainDatabase) storeTransactionHeightToTransaction(kvWriteBatch *K
 		}
 	}
 }
-func (b *BlockchainDatabase) storeTransactionHashToTransactionHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeTransactionHashToTransactionHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
@@ -487,7 +489,7 @@ func (b *BlockchainDatabase) storeTransactionHashToTransactionHeight(kvWriteBatc
 		}
 	}
 }
-func (b *BlockchainDatabase) storeTransactionOutputHeightToTransactionOutput(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeTransactionOutputHeightToTransactionOutput(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
@@ -505,7 +507,7 @@ func (b *BlockchainDatabase) storeTransactionOutputHeightToTransactionOutput(kvW
 		}
 	}
 }
-func (b *BlockchainDatabase) storeTransactionOutputIdToTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeTransactionOutputIdToTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
@@ -523,7 +525,7 @@ func (b *BlockchainDatabase) storeTransactionOutputIdToTransactionOutputHeight(k
 		}
 	}
 }
-func (b *BlockchainDatabase) storeTransactionOutputIdToUnspentTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeTransactionOutputIdToUnspentTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
@@ -553,7 +555,7 @@ func (b *BlockchainDatabase) storeTransactionOutputIdToUnspentTransactionOutputH
 		}
 	}
 }
-func (b *BlockchainDatabase) storeTransactionOutputIdToSpentTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeTransactionOutputIdToSpentTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
@@ -583,7 +585,7 @@ func (b *BlockchainDatabase) storeTransactionOutputIdToSpentTransactionOutputHei
 		}
 	}
 }
-func (b *BlockchainDatabase) storeTransactionOutputIdToSourceTransactionHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeTransactionOutputIdToSourceTransactionHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
@@ -601,7 +603,7 @@ func (b *BlockchainDatabase) storeTransactionOutputIdToSourceTransactionHeight(k
 		}
 	}
 }
-func (b *BlockchainDatabase) storeTransactionOutputIdToDestinationTransactionHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeTransactionOutputIdToDestinationTransactionHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
@@ -620,7 +622,7 @@ func (b *BlockchainDatabase) storeTransactionOutputIdToDestinationTransactionHei
 		}
 	}
 }
-func (b *BlockchainDatabase) storeAddressToTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeAddressToTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactions := block.Transactions
 	if transactions == nil {
 		return
@@ -640,7 +642,7 @@ func (b *BlockchainDatabase) storeAddressToTransactionOutputHeight(kvWriteBatch 
 	}
 }
 
-func (b *BlockchainDatabase) storeAddressToUnspentTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeAddressToUnspentTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactions := block.Transactions
 	if transactions == nil {
 		return
@@ -672,7 +674,7 @@ func (b *BlockchainDatabase) storeAddressToUnspentTransactionOutputHeight(kvWrit
 	}
 }
 
-func (b *BlockchainDatabase) storeAddressToSpentTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
+func (b *BlockchainDatabase) storeAddressToSpentTransactionOutputHeight(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	transactions := block.Transactions
 	if transactions == nil {
 		return
@@ -697,7 +699,7 @@ func (b *BlockchainDatabase) storeAddressToSpentTransactionOutputHeight(kvWriteB
 /**
  * 校验区块新产生的哈希
  */
-func (b *BlockchainDatabase) checkBlockNewHash(block *model.Block) bool {
+func (b *BlockchainDatabase) checkBlockNewHash(block *Model.Block) bool {
 	//校验哈希作为主键的正确性
 	//新产生的哈希不能有重复
 	if BlockTool.IsExistDuplicateNewHash(block) {
@@ -727,7 +729,7 @@ func (b *BlockchainDatabase) checkBlockNewHash(block *model.Block) bool {
 /**
  * 区块中校验新产生的哈希
  */
-func (b *BlockchainDatabase) checkTransactionNewHash(transaction *model.Transaction) bool {
+func (b *BlockchainDatabase) checkTransactionNewHash(transaction *Model.Transaction) bool {
 	//校验哈希作为主键的正确性
 	//校验交易Hash是否已经被使用了
 	transactionHash := transaction.TransactionHash
@@ -749,7 +751,7 @@ func (b *BlockchainDatabase) isHashUsed(hash string) bool {
 /**
  * 校验区块新产生的地址
  */
-func (b *BlockchainDatabase) checkBlockNewAddress(block *model.Block) bool {
+func (b *BlockchainDatabase) checkBlockNewAddress(block *Model.Block) bool {
 	//校验地址作为主键的正确性
 	//新产生的地址不能有重复
 	if BlockTool.IsExistDuplicateNewAddress(block) {
@@ -770,7 +772,7 @@ func (b *BlockchainDatabase) checkBlockNewAddress(block *model.Block) bool {
 /**
  * 区块中校验新产生的哈希
  */
-func (b *BlockchainDatabase) checkTransactionNewAddress(transaction *model.Transaction) bool {
+func (b *BlockchainDatabase) checkTransactionNewAddress(transaction *Model.Transaction) bool {
 	//区块新产生的地址不能有重复
 	if TransactionTool.IsExistDuplicateNewAddress(transaction) {
 		return false
@@ -798,7 +800,7 @@ func (b *BlockchainDatabase) isAddressUsed(address string) bool {
  * 校验双花
  * 双花指的是同一笔UTXO被花费两次或多次。
  */
-func (b *BlockchainDatabase) checkBlockDoubleSpend(block *model.Block) bool {
+func (b *BlockchainDatabase) checkBlockDoubleSpend(block *Model.Block) bool {
 	//双花交易：区块内部存在重复的[未花费交易输出]
 	if BlockTool.IsExistDuplicateUtxo(block) {
 		LogUtil.Debug("区块数据异常：发生双花交易。")
@@ -819,7 +821,7 @@ func (b *BlockchainDatabase) checkBlockDoubleSpend(block *model.Block) bool {
 /**
  * 校验双花
  */
-func (b *BlockchainDatabase) checkTransactionDoubleSpend(transaction *model.Transaction) bool {
+func (b *BlockchainDatabase) checkTransactionDoubleSpend(transaction *Model.Transaction) bool {
 	//双花交易：交易内部存在重复的[未花费交易输出]
 	if TransactionTool.IsExistDuplicateUtxo(transaction) {
 		LogUtil.Debug("交易数据异常，检测到双花攻击。")
@@ -836,7 +838,7 @@ func (b *BlockchainDatabase) checkTransactionDoubleSpend(transaction *model.Tran
 /**
  * 检查[花费的交易输出]是否都是[未花费的交易输出]
  */
-func (b *BlockchainDatabase) checkStxoIsUtxo(transaction *model.Transaction) bool {
+func (b *BlockchainDatabase) checkStxoIsUtxo(transaction *Model.Transaction) bool {
 	inputs := transaction.Inputs
 	if inputs != nil {
 		for _, transactionInput := range inputs {
@@ -858,7 +860,7 @@ func (b *BlockchainDatabase) checkStxoIsUtxo(transaction *model.Transaction) boo
  * 用户如何能证明自己拥有这个UTXO，只要用户能创建出一个能解锁(该UTXO对应的交易输出脚本)的交易输入脚本，就证明了用户拥有该UTXO。
  * 这是因为锁(交易输出脚本)是用户创建的，自然只有该用户有对应的钥匙(交易输入脚本)，自然意味着有钥匙的用户拥有这把锁的所有权。
  */
-func (b *BlockchainDatabase) checkTransactionScript(transaction *model.Transaction) bool {
+func (b *BlockchainDatabase) checkTransactionScript(transaction *Model.Transaction) bool {
 	inputs := transaction.Inputs
 	if inputs != nil && len(inputs) != 0 {
 		for _, transactionInput := range inputs {
@@ -869,9 +871,9 @@ func (b *BlockchainDatabase) checkTransactionScript(transaction *model.Transacti
 			//完整脚本
 			script := ScriptTool.CreateScript(inputScript, outputScript)
 			//执行脚本
-			scriptExecuteResult := b.VirtualMachine.executeScript(transaction, script)
+			scriptExecuteResult := b.VirtualMachine.ExecuteScript(transaction, &script)
 			//脚本执行结果是个栈，如果栈有且只有一个元素，且这个元素是0x01，则解锁成功。
-			executeSuccess := scriptExecuteResult.size() == 1 && ByteUtil.equals(BooleanEnum.TRUE.getCode(), ByteUtil.HexStringToBytes(scriptExecuteResult.pop()))
+			executeSuccess := scriptExecuteResult.Size() == 1 && ByteUtil.IsEquals(BooleanCodeEnum.TRUE.Code, ByteUtil.HexStringToBytes(scriptExecuteResult.Pop().(string)))
 			if !executeSuccess {
 				return false
 			}

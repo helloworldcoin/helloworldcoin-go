@@ -13,21 +13,21 @@ import (
 	"helloworldcoin-go/core/Model"
 )
 
-func CalculateBlockHash(block *model.Block) string {
+func CalculateBlockHash(block *Model.Block) string {
 	blockDto := Model2DtoTool.Block2BlockDto(block)
 	return BlockDtoTool.CalculateBlockHash(blockDto)
 }
 
-func CalculateBlockMerkleTreeRoot(block *model.Block) string {
+func CalculateBlockMerkleTreeRoot(block *Model.Block) string {
 	blockDto := Model2DtoTool.Block2BlockDto(block)
 	return BlockDtoTool.CalculateBlockMerkleTreeRoot(blockDto)
 }
 
-func GetTransactionCount(block *model.Block) uint64 {
+func GetTransactionCount(block *Model.Block) uint64 {
 	transactions := block.Transactions
 	return uint64(len(transactions))
 }
-func GetTransactionOutputCount(block *model.Block) uint64 {
+func GetTransactionOutputCount(block *Model.Block) uint64 {
 	transactionOutputCount := uint64(0)
 	transactions := block.Transactions
 	if transactions != nil {
@@ -37,7 +37,7 @@ func GetTransactionOutputCount(block *model.Block) uint64 {
 	}
 	return transactionOutputCount
 }
-func GetBlockFee(block *model.Block) uint64 {
+func GetBlockFee(block *Model.Block) uint64 {
 	blockFee := uint64(0)
 	transactions := block.Transactions
 	if transactions != nil {
@@ -53,10 +53,10 @@ func GetBlockFee(block *model.Block) uint64 {
 	}
 	return blockFee
 }
-func GetWritedIncentiveValue(block *model.Block) uint64 {
+func GetWritedIncentiveValue(block *Model.Block) uint64 {
 	return block.Transactions[0].Outputs[0].Value
 }
-func GetNextBlockHeight(currentBlock *model.Block) uint64 {
+func GetNextBlockHeight(currentBlock *Model.Block) uint64 {
 	var nextBlockHeight uint64
 	if currentBlock == nil {
 		nextBlockHeight = GenesisBlockSetting.HEIGHT + uint64(1)
@@ -65,21 +65,21 @@ func GetNextBlockHeight(currentBlock *model.Block) uint64 {
 	}
 	return nextBlockHeight
 }
-func CheckBlockHeight(previousBlock *model.Block, currentBlock *model.Block) bool {
+func CheckBlockHeight(previousBlock *Model.Block, currentBlock *Model.Block) bool {
 	if previousBlock == nil {
 		return (GenesisBlockSetting.HEIGHT + 1) == currentBlock.Height
 	} else {
 		return (previousBlock.Height + 1) == currentBlock.Height
 	}
 }
-func CheckPreviousBlockHash(previousBlock *model.Block, currentBlock *model.Block) bool {
+func CheckPreviousBlockHash(previousBlock *Model.Block, currentBlock *Model.Block) bool {
 	if previousBlock == nil {
 		return StringUtil.IsEquals(GenesisBlockSetting.HASH, currentBlock.PreviousHash)
 	} else {
 		return StringUtil.IsEquals(previousBlock.Hash, currentBlock.PreviousHash)
 	}
 }
-func CheckBlockTimestamp(previousBlock *model.Block, currentBlock *model.Block) bool {
+func CheckBlockTimestamp(previousBlock *Model.Block, currentBlock *Model.Block) bool {
 	if currentBlock.Timestamp > TimeUtil.MillisecondTimestamp() {
 		return false
 	}
@@ -93,7 +93,7 @@ func CheckBlockTimestamp(previousBlock *model.Block, currentBlock *model.Block) 
 /**
  * 区块新产生的哈希是否存在重复
  */
-func IsExistDuplicateNewHash(block *model.Block) bool {
+func IsExistDuplicateNewHash(block *Model.Block) bool {
 	var newHashs []string
 	blockHash := block.Hash
 	newHashs = append(newHashs, blockHash)
@@ -110,7 +110,7 @@ func IsExistDuplicateNewHash(block *model.Block) bool {
 /**
  * 区块新产生的地址是否存在重复
  */
-func IsExistDuplicateNewAddress(block *model.Block) bool {
+func IsExistDuplicateNewAddress(block *Model.Block) bool {
 	var newAddresss []string
 	transactions := block.Transactions
 	if transactions != nil {
@@ -130,7 +130,7 @@ func IsExistDuplicateNewAddress(block *model.Block) bool {
 /**
  * 区块中是否存在重复的[未花费交易输出]
  */
-func IsExistDuplicateUtxo(block *model.Block) bool {
+func IsExistDuplicateUtxo(block *Model.Block) bool {
 	var utxoIds []string
 	transactions := block.Transactions
 	if transactions != nil {

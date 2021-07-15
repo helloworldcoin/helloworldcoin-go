@@ -59,7 +59,7 @@ func FlatAndConcatenateLength(values [][]byte) []byte {
 	return ConcatenateLength(flatBytes)
 }
 
-func Equals(bytes1 []byte, bytes2 []byte) bool {
+func IsEquals(bytes1 []byte, bytes2 []byte) bool {
 	return bytes.Equal(bytes1, bytes2)
 }
 
