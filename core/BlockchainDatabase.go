@@ -873,7 +873,7 @@ func (b *BlockchainDatabase) checkTransactionScript(transaction *Model.Transacti
 			//执行脚本
 			scriptExecuteResult := b.VirtualMachine.ExecuteScript(transaction, &script)
 			//脚本执行结果是个栈，如果栈有且只有一个元素，且这个元素是0x01，则解锁成功。
-			executeSuccess := scriptExecuteResult.Size() == 1 && ByteUtil.IsEquals(BooleanCodeEnum.TRUE.Code, ByteUtil.HexStringToBytes(scriptExecuteResult.Pop().(string)))
+			executeSuccess := scriptExecuteResult.Size() == 1 && ByteUtil.IsEquals(BooleanCodeEnum.TRUE.Code, ByteUtil.HexStringToBytes(*scriptExecuteResult.Pop()))
 			if !executeSuccess {
 				return false
 			}
