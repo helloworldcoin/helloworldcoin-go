@@ -15,7 +15,7 @@ func (incentive *Incentive) IncentiveValue(blockchainDatabase *BlockchainDatabas
 	return minerSubsidy + minerFee
 }
 
-func (incentive *Incentive) checkIncentive(blockchainDatabase *BlockchainDatabase, block *model.Block) bool {
+func (incentive *Incentive) CheckIncentive(blockchainDatabase *BlockchainDatabase, block *model.Block) bool {
 	writeIncentiveValue := BlockTool.GetWritedIncentiveValue(block)
 	targetIncentiveValue := incentive.IncentiveValue(blockchainDatabase, block)
 	if writeIncentiveValue != targetIncentiveValue {

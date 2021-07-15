@@ -1,10 +1,13 @@
 package TransactionTool
 
 import (
+	"helloworldcoin-go/core/Model/TransactionType"
 	"helloworldcoin-go/core/tool/BlockchainDatabaseKeyTool"
 	"helloworldcoin-go/core/tool/Model2DtoTool"
 	"helloworldcoin-go/core/tool/TransactionDtoTool"
+	"helloworldcoin-go/setting/TransactionSettingTool"
 	"helloworldcoin-go/util/DataStructureUtil"
+	"helloworldcoin-go/util/LogUtil"
 
 	"helloworldcoin-go/core/Model"
 )
@@ -77,4 +80,49 @@ func IsExistDuplicateUtxo(transaction *model.Transaction) bool {
 		}
 	}
 	return DataStructureUtil.IsExistDuplicateElement(&utxoIds)
+}
+
+/**
+ * 交易中的金额是否符合系统的约束
+ */
+func CheckTransactionValue(transaction *model.Transaction) bool {
+	inputs := transaction.Inputs
+	if inputs != nil {
+		//校验交易输入的金额
+		for _, input := range inputs {
+			if !TransactionSettingTool.CheckTransactionValue(input.UnspentTransactionOutput.Value) {
+				LogUtil.Debug("交易金额不合法")
+				return false
+			}
+		}
+	}
+
+	outputs := transaction.Outputs
+	if outputs != nil {
+		//校验交易输出的金额
+		for _, output := range outputs {
+			if !TransactionSettingTool.CheckTransactionValue(output.Value) {
+				LogUtil.Debug("交易金额不合法")
+				return false
+			}
+		}
+	}
+
+	//根据交易类型，做进一步的校验
+	if transaction.TransactionType == TransactionType.GENESIS_TRANSACTION {
+		//没有需要校验的，跳过。
+	} else if transaction.TransactionType == TransactionType.STANDARD_TRANSACTION {
+		//交易输入必须要大于等于交易输出
+		inputsValue := GetInputValue(transaction)
+		outputsValue := GetOutputValue(transaction)
+		if inputsValue < outputsValue {
+			LogUtil.Debug("交易校验失败：交易的输入必须大于等于交易的输出。不合法的交易。")
+			return false
+		}
+		return true
+	} else {
+		LogUtil.Debug("区块数据异常，不能识别的交易类型。")
+		return false
+	}
+	return true
 }

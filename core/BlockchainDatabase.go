@@ -6,6 +6,7 @@ import (
 	"helloworldcoin-go/core/tool/BlockTool"
 	"helloworldcoin-go/core/tool/BlockchainDatabaseKeyTool"
 	"helloworldcoin-go/core/tool/EncodeDecodeTool"
+	"helloworldcoin-go/core/tool/ScriptTool"
 	"helloworldcoin-go/core/tool/SizeTool"
 	"helloworldcoin-go/core/tool/StructureTool"
 	"helloworldcoin-go/core/tool/TransactionTool"
@@ -118,10 +119,73 @@ func (b *BlockchainDatabase) CheckBlock(block *model.Block) bool {
 		LogUtil.Debug("区块数据异常，检测到双花攻击。")
 		return false
 	}
-
+	/*	//校验共识
+		if !b.Consensus.CheckConsensus(this, block) {
+			LogUtil.Debug("区块数据异常，未满足共识规则。")
+			return false
+		}
+		//校验激励
+		if !b.Incentive.CheckIncentive(this, block) {
+			LogUtil.Debug("区块数据异常，激励校验失败。")
+			return false
+		}*/
+	//从交易角度校验每一笔交易
+	for _, transaction := range block.Transactions {
+		transactionCanAddToNextBlock := b.CheckTransaction(&transaction)
+		if !transactionCanAddToNextBlock {
+			LogUtil.Debug("区块数据异常，交易异常。")
+			return false
+		}
+	}
 	return true
 }
-func (b *BlockchainDatabase) CheckTransaction(block *model.Transaction) bool {
+func (b *BlockchainDatabase) CheckTransaction(transaction *model.Transaction) bool {
+	//校验交易的结构
+	if !StructureTool.CheckTransactionStructure(transaction) {
+		LogUtil.Debug("交易数据异常，请校验交易的结构。")
+		return false
+	}
+	//校验交易的大小
+	if !SizeTool.CheckTransactionSize(transaction) {
+		LogUtil.Debug("交易数据异常，请校验交易的大小。")
+		return false
+	}
+
+	/*	//校验交易中的地址是否是P2PKH地址
+		if(!TransactionTool.checkPayToPublicKeyHashAddress(transaction)){
+			return false;
+		}
+		//校验交易中的脚本是否是P2PKH脚本
+		if(!TransactionTool.checkPayToPublicKeyHashScript(transaction)){
+			return false;
+		}*/
+
+	//业务校验
+	//校验新产生的哈希
+	if !b.checkTransactionNewHash(transaction) {
+		LogUtil.Debug("区块数据异常，区块中新产生的哈希异常。")
+		return false
+	}
+	//校验新产生的地址
+	if !b.checkTransactionNewAddress(transaction) {
+		LogUtil.Debug("区块数据异常，区块中新产生的哈希异常。")
+		return false
+	}
+	//校验交易金额
+	if !TransactionTool.CheckTransactionValue(transaction) {
+		LogUtil.Debug("交易金额不合法")
+		return false
+	}
+	//校验双花
+	if !b.checkTransactionDoubleSpend(transaction) {
+		LogUtil.Debug("交易数据异常，检测到双花攻击。")
+		return false
+	}
+	//校验脚本
+	if !b.checkTransactionScript(transaction) {
+		LogUtil.Debug("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。")
+		return false
+	}
 	return true
 }
 
@@ -652,7 +716,7 @@ func (b *BlockchainDatabase) checkBlockNewHash(block *model.Block) bool {
 	blockTransactions := block.Transactions
 	if blockTransactions != nil {
 		for _, transaction := range blockTransactions {
-			if b.checkTransactionNewHash(transaction) {
+			if b.checkTransactionNewHash(&transaction) {
 				return false
 			}
 		}
@@ -663,7 +727,7 @@ func (b *BlockchainDatabase) checkBlockNewHash(block *model.Block) bool {
 /**
  * 区块中校验新产生的哈希
  */
-func (b *BlockchainDatabase) checkTransactionNewHash(transaction model.Transaction) bool {
+func (b *BlockchainDatabase) checkTransactionNewHash(transaction *model.Transaction) bool {
 	//校验哈希作为主键的正确性
 	//校验交易Hash是否已经被使用了
 	transactionHash := transaction.TransactionHash
@@ -788,3 +852,30 @@ func (b *BlockchainDatabase) checkStxoIsUtxo(transaction *model.Transaction) boo
 }
 
 //endregion
+/**
+ * 检验交易脚本，即校验交易输入能解锁交易输出吗？即用户花费的是自己的钱吗？
+ * 校验用户花费的是自己的钱吗，用户只可以花费自己的钱。专业点的说法，校验UTXO所有权，用户只可以花费自己拥有的UTXO。
+ * 用户如何能证明自己拥有这个UTXO，只要用户能创建出一个能解锁(该UTXO对应的交易输出脚本)的交易输入脚本，就证明了用户拥有该UTXO。
+ * 这是因为锁(交易输出脚本)是用户创建的，自然只有该用户有对应的钥匙(交易输入脚本)，自然意味着有钥匙的用户拥有这把锁的所有权。
+ */
+func (b *BlockchainDatabase) checkTransactionScript(transaction *model.Transaction) bool {
+	inputs := transaction.Inputs
+	if inputs != nil && len(inputs) != 0 {
+		for _, transactionInput := range inputs {
+			//锁(交易输出脚本)
+			outputScript := transactionInput.UnspentTransactionOutput.OutputScript
+			//钥匙(交易输入脚本)
+			inputScript := transactionInput.InputScript
+			//完整脚本
+			script := ScriptTool.CreateScript(inputScript, outputScript)
+			//执行脚本
+			scriptExecuteResult := b.VirtualMachine.executeScript(transaction, script)
+			//脚本执行结果是个栈，如果栈有且只有一个元素，且这个元素是0x01，则解锁成功。
+			executeSuccess := scriptExecuteResult.size() == 1 && ByteUtil.equals(BooleanEnum.TRUE.getCode(), ByteUtil.HexStringToBytes(scriptExecuteResult.pop()))
+			if !executeSuccess {
+				return false
+			}
+		}
+	}
+	return true
+}

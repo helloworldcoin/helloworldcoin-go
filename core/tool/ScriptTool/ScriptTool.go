@@ -44,3 +44,13 @@ func CreatePayToPublicKeyHashOutputScript(address string) []string {
 	script = append(script, ByteUtil.BytesToHexString(OperationCodeEnum.OP_CHECKSIG.Code))
 	return script
 }
+
+/**
+ * 构建完整脚本
+ */
+func CreateScript(inputScript []string, outputScript []string) []string {
+	var script []string
+	script = append(script, inputScript...)
+	script = append(script, outputScript...)
+	return script
+}

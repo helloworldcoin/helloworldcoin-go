@@ -21,7 +21,7 @@ func CheckBlockSize(block *model.Block) bool {
  * 注意：校验交易的大小，不仅要校验交易的大小
  * ，还要校验交易内部各个属性(交易输入、交易输出)的大小。
  */
-func checkTransactionSize(transaction *model.Transaction) bool {
+func CheckTransactionSize(transaction *model.Transaction) bool {
 	return DtoSizeTool.CheckTransactionSize(Model2DtoTool.Transaction2TransactionDto(transaction))
 }
 
