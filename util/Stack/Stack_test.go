@@ -9,12 +9,12 @@ func TestStack(t *testing.T) {
 	stack.Push(3)
 	stack.Push(4)
 
-	len := stack.Len()
+	len := stack.Size()
 	if len != 4 {
 		t.Errorf("stack.Len() failed. Got %d, expected 4.", len)
 	}
 
-	value := stack.Peak().(int)
+	value := stack.Peek().(int)
 	if value != 4 {
 		t.Errorf("stack.Peak() failed. Got %d, expected 4.", value)
 	}
@@ -24,12 +24,12 @@ func TestStack(t *testing.T) {
 		t.Errorf("stack.Pop() failed. Got %d, expected 4.", value)
 	}
 
-	len = stack.Len()
+	len = stack.Size()
 	if len != 3 {
 		t.Errorf("stack.Len() failed. Got %d, expected 3.", len)
 	}
 
-	value = stack.Peak().(int)
+	value = stack.Peek().(int)
 	if value != 3 {
 		t.Errorf("stack.Peak() failed. Got %d, expected 3.", value)
 	}
@@ -44,7 +44,7 @@ func TestStack(t *testing.T) {
 		t.Errorf("stack.Pop() failed. Got %d, expected 2.", value)
 	}
 
-	empty := stack.Empty()
+	empty := stack.IsEmpty()
 	if empty {
 		t.Errorf("stack.Empty() failed. Got %T, expected false.", empty)
 	}
@@ -54,12 +54,12 @@ func TestStack(t *testing.T) {
 		t.Errorf("stack.Pop() failed. Got %d, expected 1.", value)
 	}
 
-	empty = stack.Empty()
+	empty = stack.IsEmpty()
 	if !empty {
 		t.Errorf("stack.Empty() failed. Got %T, expected true.", empty)
 	}
 
-	nilValue := stack.Peak()
+	nilValue := stack.Peek()
 	if nilValue != nil {
 		t.Errorf("stack.Peak() failed. Got %d, expected nil.", nilValue)
 	}
@@ -69,7 +69,7 @@ func TestStack(t *testing.T) {
 		t.Errorf("stack.Pop() failed. Got %d, expected nil.", nilValue)
 	}
 
-	len = stack.Len()
+	len = stack.Size()
 	if len != 0 {
 		t.Errorf("stack.Len() failed. Got %d, expected 0.", len)
 	}

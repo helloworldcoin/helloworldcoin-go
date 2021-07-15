@@ -24,7 +24,7 @@ func (stack *Stack) Pop() interface{} {
 	return nil
 }
 
-func (stack *Stack) Peak() interface{} {
+func (stack *Stack) Peek() interface{} {
 	e := stack.list.Back()
 	if e != nil {
 		return e.Value
@@ -33,10 +33,10 @@ func (stack *Stack) Peak() interface{} {
 	return nil
 }
 
-func (stack *Stack) Len() int {
+func (stack *Stack) Size() int {
 	return stack.list.Len()
 }
 
-func (stack *Stack) Empty() bool {
+func (stack *Stack) IsEmpty() bool {
 	return stack.list.Len() == 0
 }
