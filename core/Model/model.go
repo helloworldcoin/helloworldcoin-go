@@ -2,6 +2,7 @@ package Model
 
 import (
 	"helloworldcoin-go/core/Model/TransactionType"
+	"helloworldcoin-go/core/Model/script"
 )
 
 type Block struct {
@@ -30,11 +31,11 @@ type Transaction struct {
 }
 type TransactionInput struct {
 	UnspentTransactionOutput TransactionOutput
-	InputScript              []string
+	InputScript              script.InputScript
 }
 type TransactionOutput struct {
 	Value        uint64
-	OutputScript []string
+	OutputScript script.OutputScript
 
 	BlockHeight             uint64
 	BlockHash               string

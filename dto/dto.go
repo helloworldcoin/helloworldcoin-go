@@ -11,13 +11,13 @@ type TransactionDto struct {
 	Outputs []TransactionOutputDto `json:"outputs"`
 }
 type TransactionInputDto struct {
-	TransactionHash        string   `json:"transactionHash"`
-	TransactionOutputIndex uint64   `json:"transactionOutputIndex"`
-	InputScript            []string `json:"inputScript"`
+	TransactionHash        string         `json:"transactionHash"`
+	TransactionOutputIndex uint64         `json:"transactionOutputIndex"`
+	InputScript            InputScriptDto `json:"inputScript"`
 }
 type TransactionOutputDto struct {
-	OutputScript []string `json:"outputScript"`
-	Value        uint64   `json:"value"`
+	OutputScript OutputScriptDto `json:"outputScript"`
+	Value        uint64          `json:"value"`
 }
 type ScriptDto = []string
 type InputScriptDto = ScriptDto
