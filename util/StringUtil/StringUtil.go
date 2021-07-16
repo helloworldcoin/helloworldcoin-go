@@ -29,3 +29,6 @@ func Concatenate3(value1 string, value2 string, value3 string) string {
 func ValueOfUint64(number uint64) string {
 	return strconv.FormatUint(number, 10)
 }
+func UtfCharacterCount(value string) int {
+	return utf8.RuneCountInString(value)
+}

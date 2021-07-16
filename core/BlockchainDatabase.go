@@ -153,14 +153,14 @@ func (b *BlockchainDatabase) CheckTransaction(transaction *Model.Transaction) bo
 		return false
 	}
 
-	/*	//校验交易中的地址是否是P2PKH地址
-		if(!TransactionTool.checkPayToPublicKeyHashAddress(transaction)){
-			return false;
-		}
-		//校验交易中的脚本是否是P2PKH脚本
-		if(!TransactionTool.checkPayToPublicKeyHashScript(transaction)){
-			return false;
-		}*/
+	//校验交易中的地址是否是P2PKH地址
+	if !TransactionTool.CheckPayToPublicKeyHashAddress(transaction) {
+		return false
+	}
+	//校验交易中的脚本是否是P2PKH脚本
+	if !TransactionTool.CheckPayToPublicKeyHashScript(transaction) {
+		return false
+	}
 
 	//业务校验
 	//校验新产生的哈希

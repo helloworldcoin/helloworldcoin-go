@@ -19,3 +19,6 @@ type TransactionOutputDto struct {
 	OutputScript []string `json:"outputScript"`
 	Value        uint64   `json:"value"`
 }
+type ScriptDto = []string
+type InputScriptDto = ScriptDto
+type OutputScriptDto = ScriptDto

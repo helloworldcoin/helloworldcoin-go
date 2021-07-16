@@ -4,7 +4,9 @@ import (
 	"helloworldcoin-go/core/Model/TransactionType"
 	"helloworldcoin-go/core/tool/BlockchainDatabaseKeyTool"
 	"helloworldcoin-go/core/tool/Model2DtoTool"
+	"helloworldcoin-go/core/tool/ScriptTool"
 	"helloworldcoin-go/core/tool/TransactionDtoTool"
+	"helloworldcoin-go/crypto/AccountUtil"
 	"helloworldcoin-go/setting/TransactionSettingTool"
 	"helloworldcoin-go/util/DataStructureUtil"
 	"helloworldcoin-go/util/LogUtil"
@@ -123,6 +125,45 @@ func CheckTransactionValue(transaction *Model.Transaction) bool {
 	} else {
 		LogUtil.Debug("区块数据异常，不能识别的交易类型。")
 		return false
+	}
+	return true
+}
+
+/**
+ * 校验交易中的地址是否是P2PKH地址
+ */
+func CheckPayToPublicKeyHashAddress(transaction *Model.Transaction) bool {
+	outputs := transaction.Outputs
+	if outputs != nil {
+		for _, output := range outputs {
+			if !AccountUtil.IsPayToPublicKeyHashAddress(output.Address) {
+				LogUtil.Debug("交易地址不合法")
+				return false
+			}
+		}
+	}
+	return true
+}
+
+/**
+ * 校验交易中的脚本是否是P2PKH脚本
+ */
+func CheckPayToPublicKeyHashScript(transaction *Model.Transaction) bool {
+	inputs := transaction.Inputs
+	if inputs != nil {
+		for _, input := range inputs {
+			if !ScriptTool.IsPayToPublicKeyHashInputScript(input.InputScript) {
+				return false
+			}
+		}
+	}
+	outputs := transaction.Outputs
+	if outputs != nil {
+		for _, output := range outputs {
+			if !ScriptTool.IsPayToPublicKeyHashOutputScript(output.OutputScript) {
+				return false
+			}
+		}
 	}
 	return true
 }
