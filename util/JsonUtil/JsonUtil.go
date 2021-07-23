@@ -6,16 +6,16 @@ import (
 	"helloworldcoin-go/dto"
 )
 
-func ToJson(blockDto *dto.BlockDto) string {
+func ToString(blockDto *dto.BlockDto) string {
 	jsonString, _ := json.Marshal(blockDto)
 	return string(jsonString)
 }
 
-func fromJson() {
+func toObject() {
 
 }
 
-func ToJsonStringBlock(block *Model.Block) string {
+func ToStringBlock(block *Model.Block) string {
 	jsonString, _ := json.Marshal(block)
 	return string(jsonString)
 }

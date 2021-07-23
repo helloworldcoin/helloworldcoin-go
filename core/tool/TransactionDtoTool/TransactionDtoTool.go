@@ -1,11 +1,11 @@
 package TransactionDtoTool
 
 import (
+	"helloworldcoin-go/core/tool/ScriptDtoTool"
+	"helloworldcoin-go/crypto/AccountUtil"
 	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/crypto/Sha256Util"
 	"helloworldcoin-go/dto"
-
-	"helloworldcoin-go/core/tool/ScriptTool"
 )
 
 func CalculateTransactionHash(transaction *dto.TransactionDto) string {
@@ -23,7 +23,7 @@ func BytesTransaction(transaction *dto.TransactionDto, omitInputScript bool) []b
 		bytesUnspentTransactionOutput := ByteUtil.Concatenate(ByteUtil.ConcatenateLength(bytesTransactionHash),
 			ByteUtil.ConcatenateLength(bytesTransactionOutputIndex))
 		if !omitInputScript {
-			bytesInputScript := ScriptTool.BytesScript(input.InputScript)
+			bytesInputScript := ScriptDtoTool.BytesInputScript(input.InputScript)
 			bytesUnspentTransactionOutput = ByteUtil.Concatenate(bytesUnspentTransactionOutput, ByteUtil.ConcatenateLength(bytesInputScript))
 		}
 		bytesUnspentTransactionOutputs = append(bytesUnspentTransactionOutputs, ByteUtil.ConcatenateLength(bytesUnspentTransactionOutput))
@@ -32,7 +32,7 @@ func BytesTransaction(transaction *dto.TransactionDto, omitInputScript bool) []b
 	var bytesTransactionOutputs [][]byte
 	outputs := transaction.Outputs
 	for _, output := range outputs {
-		bytesOutputScript := ScriptTool.BytesScript(output.OutputScript)
+		bytesOutputScript := ScriptDtoTool.BytesOutputScript(output.OutputScript)
 		bytesValue := ByteUtil.Uint64ToBytes(output.Value)
 		bytesTransactionOutput := ByteUtil.Concatenate(ByteUtil.ConcatenateLength(bytesOutputScript), ByteUtil.ConcatenateLength(bytesValue))
 		bytesTransactionOutputs = append(bytesTransactionOutputs, ByteUtil.ConcatenateLength(bytesTransactionOutput))
@@ -41,4 +41,22 @@ func BytesTransaction(transaction *dto.TransactionDto, omitInputScript bool) []b
 	data := ByteUtil.Concatenate(ByteUtil.FlatAndConcatenateLength(bytesUnspentTransactionOutputs),
 		ByteUtil.FlatAndConcatenateLength(bytesTransactionOutputs))
 	return data
+}
+
+/**
+ * 获取待签名数据
+ */
+func SignatureHashAll(transactionDto *dto.TransactionDto) string {
+	bytesTransaction := BytesTransaction(transactionDto, true)
+	sha256Digest := Sha256Util.DoubleDigest(bytesTransaction)
+	return ByteUtil.BytesToHexString(sha256Digest)
+}
+
+/**
+ * 验证签名
+ */
+func VerifySignature(transaction *dto.TransactionDto, publicKey string, bytesSignature []byte) bool {
+	message := SignatureHashAll(transaction)
+	bytesMessage := ByteUtil.HexStringToBytes(message)
+	return AccountUtil.VerifySignature(publicKey, bytesMessage, bytesSignature)
 }

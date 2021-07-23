@@ -1,4 +1,4 @@
-package script
+package Script
 
 import (
 	"helloworldcoin-go/util/StringStack"

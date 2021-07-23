@@ -3,7 +3,7 @@ package core
 import (
 	"helloworldcoin-go/core/Model"
 	"helloworldcoin-go/core/Model/BlockchainActionEnum"
-	"helloworldcoin-go/core/Model/script/BooleanCodeEnum"
+	"helloworldcoin-go/core/Model/Script/BooleanCodeEnum"
 	"helloworldcoin-go/core/tool/BlockTool"
 	"helloworldcoin-go/core/tool/BlockchainDatabaseKeyTool"
 	"helloworldcoin-go/core/tool/EncodeDecodeTool"
@@ -718,7 +718,7 @@ func (b *BlockchainDatabase) checkBlockNewHash(block *Model.Block) bool {
 	blockTransactions := block.Transactions
 	if blockTransactions != nil {
 		for _, transaction := range blockTransactions {
-			if b.checkTransactionNewHash(&transaction) {
+			if !b.checkTransactionNewHash(&transaction) {
 				return false
 			}
 		}
@@ -871,7 +871,7 @@ func (b *BlockchainDatabase) checkTransactionScript(transaction *Model.Transacti
 			//完整脚本
 			script := ScriptTool.CreateScript(inputScript, outputScript)
 			//执行脚本
-			scriptExecuteResult := b.VirtualMachine.ExecuteScript(transaction, &script)
+			scriptExecuteResult := b.VirtualMachine.ExecuteScript(transaction, script)
 			//脚本执行结果是个栈，如果栈有且只有一个元素，且这个元素是0x01，则解锁成功。
 			executeSuccess := scriptExecuteResult.Size() == 1 && ByteUtil.IsEquals(BooleanCodeEnum.TRUE.Code, ByteUtil.HexStringToBytes(*scriptExecuteResult.Pop()))
 			if !executeSuccess {

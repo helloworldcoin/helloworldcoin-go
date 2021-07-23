@@ -2,10 +2,10 @@ package core
 
 import (
 	"helloworldcoin-go/core/Model"
+	"helloworldcoin-go/core/Model/Script"
 	"helloworldcoin-go/core/Model/TransactionType"
-	"helloworldcoin-go/core/Model/script"
 	"helloworldcoin-go/core/tool/BlockTool"
-	"helloworldcoin-go/core/tool/ScriptTool"
+	"helloworldcoin-go/core/tool/ScriptDtoTool"
 	"helloworldcoin-go/core/tool/TransactionDtoTool"
 	"helloworldcoin-go/crypto/AccountUtil"
 	"helloworldcoin-go/dto"
@@ -86,7 +86,7 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 
 func transactionOutputDto2TransactionOutput(transactionOutputDto dto.TransactionOutputDto) *Model.TransactionOutput {
 	var transactionOutput Model.TransactionOutput
-	publicKeyHash := ScriptTool.GetPublicKeyHashByPayToPublicKeyHashOutputScript(transactionOutputDto.OutputScript)
+	publicKeyHash := ScriptDtoTool.GetPublicKeyHashFromPayToPublicKeyHashOutputScript(transactionOutputDto.OutputScript)
 	address := AccountUtil.AddressFromPublicKeyHash(publicKeyHash)
 	transactionOutput.Address = address
 	transactionOutput.Value = transactionOutputDto.Value
@@ -134,13 +134,13 @@ func fillBlockProperty(blockchainDatabase *BlockchainDatabase, block *Model.Bloc
 		}
 	}
 }
-func OutputScriptDto2OutputScript(outputScriptDto dto.OutputScriptDto) script.OutputScript {
-	var outputScript script.OutputScript
+func OutputScriptDto2OutputScript(outputScriptDto dto.OutputScriptDto) Script.OutputScript {
+	var outputScript Script.OutputScript
 	outputScript = append(outputScript, outputScriptDto...)
 	return outputScript
 }
-func InputScriptDto2InputScript(inputScriptDto dto.InputScriptDto) script.InputScript {
-	var inputScript script.InputScript
+func InputScriptDto2InputScript(inputScriptDto dto.InputScriptDto) Script.InputScript {
+	var inputScript Script.InputScript
 	inputScript = append(inputScript, inputScriptDto...)
 	return inputScript
 }

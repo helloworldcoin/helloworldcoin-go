@@ -4,6 +4,7 @@ import (
 	"helloworldcoin-go/core/Model"
 	"helloworldcoin-go/core/Model/TransactionType"
 	"helloworldcoin-go/core/tool/BlockTool"
+	"helloworldcoin-go/core/tool/ScriptTool"
 	"helloworldcoin-go/setting/BlockSetting"
 	"helloworldcoin-go/util/LogUtil"
 	"helloworldcoin-go/util/StringUtil"
@@ -75,19 +76,26 @@ func CheckTransactionStructure(transaction *Model.Transaction) bool {
 	//校验脚本结构
 	//输入脚本不需要校验，如果输入脚本结构有误，则在业务[交易输入脚本解锁交易输出脚本]上就通不过。
 
-	//校验输出脚本
-	outputs := transaction.Outputs
-	if outputs != nil {
-		for _, transactionOutput := range outputs {
-			if !checkScriptStructure(transactionOutput.OutputScript) {
+	//校验输入脚本
+	inputs := transaction.Inputs
+	if inputs != nil {
+		for _, input := range inputs {
+			//这里采用严格校验，必须是P2PKH输入脚本。
+			if !ScriptTool.IsPayToPublicKeyHashInputScript(input.InputScript) {
+				LogUtil.Debug("交易数据异常：创世交易不能有交易输入。")
 				return false
 			}
 		}
 	}
-	return true
-}
-
-func checkScriptStructure(script []string) bool {
-	//TODO
+	//校验输出脚本
+	//校验输出脚本
+	outputs := transaction.Outputs
+	if outputs != nil {
+		for _, transactionOutput := range outputs {
+			if !ScriptTool.IsPayToPublicKeyHashOutputScript(transactionOutput.OutputScript) {
+				return false
+			}
+		}
+	}
 	return true
 }

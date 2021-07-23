@@ -167,3 +167,19 @@ func CheckPayToPublicKeyHashScript(transaction *Model.Transaction) bool {
 	}
 	return true
 }
+
+/**
+ * 获取待签名数据
+ */
+func SignatureHashAll(transaction *Model.Transaction) string {
+	transactionDto := Model2DtoTool.Transaction2TransactionDto(transaction)
+	return TransactionDtoTool.SignatureHashAll(&transactionDto)
+}
+
+/**
+ * 验证签名
+ */
+func VerifySignature(transaction *Model.Transaction, publicKey string, bytesSignature []byte) bool {
+	transactionDto := Model2DtoTool.Transaction2TransactionDto(transaction)
+	return TransactionDtoTool.VerifySignature(&transactionDto, publicKey, bytesSignature)
+}

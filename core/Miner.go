@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"helloworldcoin-go/core/Model"
 	"helloworldcoin-go/core/Model/TransactionType"
 	"helloworldcoin-go/core/tool/BlockTool"
@@ -11,7 +10,8 @@ import (
 	"helloworldcoin-go/crypto/AccountUtil"
 	"helloworldcoin-go/crypto/ByteUtil"
 	"helloworldcoin-go/setting/GenesisBlockSetting"
-	"helloworldcoin-go/util/JsonUtil"
+	"helloworldcoin-go/util/LogUtil"
+	"helloworldcoin-go/util/StringUtil"
 	"helloworldcoin-go/util/ThreadUtil"
 	"helloworldcoin-go/util/TimeUtil"
 )
@@ -46,11 +46,11 @@ func (i *Miner) Start() {
 			//挖矿成功
 			if i.BlockchainDatabase.Consensus.CheckConsensus(i.BlockchainDatabase, block) {
 				i.Wallet.SaveAccount(minerAccount)
+				LogUtil.Debug("祝贺您！挖矿成功！！！区块高度:" + StringUtil.ValueOfUint64(block.Height) + ",区块哈希:" + block.Hash)
 				blockDto := Model2DtoTool.Block2BlockDto(block)
-				fmt.Println(JsonUtil.ToJson(blockDto))
 				isAddBlockToBlockchainSuccess := i.BlockchainDatabase.AddBlockDto(blockDto)
 				if !isAddBlockToBlockchainSuccess {
-					//LogUtil.debug("挖矿成功，但是区块放入区块链失败。")
+					LogUtil.Debug("挖矿成功，但是区块放入区块链失败。")
 				}
 				break
 			}
@@ -88,10 +88,8 @@ func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfi
 	packingTransactions = append(mineAwardTransactions, packingTransactions...)
 	nonNonceBlock.Transactions = packingTransactions
 
-	fmt.Println(JsonUtil.ToJsonStringBlock(&nonNonceBlock))
 	merkleTreeRoot := BlockTool.CalculateBlockMerkleTreeRoot(&nonNonceBlock)
 	nonNonceBlock.MerkleTreeRoot = merkleTreeRoot
-	fmt.Println(JsonUtil.ToJsonStringBlock(&nonNonceBlock))
 
 	//计算挖矿难度
 	nonNonceBlock.Difficulty = blockchainDatabase.Consensus.CalculateDifficult(blockchainDatabase, &nonNonceBlock)
@@ -106,7 +104,6 @@ func (i *Miner) buildIncentiveTransaction(address string, incentiveValue uint64)
 	var output Model.TransactionOutput
 	output.Address = address
 	output.Value = incentiveValue
-	fmt.Println("address:" + address)
 	output.OutputScript = ScriptTool.CreatePayToPublicKeyHashOutputScript(address)
 	outputs = append(outputs, output)
 

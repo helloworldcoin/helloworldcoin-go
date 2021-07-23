@@ -2,7 +2,7 @@ package Model2DtoTool
 
 import (
 	"helloworldcoin-go/core/Model"
-	"helloworldcoin-go/core/Model/script"
+	"helloworldcoin-go/core/Model/Script"
 	"helloworldcoin-go/dto"
 )
 
@@ -57,12 +57,12 @@ func TransactionOutput2TransactionOutputDto(transactionOutput *Model.Transaction
 	transactionOutputDto.OutputScript = OutputScript2OutputScriptDto(transactionOutput.OutputScript)
 	return transactionOutputDto
 }
-func InputScript2InputScriptDto(inputScript script.InputScript) dto.InputScriptDto {
+func InputScript2InputScriptDto(inputScript Script.InputScript) dto.InputScriptDto {
 	var inputScriptDto dto.InputScriptDto
 	inputScriptDto = append(inputScriptDto, inputScript...)
 	return inputScriptDto
 }
-func OutputScript2OutputScriptDto(outputScript script.OutputScript) dto.OutputScriptDto {
+func OutputScript2OutputScriptDto(outputScript Script.OutputScript) dto.OutputScriptDto {
 	var outputScriptDto dto.OutputScriptDto
 	outputScriptDto = append(outputScriptDto, outputScript...)
 	return outputScriptDto

@@ -1,40 +1,13 @@
 package ScriptTool
 
 import (
-	"helloworldcoin-go/core/Model/script"
-	"helloworldcoin-go/core/Model/script/OperationCodeEnum"
-	"helloworldcoin-go/core/tool/DtoScriptTool"
+	"helloworldcoin-go/core/Model/Script"
+	"helloworldcoin-go/core/Model/Script/OperationCodeEnum"
 	"helloworldcoin-go/core/tool/Model2DtoTool"
+	"helloworldcoin-go/core/tool/ScriptDtoTool"
 	"helloworldcoin-go/crypto/AccountUtil"
 	"helloworldcoin-go/crypto/ByteUtil"
 )
-
-func BytesScript(script []string) []byte {
-	var bytesScript []byte
-	for i := 0; i < len(script); i++ {
-		operationCode := script[i]
-		bytesOperationCode := ByteUtil.HexStringToBytes(operationCode)
-		if ByteUtil.IsEquals(OperationCodeEnum.OP_DUP.Code, bytesOperationCode) ||
-			ByteUtil.IsEquals(OperationCodeEnum.OP_HASH160.Code, bytesOperationCode) ||
-			ByteUtil.IsEquals(OperationCodeEnum.OP_EQUALVERIFY.Code, bytesOperationCode) ||
-			ByteUtil.IsEquals(OperationCodeEnum.OP_CHECKSIG.Code, bytesOperationCode) {
-			bytesScript = ByteUtil.Concatenate(bytesScript, ByteUtil.ConcatenateLength(bytesOperationCode))
-		} else if ByteUtil.IsEquals(OperationCodeEnum.OP_PUSHDATA.Code, bytesOperationCode) {
-			i = i + 1
-			operationData := script[i]
-			bytesOperationData := ByteUtil.HexStringToBytes(operationData)
-			bytesScript = ByteUtil.Concatenate3(bytesScript, ByteUtil.ConcatenateLength(bytesOperationCode), ByteUtil.ConcatenateLength(bytesOperationData))
-		} else {
-
-		}
-
-	}
-
-	return bytesScript
-}
-func GetPublicKeyHashByPayToPublicKeyHashOutputScript(outputScript []string) string {
-	return outputScript[3]
-}
 
 func CreatePayToPublicKeyHashOutputScript(address string) []string {
 	var script []string
@@ -51,8 +24,8 @@ func CreatePayToPublicKeyHashOutputScript(address string) []string {
 /**
  * 构建完整脚本
  */
-func CreateScript(inputScript []string, outputScript []string) []string {
-	var script []string
+func CreateScript(inputScript Script.InputScript, outputScript Script.OutputScript) []string {
+	var script Script.Script
 	script = append(script, inputScript...)
 	script = append(script, outputScript...)
 	return script
@@ -61,15 +34,15 @@ func CreateScript(inputScript []string, outputScript []string) []string {
 /**
  * 是否是P2PKH输入脚本
  */
-func IsPayToPublicKeyHashInputScript(inputScript script.InputScript) bool {
+func IsPayToPublicKeyHashInputScript(inputScript Script.InputScript) bool {
 	inputScriptDto := Model2DtoTool.InputScript2InputScriptDto(inputScript)
-	return DtoScriptTool.IsPayToPublicKeyHashInputScript(inputScriptDto)
+	return ScriptDtoTool.IsPayToPublicKeyHashInputScript(inputScriptDto)
 }
 
 /**
  * 是否是P2PKH输出脚本
  */
-func IsPayToPublicKeyHashOutputScript(outputScript script.OutputScript) bool {
+func IsPayToPublicKeyHashOutputScript(outputScript Script.OutputScript) bool {
 	outputScriptDto := Model2DtoTool.OutputScript2OutputScriptDto(outputScript)
-	return DtoScriptTool.IsPayToPublicKeyHashOutputScript(outputScriptDto)
+	return ScriptDtoTool.IsPayToPublicKeyHashOutputScript(outputScriptDto)
 }
