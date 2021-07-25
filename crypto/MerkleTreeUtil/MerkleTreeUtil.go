@@ -1,8 +1,8 @@
 package MerkleTreeUtil
 
 import (
-	"helloworldcoin-go/crypto/ByteUtil"
-	"helloworldcoin-go/crypto/Sha256Util"
+	"helloworld-blockchain-go/crypto/ByteUtil"
+	"helloworld-blockchain-go/crypto/Sha256Util"
 )
 
 func CalculateMerkleTreeRoot(dataList [][]byte) []byte {

@@ -1,8 +1,8 @@
 package Model
 
 import (
-	"helloworldcoin-go/core/Model/Script"
-	"helloworldcoin-go/core/Model/TransactionType"
+	"helloworld-blockchain-go/core/Model/Script"
+	"helloworld-blockchain-go/core/Model/TransactionType"
 )
 
 type Block struct {

@@ -1,11 +1,11 @@
 package core
 
 import (
-	"helloworldcoin-go/core/tool/EncodeDecodeTool"
-	"helloworldcoin-go/crypto/AccountUtil"
-	"helloworldcoin-go/crypto/ByteUtil"
-	"helloworldcoin-go/util/FileUtil"
-	"helloworldcoin-go/util/KvDbUtil"
+	"helloworld-blockchain-go/core/tool/EncodeDecodeTool"
+	"helloworld-blockchain-go/crypto/AccountUtil"
+	"helloworld-blockchain-go/crypto/ByteUtil"
+	"helloworld-blockchain-go/util/FileUtil"
+	"helloworld-blockchain-go/util/KvDbUtil"
 )
 
 const WALLET_DATABASE_NAME = "WalletDatabase"

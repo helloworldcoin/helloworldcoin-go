@@ -1,8 +1,8 @@
 package BlockchainDatabaseKeyTool
 
 import (
-	"helloworldcoin-go/crypto/ByteUtil"
-	"helloworldcoin-go/util/StringUtil"
+	"helloworld-blockchain-go/crypto/ByteUtil"
+	"helloworld-blockchain-go/util/StringUtil"
 )
 
 const (

@@ -1,9 +1,9 @@
 package SizeTool
 
 import (
-	"helloworldcoin-go/core/Model"
-	"helloworldcoin-go/core/tool/DtoSizeTool"
-	"helloworldcoin-go/core/tool/Model2DtoTool"
+	"helloworld-blockchain-go/core/Model"
+	"helloworld-blockchain-go/core/tool/DtoSizeTool"
+	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 )
 
 //region 校验大小

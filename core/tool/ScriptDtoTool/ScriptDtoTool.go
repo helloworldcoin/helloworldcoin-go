@@ -1,10 +1,10 @@
 package ScriptDtoTool
 
 import (
-	"helloworldcoin-go/core/Model/Script/OperationCodeEnum"
-	"helloworldcoin-go/crypto/ByteUtil"
-	"helloworldcoin-go/dto"
-	"helloworldcoin-go/util/StringUtil"
+	"helloworld-blockchain-go/core/Model/Script/OperationCodeEnum"
+	"helloworld-blockchain-go/crypto/ByteUtil"
+	"helloworld-blockchain-go/dto"
+	"helloworld-blockchain-go/util/StringUtil"
 )
 
 //region 序列化与反序列化

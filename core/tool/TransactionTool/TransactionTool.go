@@ -1,17 +1,17 @@
 package TransactionTool
 
 import (
-	"helloworldcoin-go/core/Model/TransactionType"
-	"helloworldcoin-go/core/tool/BlockchainDatabaseKeyTool"
-	"helloworldcoin-go/core/tool/Model2DtoTool"
-	"helloworldcoin-go/core/tool/ScriptTool"
-	"helloworldcoin-go/core/tool/TransactionDtoTool"
-	"helloworldcoin-go/crypto/AccountUtil"
-	"helloworldcoin-go/setting/TransactionSettingTool"
-	"helloworldcoin-go/util/DataStructureUtil"
-	"helloworldcoin-go/util/LogUtil"
+	"helloworld-blockchain-go/core/Model/TransactionType"
+	"helloworld-blockchain-go/core/tool/BlockchainDatabaseKeyTool"
+	"helloworld-blockchain-go/core/tool/Model2DtoTool"
+	"helloworld-blockchain-go/core/tool/ScriptTool"
+	"helloworld-blockchain-go/core/tool/TransactionDtoTool"
+	"helloworld-blockchain-go/crypto/AccountUtil"
+	"helloworld-blockchain-go/setting/TransactionSettingTool"
+	"helloworld-blockchain-go/util/DataStructureUtil"
+	"helloworld-blockchain-go/util/LogUtil"
 
-	"helloworldcoin-go/core/Model"
+	"helloworld-blockchain-go/core/Model"
 )
 
 func GetTransactionOutputCount(transaction *Model.Transaction) uint64 {

@@ -1,16 +1,16 @@
 package BlockTool
 
 import (
-	"helloworldcoin-go/core/Model/TransactionType"
-	"helloworldcoin-go/core/tool/BlockDtoTool"
-	"helloworldcoin-go/core/tool/Model2DtoTool"
-	"helloworldcoin-go/core/tool/TransactionTool"
-	"helloworldcoin-go/setting/GenesisBlockSetting"
-	"helloworldcoin-go/util/DataStructureUtil"
-	"helloworldcoin-go/util/StringUtil"
-	"helloworldcoin-go/util/TimeUtil"
+	"helloworld-blockchain-go/core/Model/TransactionType"
+	"helloworld-blockchain-go/core/tool/BlockDtoTool"
+	"helloworld-blockchain-go/core/tool/Model2DtoTool"
+	"helloworld-blockchain-go/core/tool/TransactionTool"
+	"helloworld-blockchain-go/setting/GenesisBlockSetting"
+	"helloworld-blockchain-go/util/DataStructureUtil"
+	"helloworld-blockchain-go/util/StringUtil"
+	"helloworld-blockchain-go/util/TimeUtil"
 
-	"helloworldcoin-go/core/Model"
+	"helloworld-blockchain-go/core/Model"
 )
 
 func CalculateBlockHash(block *Model.Block) string {

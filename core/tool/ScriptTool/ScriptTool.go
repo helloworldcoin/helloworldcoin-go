@@ -1,12 +1,12 @@
 package ScriptTool
 
 import (
-	"helloworldcoin-go/core/Model/Script"
-	"helloworldcoin-go/core/Model/Script/OperationCodeEnum"
-	"helloworldcoin-go/core/tool/Model2DtoTool"
-	"helloworldcoin-go/core/tool/ScriptDtoTool"
-	"helloworldcoin-go/crypto/AccountUtil"
-	"helloworldcoin-go/crypto/ByteUtil"
+	"helloworld-blockchain-go/core/Model/Script"
+	"helloworld-blockchain-go/core/Model/Script/OperationCodeEnum"
+	"helloworld-blockchain-go/core/tool/Model2DtoTool"
+	"helloworld-blockchain-go/core/tool/ScriptDtoTool"
+	"helloworld-blockchain-go/crypto/AccountUtil"
+	"helloworld-blockchain-go/crypto/ByteUtil"
 )
 
 func CreatePayToPublicKeyHashOutputScript(address string) []string {

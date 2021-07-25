@@ -2,11 +2,11 @@ package EncodeDecodeTool
 
 import (
 	"bytes"
-	"helloworldcoin-go/core/Model"
-	"helloworldcoin-go/dto"
+	"helloworld-blockchain-go/core/Model"
+	"helloworld-blockchain-go/dto"
 
 	"encoding/gob"
-	"helloworldcoin-go/crypto/AccountUtil"
+	"helloworld-blockchain-go/crypto/AccountUtil"
 )
 
 func EncodeAccount(account *AccountUtil.Account) []byte {

@@ -1,12 +1,12 @@
 package DtoSizeTool
 
 import (
-	"helloworldcoin-go/dto"
-	"helloworldcoin-go/setting/BlockSetting"
-	"helloworldcoin-go/setting/ScriptSetting"
-	"helloworldcoin-go/setting/TransactionSetting"
-	"helloworldcoin-go/util/LogUtil"
-	"helloworldcoin-go/util/StringUtil"
+	"helloworld-blockchain-go/dto"
+	"helloworld-blockchain-go/setting/BlockSetting"
+	"helloworld-blockchain-go/setting/ScriptSetting"
+	"helloworld-blockchain-go/setting/TransactionSetting"
+	"helloworld-blockchain-go/util/LogUtil"
+	"helloworld-blockchain-go/util/StringUtil"
 	"strconv"
 	"unicode/utf8"
 )

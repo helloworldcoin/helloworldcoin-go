@@ -1,14 +1,14 @@
 package core
 
 import (
-	"helloworldcoin-go/core/Model"
-	"helloworldcoin-go/core/Model/Script"
-	"helloworldcoin-go/core/Model/Script/BooleanCodeEnum"
-	"helloworldcoin-go/core/Model/Script/OperationCodeEnum"
-	"helloworldcoin-go/core/tool/TransactionTool"
-	"helloworldcoin-go/crypto/AccountUtil"
-	"helloworldcoin-go/crypto/ByteUtil"
-	"helloworldcoin-go/util/StringUtil"
+	"helloworld-blockchain-go/core/Model"
+	"helloworld-blockchain-go/core/Model/Script"
+	"helloworld-blockchain-go/core/Model/Script/BooleanCodeEnum"
+	"helloworld-blockchain-go/core/Model/Script/OperationCodeEnum"
+	"helloworld-blockchain-go/core/tool/TransactionTool"
+	"helloworld-blockchain-go/crypto/AccountUtil"
+	"helloworld-blockchain-go/crypto/ByteUtil"
+	"helloworld-blockchain-go/util/StringUtil"
 )
 
 type VirtualMachine struct {

@@ -1,7 +1,7 @@
 package core
 
 import (
-	"helloworldcoin-go/dto"
+	"helloworld-blockchain-go/dto"
 	"testing"
 )
 

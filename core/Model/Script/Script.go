@@ -1,7 +1,7 @@
 package Script
 
 import (
-	"helloworldcoin-go/util/StringStack"
+	"helloworld-blockchain-go/util/StringStack"
 )
 
 type VirtualMachine struct {

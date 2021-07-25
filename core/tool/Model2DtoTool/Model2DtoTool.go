@@ -1,9 +1,9 @@
 package Model2DtoTool
 
 import (
-	"helloworldcoin-go/core/Model"
-	"helloworldcoin-go/core/Model/Script"
-	"helloworldcoin-go/dto"
+	"helloworld-blockchain-go/core/Model"
+	"helloworld-blockchain-go/core/Model/Script"
+	"helloworld-blockchain-go/dto"
 )
 
 func Block2BlockDto(block *Model.Block) *dto.BlockDto {

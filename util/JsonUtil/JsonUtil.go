@@ -2,8 +2,8 @@ package JsonUtil
 
 import (
 	"encoding/json"
-	"helloworldcoin-go/core/Model"
-	"helloworldcoin-go/dto"
+	"helloworld-blockchain-go/core/Model"
+	"helloworld-blockchain-go/dto"
 )
 
 func ToString(blockDto *dto.BlockDto) string {

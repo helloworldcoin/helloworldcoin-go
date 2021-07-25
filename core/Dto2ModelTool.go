@@ -1,14 +1,14 @@
 package core
 
 import (
-	"helloworldcoin-go/core/Model"
-	"helloworldcoin-go/core/Model/Script"
-	"helloworldcoin-go/core/Model/TransactionType"
-	"helloworldcoin-go/core/tool/BlockTool"
-	"helloworldcoin-go/core/tool/ScriptDtoTool"
-	"helloworldcoin-go/core/tool/TransactionDtoTool"
-	"helloworldcoin-go/crypto/AccountUtil"
-	"helloworldcoin-go/dto"
+	"helloworld-blockchain-go/core/Model"
+	"helloworld-blockchain-go/core/Model/Script"
+	"helloworld-blockchain-go/core/Model/TransactionType"
+	"helloworld-blockchain-go/core/tool/BlockTool"
+	"helloworld-blockchain-go/core/tool/ScriptDtoTool"
+	"helloworld-blockchain-go/core/tool/TransactionDtoTool"
+	"helloworld-blockchain-go/crypto/AccountUtil"
+	"helloworld-blockchain-go/dto"
 )
 
 func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockDto) *Model.Block {

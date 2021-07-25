@@ -1,7 +1,7 @@
 package BlockTool
 
 import (
-	"helloworldcoin-go/core/Model"
+	"helloworld-blockchain-go/core/Model"
 	"testing"
 )
 

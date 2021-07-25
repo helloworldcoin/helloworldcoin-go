@@ -1,7 +1,7 @@
 package main
 
 import (
-	"helloworldcoin-go/core"
+	"helloworld-blockchain-go/core"
 )
 
 func main() {
