@@ -133,7 +133,7 @@ func (b *BlockchainDatabase) CheckBlock(block *Model.Block) bool {
 	}
 	//从交易角度校验每一笔交易
 	for _, transaction := range block.Transactions {
-		transactionCanAddToNextBlock := b.CheckTransaction(&transaction)
+		transactionCanAddToNextBlock := b.CheckTransaction(transaction)
 		if !transactionCanAddToNextBlock {
 			LogUtil.Debug("区块数据异常，交易异常。")
 			return false
@@ -327,7 +327,7 @@ func (b *BlockchainDatabase) getBlockchainDatabasePath() string {
 	return FileUtil.NewPath(b.CoreConfiguration.getCorePath(), BLOCKCHAIN_DATABASE_NAME)
 }
 func (b *BlockchainDatabase) createBlockWriteBatch(block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) *KvDbUtil.KvWriteBatch {
-	b.fillBlockProperty(block)
+	//b.fillBlockProperty(block)
 	kvWriteBatch := new(KvDbUtil.KvWriteBatch)
 
 	b.storeHash(kvWriteBatch, block, blockchainActionEnum)
@@ -355,7 +355,8 @@ func (b *BlockchainDatabase) createBlockWriteBatch(block *Model.Block, blockchai
 	b.storeAddressToSpentTransactionOutputHeight(kvWriteBatch, block, blockchainActionEnum)
 	return kvWriteBatch
 }
-func (b *BlockchainDatabase) fillBlockProperty(block *Model.Block) {
+
+/*func (b *BlockchainDatabase) fillBlockProperty(block *Model.Block) {
 	transactionIndex := uint64(0)
 	transactionHeight := b.QueryBlockchainTransactionHeight()
 	transactionOutputHeight := b.QueryBlockchainTransactionOutputHeight()
@@ -386,7 +387,7 @@ func (b *BlockchainDatabase) fillBlockProperty(block *Model.Block) {
 			output.TransactionOutputHeight = transactionOutputHeight
 		}
 	}
-}
+}*/
 
 func (b *BlockchainDatabase) storeHash(kvWriteBatch *KvDbUtil.KvWriteBatch, block *Model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) {
 	blockHashKey := BlockchainDatabaseKeyTool.BuildHashKey(block.Hash)
@@ -469,7 +470,7 @@ func (b *BlockchainDatabase) storeTransactionHeightToTransaction(kvWriteBatch *K
 		for _, transaction := range transactions {
 			transactionHeightToTransactionKey := BlockchainDatabaseKeyTool.BuildTransactionHeightToTransactionKey(transaction.TransactionHeight)
 			if BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum {
-				kvWriteBatch.Put(transactionHeightToTransactionKey, EncodeDecodeTool.EncodeTransaction(&transaction))
+				kvWriteBatch.Put(transactionHeightToTransactionKey, EncodeDecodeTool.EncodeTransaction(transaction))
 			} else {
 				kvWriteBatch.Delete(transactionHeightToTransactionKey)
 			}
@@ -498,7 +499,7 @@ func (b *BlockchainDatabase) storeTransactionOutputHeightToTransactionOutput(kvW
 				for _, output := range outputs {
 					transactionOutputHeightToTransactionOutputKey := BlockchainDatabaseKeyTool.BuildTransactionOutputHeightToTransactionOutputKey(output.TransactionOutputHeight)
 					if BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum {
-						kvWriteBatch.Put(transactionOutputHeightToTransactionOutputKey, EncodeDecodeTool.EncodeTransactionOutput(&output))
+						kvWriteBatch.Put(transactionOutputHeightToTransactionOutputKey, EncodeDecodeTool.EncodeTransactionOutput(output))
 					} else {
 						kvWriteBatch.Delete(transactionOutputHeightToTransactionOutputKey)
 					}
@@ -718,7 +719,7 @@ func (b *BlockchainDatabase) checkBlockNewHash(block *Model.Block) bool {
 	blockTransactions := block.Transactions
 	if blockTransactions != nil {
 		for _, transaction := range blockTransactions {
-			if !b.checkTransactionNewHash(&transaction) {
+			if !b.checkTransactionNewHash(transaction) {
 				return false
 			}
 		}
@@ -761,7 +762,7 @@ func (b *BlockchainDatabase) checkBlockNewAddress(block *Model.Block) bool {
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
-			if !b.checkTransactionNewAddress(&transaction) {
+			if !b.checkTransactionNewAddress(transaction) {
 				return false
 			}
 		}
@@ -809,7 +810,7 @@ func (b *BlockchainDatabase) checkBlockDoubleSpend(block *Model.Block) bool {
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
-			if !b.checkTransactionDoubleSpend(&transaction) {
+			if !b.checkTransactionDoubleSpend(transaction) {
 				LogUtil.Debug("区块数据异常：发生双花交易。")
 				return false
 			}

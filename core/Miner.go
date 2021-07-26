@@ -82,8 +82,8 @@ func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfi
 	incentiveValue := incentive.IncentiveValue(blockchainDatabase, &nonNonceBlock)
 
 	mineAwardTransaction := i.buildIncentiveTransaction(minerAccount.Address, incentiveValue)
-	var mineAwardTransactions []Model.Transaction
-	mineAwardTransactions = append(mineAwardTransactions, *mineAwardTransaction)
+	var mineAwardTransactions []*Model.Transaction
+	mineAwardTransactions = append(mineAwardTransactions, mineAwardTransaction)
 
 	packingTransactions = append(mineAwardTransactions, packingTransactions...)
 	nonNonceBlock.Transactions = packingTransactions
@@ -100,26 +100,26 @@ func (i *Miner) buildIncentiveTransaction(address string, incentiveValue uint64)
 	var transaction Model.Transaction
 	transaction.TransactionType = TransactionType.GENESIS_TRANSACTION
 
-	var outputs []Model.TransactionOutput
+	var outputs []*Model.TransactionOutput
 	var output Model.TransactionOutput
 	output.Address = address
 	output.Value = incentiveValue
 	output.OutputScript = ScriptTool.CreatePayToPublicKeyHashOutputScript(address)
-	outputs = append(outputs, output)
+	outputs = append(outputs, &output)
 
 	transaction.Outputs = outputs
 	transaction.TransactionHash = TransactionTool.CalculateTransactionHash(transaction)
 	return &transaction
 }
-func (i *Miner) packingTransactions(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase) []Model.Transaction {
+func (i *Miner) packingTransactions(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase) []*Model.Transaction {
 	forMineBlockTransactionDtos := unconfirmedTransactionDatabase.SelectTransactions(uint64(1), uint64(10000))
 
-	var transactions []Model.Transaction
+	var transactions []*Model.Transaction
 	if forMineBlockTransactionDtos != nil {
 		for _, transactionDto := range forMineBlockTransactionDtos {
 			//TODO exception
 			transaction := TransactionDto2Transaction(blockchainDatabase, &transactionDto)
-			transactions = append(transactions, *transaction)
+			transactions = append(transactions, transaction)
 		}
 	}
 	return transactions

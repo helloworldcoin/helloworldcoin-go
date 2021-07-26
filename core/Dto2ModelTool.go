@@ -41,18 +41,18 @@ func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockD
 	}
 	return block
 }
-func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transactionDtos []dto.TransactionDto) []Model.Transaction {
-	var transactions []Model.Transaction
+func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transactionDtos []dto.TransactionDto) []*Model.Transaction {
+	var transactions []*Model.Transaction
 	if transactionDtos != nil {
 		for _, transactionDto := range transactionDtos {
 			transaction := TransactionDto2Transaction(blockchainDatabase, &transactionDto)
-			transactions = append(transactions, *transaction)
+			transactions = append(transactions, transaction)
 		}
 	}
 	return transactions
 }
 func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transactionDto *dto.TransactionDto) *Model.Transaction {
-	var inputs []Model.TransactionInput
+	var inputs []*Model.TransactionInput
 	transactionInputDtos := transactionDto.Inputs
 	if transactionInputDtos != nil {
 		for _, transactionInputDto := range transactionInputDtos {
@@ -64,15 +64,15 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 			var transactionInput Model.TransactionInput
 			transactionInput.UnspentTransactionOutput = *unspentTransactionOutput
 			transactionInput.InputScript = InputScriptDto2InputScript(transactionInputDto.InputScript)
-			inputs = append(inputs, transactionInput)
+			inputs = append(inputs, &transactionInput)
 		}
 	}
-	var outputs []Model.TransactionOutput
+	var outputs []*Model.TransactionOutput
 	transactionOutputDtos := transactionDto.Outputs
 	if transactionOutputDtos != nil {
 		for _, transactionOutputDto := range transactionOutputDtos {
 			transactionOutput := transactionOutputDto2TransactionOutput(transactionOutputDto)
-			outputs = append(outputs, *transactionOutput)
+			outputs = append(outputs, transactionOutput)
 		}
 	}
 	transaction := new(Model.Transaction)

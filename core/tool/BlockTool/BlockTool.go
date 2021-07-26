@@ -32,7 +32,7 @@ func GetTransactionOutputCount(block *Model.Block) uint64 {
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
-			transactionOutputCount = transactionOutputCount + TransactionTool.GetTransactionOutputCount(&transaction)
+			transactionOutputCount = transactionOutputCount + TransactionTool.GetTransactionOutputCount(transaction)
 		}
 	}
 	return transactionOutputCount
@@ -45,7 +45,7 @@ func GetBlockFee(block *Model.Block) uint64 {
 			if transaction.TransactionType == TransactionType.GENESIS_TRANSACTION {
 				continue
 			} else if transaction.TransactionType == TransactionType.STANDARD_TRANSACTION {
-				fee := TransactionTool.GetTransactionFee(&transaction)
+				fee := TransactionTool.GetTransactionFee(transaction)
 				blockFee += fee
 			} else {
 			}

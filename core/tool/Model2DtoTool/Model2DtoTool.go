@@ -11,7 +11,7 @@ func Block2BlockDto(block *Model.Block) *dto.BlockDto {
 	transactionList := block.Transactions
 	if transactionList != nil {
 		for _, transaction := range transactionList {
-			transactionDto := Transaction2TransactionDto(&transaction)
+			transactionDto := Transaction2TransactionDto(transaction)
 			transactionDtos = append(transactionDtos, transactionDto)
 		}
 	}
@@ -41,7 +41,7 @@ func Transaction2TransactionDto(transaction *Model.Transaction) dto.TransactionD
 	transactionOutputList := transaction.Outputs
 	if transactionOutputList != nil {
 		for _, transactionOutput := range transactionOutputList {
-			transactionOutputDto := TransactionOutput2TransactionOutputDto(&transactionOutput)
+			transactionOutputDto := TransactionOutput2TransactionOutputDto(transactionOutput)
 			outputs = append(outputs, transactionOutputDto)
 		}
 	}

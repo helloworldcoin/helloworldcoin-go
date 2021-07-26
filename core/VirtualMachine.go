@@ -8,6 +8,7 @@ import (
 	"helloworld-blockchain-go/core/tool/TransactionTool"
 	"helloworld-blockchain-go/crypto/AccountUtil"
 	"helloworld-blockchain-go/crypto/ByteUtil"
+	"helloworld-blockchain-go/util/StringStack"
 	"helloworld-blockchain-go/util/StringUtil"
 )
 
@@ -16,8 +17,8 @@ type VirtualMachine struct {
 
 func (this *VirtualMachine) ExecuteScript(transactionEnvironment *Model.Transaction, script Script.Script) *Script.ScriptExecuteResult {
 
-	var stack Script.ScriptExecuteResult
-	for i, _ := range script {
+	stack := StringStack.NewStringStack()
+	for i := 0; i < len(script); i++ {
 		operationCode := script[i]
 		bytesOperationCode := ByteUtil.HexStringToBytes(operationCode)
 		if ByteUtil.IsEquals(OperationCodeEnum.OP_DUP.Code, bytesOperationCode) {
@@ -61,5 +62,5 @@ func (this *VirtualMachine) ExecuteScript(transactionEnvironment *Model.Transact
 			panic("不能识别的操作码")
 		}
 	}
-	return &stack
+	return stack
 }

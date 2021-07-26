@@ -38,7 +38,7 @@ func CheckBlockStructure(block *Model.Block) bool {
 	}
 	//校验交易的结构
 	for _, transaction := range transactions {
-		if !CheckTransactionStructure(&transaction) {
+		if !CheckTransactionStructure(transaction) {
 			LogUtil.Debug("交易数据异常：交易结构异常。")
 			return false
 		}

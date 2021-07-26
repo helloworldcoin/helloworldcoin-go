@@ -10,7 +10,7 @@ type Block struct {
 	PreviousHash   string
 	MerkleTreeRoot string
 	Nonce          string
-	Transactions   []Transaction
+	Transactions   []*Transaction
 
 	Height                    uint64
 	Hash                      string
@@ -20,8 +20,8 @@ type Block struct {
 }
 type Transaction struct {
 	TransactionHash string
-	Inputs          []TransactionInput
-	Outputs         []TransactionOutput
+	Inputs          []*TransactionInput
+	Outputs         []*TransactionOutput
 
 	TransactionIndex  uint64
 	TransactionHeight uint64
