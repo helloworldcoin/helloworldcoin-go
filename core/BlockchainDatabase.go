@@ -18,6 +18,7 @@ import (
 	"helloworld-blockchain-go/util/FileUtil"
 	"helloworld-blockchain-go/util/KvDbUtil"
 	"helloworld-blockchain-go/util/LogUtil"
+	"helloworld-blockchain-go/util/StringUtil"
 	"sync"
 )
 
@@ -873,8 +874,13 @@ func (b *BlockchainDatabase) checkTransactionScript(transaction *Model.Transacti
 			script := ScriptTool.CreateScript(inputScript, outputScript)
 			//执行脚本
 			scriptExecuteResult := b.VirtualMachine.ExecuteScript(transaction, script)
+			/*fmt.Println(ByteUtil.HexStringToBytes(*scriptExecuteResult.Pop()))
+			fmt.Println(BooleanCodeEnum.TRUE.Code)*/
+
 			//脚本执行结果是个栈，如果栈有且只有一个元素，且这个元素是0x01，则解锁成功。
-			executeSuccess := scriptExecuteResult.Size() == 1 && ByteUtil.IsEquals(BooleanCodeEnum.TRUE.Code, ByteUtil.HexStringToBytes(*scriptExecuteResult.Pop()))
+			//executeSuccess := scriptExecuteResult.Size() == 1 && ByteUtil.IsEquals(BooleanCodeEnum.TRUE.Code, ByteUtil.HexStringToBytes(*scriptExecuteResult.Pop()))
+			//TODO java...
+			executeSuccess := scriptExecuteResult.Size() == 1 && StringUtil.IsEquals(ByteUtil.BytesToHexString(BooleanCodeEnum.TRUE.Code), *scriptExecuteResult.Pop())
 			if !executeSuccess {
 				return false
 			}
