@@ -60,3 +60,13 @@ func VerifySignature(transaction *dto.TransactionDto, publicKey string, bytesSig
 	bytesMessage := ByteUtil.HexStringToBytes(message)
 	return AccountUtil.VerifySignature(publicKey, bytesMessage, bytesSignature)
 }
+
+/**
+ * 交易签名
+ */
+func Signature(privateKey string, transactionDto *dto.TransactionDto) string {
+	signatureHashAll := SignatureHashAll(transactionDto)
+	bytesSignatureHashAll := ByteUtil.HexStringToBytes(signatureHashAll)
+	signature := AccountUtil.Signature(privateKey, bytesSignatureHashAll)
+	return signature
+}

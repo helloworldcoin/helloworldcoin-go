@@ -2,6 +2,7 @@ package ScriptDtoTool
 
 import (
 	"helloworld-blockchain-go/core/Model/Script/OperationCodeEnum"
+	"helloworld-blockchain-go/crypto/AccountUtil"
 	"helloworld-blockchain-go/crypto/ByteUtil"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/util/StringUtil"
@@ -68,4 +69,32 @@ func IsPayToPublicKeyHashOutputScript(outputScriptDto dto.OutputScriptDto) bool 
 		(40 == StringUtil.UtfCharacterCount(outputScriptDto[3])) &&
 		(StringUtil.IsEquals(ByteUtil.BytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.Code), outputScriptDto[4])) &&
 		(StringUtil.IsEquals(ByteUtil.BytesToHexString(OperationCodeEnum.OP_CHECKSIG.Code), outputScriptDto[5]))
+}
+
+/**
+ * 创建P2PKH输出脚本
+ */
+func CreatePayToPublicKeyHashOutputScript(address string) dto.OutputScriptDto {
+	var script dto.OutputScriptDto
+	script = append(script, ByteUtil.BytesToHexString(OperationCodeEnum.OP_DUP.Code))
+	script = append(script, ByteUtil.BytesToHexString(OperationCodeEnum.OP_HASH160.Code))
+	script = append(script, ByteUtil.BytesToHexString(OperationCodeEnum.OP_PUSHDATA.Code))
+	publicKeyHash := AccountUtil.PublicKeyHashFromAddress(address)
+	script = append(script, publicKeyHash)
+	script = append(script, ByteUtil.BytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.Code))
+	script = append(script, ByteUtil.BytesToHexString(OperationCodeEnum.OP_CHECKSIG.Code))
+	return script
+}
+
+/**
+ * 创建P2PKH输入脚本
+ */
+func CreatePayToPublicKeyHashInputScript(sign string, publicKey string) dto.InputScriptDto {
+	var script dto.InputScriptDto
+
+	script = append(script, ByteUtil.BytesToHexString(OperationCodeEnum.OP_PUSHDATA.Code))
+	script = append(script, sign)
+	script = append(script, ByteUtil.BytesToHexString(OperationCodeEnum.OP_PUSHDATA.Code))
+	script = append(script, publicKey)
+	return script
 }

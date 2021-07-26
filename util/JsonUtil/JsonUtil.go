@@ -3,11 +3,10 @@ package JsonUtil
 import (
 	"encoding/json"
 	"helloworld-blockchain-go/core/Model"
-	"helloworld-blockchain-go/dto"
 )
 
-func ToString(blockDto *dto.BlockDto) string {
-	jsonString, _ := json.Marshal(blockDto)
+func ToString(emptyStruct interface{}) string {
+	jsonString, _ := json.Marshal(emptyStruct)
 	return string(jsonString)
 }
 
