@@ -22,3 +22,15 @@ type TransactionOutputDto struct {
 type ScriptDto = []string
 type InputScriptDto = ScriptDto
 type OutputScriptDto = ScriptDto
+
+type GetBlockRequest struct {
+	BlockHeight uint64 `json:"blockHeight"`
+}
+type GetBlockResponse struct {
+	Block BlockDto `json:"block"`
+}
+type PostBlockRequest struct {
+	Block BlockDto `json:"block"`
+}
+type PostBlockResponse struct {
+}

@@ -41,10 +41,10 @@ func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockD
 	}
 	return block
 }
-func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transactionDtoList []dto.TransactionDto) []Model.Transaction {
+func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transactionDtos []dto.TransactionDto) []Model.Transaction {
 	var transactions []Model.Transaction
-	if transactionDtoList != nil {
-		for _, transactionDto := range transactionDtoList {
+	if transactionDtos != nil {
+		for _, transactionDto := range transactionDtos {
 			transaction := TransactionDto2Transaction(blockchainDatabase, &transactionDto)
 			transactions = append(transactions, *transaction)
 		}

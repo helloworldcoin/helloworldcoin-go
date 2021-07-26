@@ -30,9 +30,9 @@ func CheckBlockSize(blockDto *dto.BlockDto) bool {
 	}
 
 	//校验每一笔交易大小
-	transactionDtoList := blockDto.Transactions
-	if transactionDtoList != nil {
-		for _, transactionDto := range transactionDtoList {
+	transactionDtos := blockDto.Transactions
+	if transactionDtos != nil {
+		for _, transactionDto := range transactionDtos {
 			if !CheckTransactionSize(transactionDto) {
 				LogUtil.Debug("交易数据异常，交易大小非法。")
 				return false
@@ -142,8 +142,8 @@ func CalculateBlockSize(blockDto *dto.BlockDto) uint64 {
 
 	nonce := blockDto.Nonce
 	size += sizeOfString(nonce)
-	transactionDtoList := blockDto.Transactions
-	for _, transactionDto := range transactionDtoList {
+	transactionDtos := blockDto.Transactions
+	for _, transactionDto := range transactionDtos {
 		size += CalculateTransactionSize(transactionDto)
 	}
 	return size

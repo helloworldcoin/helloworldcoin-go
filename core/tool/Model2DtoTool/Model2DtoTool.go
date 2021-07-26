@@ -7,19 +7,19 @@ import (
 )
 
 func Block2BlockDto(block *Model.Block) *dto.BlockDto {
-	var transactionDtoList []dto.TransactionDto
+	var transactionDtos []dto.TransactionDto
 	transactionList := block.Transactions
 	if transactionList != nil {
 		for _, transaction := range transactionList {
 			transactionDto := Transaction2TransactionDto(&transaction)
-			transactionDtoList = append(transactionDtoList, transactionDto)
+			transactionDtos = append(transactionDtos, transactionDto)
 		}
 	}
 
 	var blockDto dto.BlockDto
 	blockDto.Timestamp = block.Timestamp
 	blockDto.PreviousHash = block.PreviousHash
-	blockDto.Transactions = transactionDtoList
+	blockDto.Transactions = transactionDtos
 	blockDto.Nonce = block.Nonce
 	return &blockDto
 }

@@ -22,15 +22,15 @@ func (u *UnconfirmedTransactionDatabase) InsertTransaction(transactionDto *dto.T
 }
 
 func (u *UnconfirmedTransactionDatabase) SelectTransactions(from uint64, size uint64) []dto.TransactionDto {
-	var transactionDtoList []dto.TransactionDto
+	var transactionDtos []dto.TransactionDto
 	bytesTransactionDtos := KvDbUtil.Gets(u.getUnconfirmedTransactionDatabasePath(), from, size)
 	if bytesTransactionDtos != nil {
 		for e := bytesTransactionDtos.Front(); e != nil; e = e.Next() {
 			transactionDto := EncodeDecodeTool.DecodeToTransactionDto(e.Value.([]byte))
-			transactionDtoList = append(transactionDtoList, *transactionDto)
+			transactionDtos = append(transactionDtos, *transactionDto)
 		}
 	}
-	return transactionDtoList
+	return transactionDtos
 }
 
 func (u *UnconfirmedTransactionDatabase) DeleteByTransactionHash(transactionHash string) {

@@ -4,18 +4,20 @@ import (
 	"fmt"
 	"helloworld-blockchain-go/core"
 	"helloworld-blockchain-go/core/Model/ModelWallet"
+	"helloworld-blockchain-go/netcore/server"
 	"helloworld-blockchain-go/util/JsonUtil"
 )
 
 func main() {
 	consensus := &core.Consensus{}
 	incentive := &core.Incentive{}
-	coreConfiguration := &core.CoreConfiguration{CorePath: "C:\\HelloworldBlockchainDataGo"}
+	coreConfiguration := &core.CoreConfiguration{CorePath: "C:\\helloworld-blockchain-go"}
 	blockchainDatabase := &core.BlockchainDatabase{Consensus: consensus, Incentive: incentive, CoreConfiguration: coreConfiguration}
 	wallet := &core.Wallet{CoreConfiguration: coreConfiguration, BlockchainDatabase: blockchainDatabase}
 	unconfirmedTransactionDatabase := &core.UnconfirmedTransactionDatabase{CoreConfiguration: coreConfiguration}
 	miner := &core.Miner{CoreConfiguration: coreConfiguration, Wallet: wallet, BlockchainDatabase: blockchainDatabase, UnconfirmedTransactionDatabase: unconfirmedTransactionDatabase}
 	//miner.Start()
+	fmt.Println(JsonUtil.ToString(miner))
 
 	var request ModelWallet.AutoBuildTransactionRequest
 	var nonChangePayees []ModelWallet.Payee
@@ -25,6 +27,7 @@ func main() {
 	response := wallet.AutoBuildTransaction(&request)
 	fmt.Println(JsonUtil.ToString(response))
 
-	unconfirmedTransactionDatabase.InsertTransaction(&response.Transaction)
-	miner.Start()
+	blockchainCore := &core.BlockchainCore{BlockchainDatabase: blockchainDatabase}
+	blockchainNodeHttpServer := server.BlockchainNodeHttpServer{BlockchainCore: blockchainCore}
+	blockchainNodeHttpServer.Start()
 }
