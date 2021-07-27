@@ -6,6 +6,7 @@ import (
 	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/dto/API"
+	"helloworld-blockchain-go/setting/BlockSetting"
 	"helloworld-blockchain-go/util/JsonUtil"
 	"io"
 	"io/ioutil"
@@ -24,6 +25,7 @@ func (b *BlockchainNodeHttpServer) Start() {
 	http.HandleFunc(API.POST_BLOCKCHAIN_HEIGHT, b.postBlockchainHeight)
 	http.HandleFunc(API.GET_BLOCKCHAIN_HEIGHT, b.getBlockchainHeight)
 	http.HandleFunc(API.POST_TRANSACTION, b.postTransaction)
+	http.HandleFunc(API.GET_UNCONFIRMED_TRANSACTIONS, b.getUnconfirmedTransactions)
 
 	err := http.ListenAndServe(":8888", nil)
 	if err != nil {
@@ -81,6 +83,17 @@ func (b *BlockchainNodeHttpServer) postTransaction(w http.ResponseWriter, req *h
 	request := JsonUtil.ToObject(string(requestBody), dto.PostTransactionRequest{}).(*dto.PostTransactionRequest)
 	b.BlockchainCore.PostTransaction(request.Transaction)
 	var response dto.PostTransactionResponse
+	w.Header().Set("content-type", "text/json")
+	io.WriteString(w, JsonUtil.ToString(response))
+}
+func (b *BlockchainNodeHttpServer) getUnconfirmedTransactions(w http.ResponseWriter, req *http.Request) {
+	requestBody, _ := ioutil.ReadAll(req.Body)
+	request := JsonUtil.ToObject(string(requestBody), dto.GetUnconfirmedTransactionsRequest{}).(*dto.GetUnconfirmedTransactionsRequest)
+	fmt.Println(request)
+	unconfirmedTransactionDatabase := b.BlockchainCore.UnconfirmedTransactionDatabase
+	transactions := unconfirmedTransactionDatabase.SelectTransactions(1, BlockSetting.BLOCK_MAX_TRANSACTION_COUNT)
+	var response dto.GetUnconfirmedTransactionsResponse
+	response.Transactions = transactions
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, JsonUtil.ToString(response))
 }
