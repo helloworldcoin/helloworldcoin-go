@@ -27,7 +27,7 @@ func main() {
 	response := wallet.AutoBuildTransaction(&request)
 	fmt.Println(JsonUtil.ToString(response))
 
-	blockchainCore := &core.BlockchainCore{BlockchainDatabase: blockchainDatabase}
+	blockchainCore := &core.BlockchainCore{BlockchainDatabase: blockchainDatabase, UnconfirmedTransactionDatabase: unconfirmedTransactionDatabase}
 	blockchainNodeHttpServer := server.BlockchainNodeHttpServer{BlockchainCore: blockchainCore}
 	blockchainNodeHttpServer.Start()
 }
