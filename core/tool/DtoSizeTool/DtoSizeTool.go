@@ -56,9 +56,9 @@ func CheckBlockSize(blockDto *dto.BlockDto) bool {
  */
 func CheckTransactionSize(transactionDto dto.TransactionDto) bool {
 	//校验交易输入
-	transactionInputDtoList := transactionDto.Inputs
-	if transactionInputDtoList != nil {
-		for _, transactionInputDto := range transactionInputDtoList {
+	transactionInputDtos := transactionDto.Inputs
+	if transactionInputDtos != nil {
+		for _, transactionInputDto := range transactionInputDtos {
 			//交易的未花费输出大小不需要校验  假设不正确，则在随后的业务逻辑中走不通
 
 			//校验脚本大小
@@ -71,9 +71,9 @@ func CheckTransactionSize(transactionDto dto.TransactionDto) bool {
 	}
 
 	//校验交易输出
-	transactionOutputDtoList := transactionDto.Outputs
-	if transactionOutputDtoList != nil {
-		for _, transactionOutputDto := range transactionOutputDtoList {
+	transactionOutputDtos := transactionDto.Outputs
+	if transactionOutputDtos != nil {
+		for _, transactionOutputDto := range transactionOutputDtos {
 			//交易输出金额大小不需要校验  假设不正确，则在随后的业务逻辑中走不通
 
 			//校验脚本大小
@@ -150,10 +150,10 @@ func CalculateBlockSize(blockDto *dto.BlockDto) uint64 {
 }
 func CalculateTransactionSize(transactionDto dto.TransactionDto) uint64 {
 	size := uint64(0)
-	transactionInputDtoList := transactionDto.Inputs
-	size += calculateTransactionInputsSize(transactionInputDtoList)
-	transactionOutputDtoList := transactionDto.Outputs
-	size += calculateTransactionOutputsSize(transactionOutputDtoList)
+	transactionInputDtos := transactionDto.Inputs
+	size += calculateTransactionInputsSize(transactionInputDtos)
+	transactionOutputDtos := transactionDto.Outputs
+	size += calculateTransactionOutputsSize(transactionOutputDtos)
 	return size
 }
 func calculateTransactionOutputsSize(transactionOutputDtos []dto.TransactionOutputDto) uint64 {

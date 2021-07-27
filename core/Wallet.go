@@ -22,8 +22,8 @@ type Wallet struct {
 
 func (w *Wallet) GetAllAccounts() []*AccountUtil.Account {
 	var accounts []*AccountUtil.Account
-	list := KvDbUtil.Gets(w.getWalletDatabasePath(), 1, 11)
-	for e := list.Front(); e != nil; e = e.Next() {
+	bytesAccounts := KvDbUtil.Gets(w.getWalletDatabasePath(), 1, 100000000)
+	for e := bytesAccounts.Front(); e != nil; e = e.Next() {
 		account := EncodeDecodeTool.DecodeToAccount(e.Value.([]byte))
 		accounts = append(accounts, account)
 	}
@@ -31,8 +31,8 @@ func (w *Wallet) GetAllAccounts() []*AccountUtil.Account {
 }
 func (w *Wallet) GetNonZeroBalanceAccounts() []*AccountUtil.Account {
 	var accounts []*AccountUtil.Account
-	list := KvDbUtil.Gets(w.getWalletDatabasePath(), 1, 11)
-	for e := list.Front(); e != nil; e = e.Next() {
+	bytesAccounts := KvDbUtil.Gets(w.getWalletDatabasePath(), 1, 100000000)
+	for e := bytesAccounts.Front(); e != nil; e = e.Next() {
 		account := EncodeDecodeTool.DecodeToAccount(e.Value.([]byte))
 		utxo := w.BlockchainDatabase.QueryUnspentTransactionOutputByAddress(account.Address)
 		if utxo != nil && utxo.Value > 0 {

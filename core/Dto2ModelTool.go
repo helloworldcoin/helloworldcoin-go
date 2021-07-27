@@ -21,8 +21,8 @@ func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockD
 
 	blockHeight := BlockTool.GetNextBlockHeight(previousBlock)
 	block.Height = blockHeight
-	transactionList := transactionDtos2Transactions(blockchainDatabase, blockDto.Transactions)
-	block.Transactions = transactionList
+	transactions := transactionDtos2Transactions(blockchainDatabase, blockDto.Transactions)
+	block.Transactions = transactions
 
 	merkleTreeRoot := BlockTool.CalculateBlockMerkleTreeRoot(block)
 	block.MerkleTreeRoot = merkleTreeRoot
