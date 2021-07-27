@@ -24,7 +24,7 @@ func CalculateBlockMerkleTreeRoot(block *dto.BlockDto) string {
 	transactions := block.Transactions
 	var bytesTransactionHashs [][]byte
 	for _, transaction := range transactions {
-		transactionHash := TransactionDtoTool.CalculateTransactionHash(&transaction)
+		transactionHash := TransactionDtoTool.CalculateTransactionHash(transaction)
 		bytesTransactionHash := ByteUtil.HexStringToBytes(transactionHash)
 		bytesTransactionHashs = append(bytesTransactionHashs, bytesTransactionHash)
 	}

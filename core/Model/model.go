@@ -30,12 +30,12 @@ type Transaction struct {
 	TransactionType TransactionType.TransactionType
 }
 type TransactionInput struct {
-	UnspentTransactionOutput TransactionOutput
-	InputScript              Script.InputScript
+	UnspentTransactionOutput *TransactionOutput
+	InputScript              *Script.InputScript
 }
 type TransactionOutput struct {
 	Value        uint64
-	OutputScript Script.OutputScript
+	OutputScript *Script.OutputScript
 
 	BlockHeight             uint64
 	BlockHash               string

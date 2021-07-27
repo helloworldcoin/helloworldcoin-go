@@ -185,19 +185,19 @@ func (w *Wallet) changeValue(payers []ModelWallet.Payer, payees []ModelWallet.Pa
 }
 func (w *Wallet) buildTransaction(payers []ModelWallet.Payer, payees []ModelWallet.Payee) dto.TransactionDto {
 	//构建交易输入
-	var transactionInputs []dto.TransactionInputDto
+	var transactionInputs []*dto.TransactionInputDto
 	for _, payer := range payers {
-		var transactionInput dto.TransactionInputDto
+		var transactionInput *dto.TransactionInputDto
 		transactionInput.TransactionHash = payer.TransactionHash
 		transactionInput.TransactionOutputIndex = payer.TransactionOutputIndex
 		transactionInputs = append(transactionInputs, transactionInput)
 	}
 	//构建交易输出
-	var transactionOutputs []dto.TransactionOutputDto
+	var transactionOutputs []*dto.TransactionOutputDto
 	//构造收款方交易输出
 	if payees != nil {
 		for _, payee := range payees {
-			var transactionOutput dto.TransactionOutputDto
+			var transactionOutput *dto.TransactionOutputDto
 			outputScript := ScriptDtoTool.CreatePayToPublicKeyHashOutputScript(payee.Address)
 			transactionOutput.Value = payee.Value
 			transactionOutput.OutputScript = outputScript

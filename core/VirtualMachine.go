@@ -15,11 +15,11 @@ import (
 type VirtualMachine struct {
 }
 
-func (this *VirtualMachine) ExecuteScript(transactionEnvironment *Model.Transaction, script Script.Script) *Script.ScriptExecuteResult {
+func (this *VirtualMachine) ExecuteScript(transactionEnvironment *Model.Transaction, script *Script.Script) *Script.ScriptExecuteResult {
 
 	stack := StringStack.NewStringStack()
-	for i := 0; i < len(script); i++ {
-		operationCode := script[i]
+	for i := 0; i < len(*script); i++ {
+		operationCode := (*script)[i]
 		bytesOperationCode := ByteUtil.HexStringToBytes(operationCode)
 		if ByteUtil.IsEquals(OperationCodeEnum.OP_DUP.Code, bytesOperationCode) {
 			if stack.Size() < 1 {
@@ -53,11 +53,11 @@ func (this *VirtualMachine) ExecuteScript(transactionEnvironment *Model.Transact
 			}
 			stack.Push(ByteUtil.BytesToHexString(BooleanCodeEnum.TRUE.Code))
 		} else if ByteUtil.IsEquals(OperationCodeEnum.OP_PUSHDATA.Code, bytesOperationCode) {
-			if len(script) < i+2 {
+			if len(*script) < i+2 {
 				panic("指令运行异常")
 			}
 			i++
-			stack.Push(script[i])
+			stack.Push((*script)[i])
 		} else {
 			panic("不能识别的操作码")
 		}

@@ -23,7 +23,7 @@ func GetTransactionOutputCount(transaction *Model.Transaction) uint64 {
 }
 func CalculateTransactionHash(transaction Model.Transaction) string {
 	transactionDto := Model2DtoTool.Transaction2TransactionDto(&transaction)
-	return TransactionDtoTool.CalculateTransactionHash(&transactionDto)
+	return TransactionDtoTool.CalculateTransactionHash(transactionDto)
 }
 func GetTransactionFee(transaction *Model.Transaction) uint64 {
 	transactionFee := GetInputValue(transaction) - GetOutputValue(transaction)
@@ -77,7 +77,7 @@ func IsExistDuplicateUtxo(transaction *Model.Transaction) bool {
 	if inputs != nil {
 		for _, transactionInput := range inputs {
 			unspentTransactionOutput := transactionInput.UnspentTransactionOutput
-			utxoId := GetTransactionOutputId(&unspentTransactionOutput)
+			utxoId := GetTransactionOutputId(unspentTransactionOutput)
 			utxoIds = append(utxoIds, utxoId)
 		}
 	}
@@ -173,7 +173,7 @@ func CheckPayToPublicKeyHashScript(transaction *Model.Transaction) bool {
  */
 func SignatureHashAll(transaction *Model.Transaction) string {
 	transactionDto := Model2DtoTool.Transaction2TransactionDto(transaction)
-	return TransactionDtoTool.SignatureHashAll(&transactionDto)
+	return TransactionDtoTool.SignatureHashAll(transactionDto)
 }
 
 /**
@@ -181,5 +181,5 @@ func SignatureHashAll(transaction *Model.Transaction) string {
  */
 func VerifySignature(transaction *Model.Transaction, publicKey string, bytesSignature []byte) bool {
 	transactionDto := Model2DtoTool.Transaction2TransactionDto(transaction)
-	return TransactionDtoTool.VerifySignature(&transactionDto, publicKey, bytesSignature)
+	return TransactionDtoTool.VerifySignature(transactionDto, publicKey, bytesSignature)
 }

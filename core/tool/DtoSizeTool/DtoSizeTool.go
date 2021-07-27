@@ -54,7 +54,7 @@ func CheckBlockSize(blockDto *dto.BlockDto) bool {
  * 注意：校验交易的大小，不仅要校验交易的大小
  * ，还要校验交易内部各个属性(交易输入、交易输出)的大小。
  */
-func CheckTransactionSize(transactionDto dto.TransactionDto) bool {
+func CheckTransactionSize(transactionDto *dto.TransactionDto) bool {
 	//校验交易输入
 	transactionInputDtos := transactionDto.Inputs
 	if transactionInputDtos != nil {
@@ -98,7 +98,7 @@ func CheckTransactionSize(transactionDto dto.TransactionDto) bool {
 /**
  * 校验输入脚本的大小
  */
-func checkInputScriptSize(inputScriptDto []string) bool {
+func checkInputScriptSize(inputScriptDto *dto.InputScriptDto) bool {
 	//校验脚本大小
 	if !checkScriptSize(inputScriptDto) {
 		return false
@@ -109,7 +109,7 @@ func checkInputScriptSize(inputScriptDto []string) bool {
 /**
  * 校验输出脚本的大小
  */
-func checkOutputScriptSize(outputScriptDto []string) bool {
+func checkOutputScriptSize(outputScriptDto *dto.OutputScriptDto) bool {
 	//校验脚本大小
 	if !checkScriptSize(outputScriptDto) {
 		return false
@@ -120,7 +120,7 @@ func checkOutputScriptSize(outputScriptDto []string) bool {
 /**
  * 校验脚本的大小
  */
-func checkScriptSize(scriptDto []string) bool {
+func checkScriptSize(scriptDto *[]string) bool {
 	//脚本内的操作码、操作数大小不需要校验，因为操作码、操作数不合规，在脚本结构上就构不成一个合格的脚本。
 	if calculateScriptSize(scriptDto) > ScriptSetting.SCRIPT_MAX_CHARACTER_COUNT {
 		LogUtil.Debug("交易校验失败：交易输出脚本大小超出限制。")
@@ -148,7 +148,7 @@ func CalculateBlockSize(blockDto *dto.BlockDto) uint64 {
 	}
 	return size
 }
-func CalculateTransactionSize(transactionDto dto.TransactionDto) uint64 {
+func CalculateTransactionSize(transactionDto *dto.TransactionDto) uint64 {
 	size := uint64(0)
 	transactionInputDtos := transactionDto.Inputs
 	size += calculateTransactionInputsSize(transactionInputDtos)
@@ -156,7 +156,7 @@ func CalculateTransactionSize(transactionDto dto.TransactionDto) uint64 {
 	size += calculateTransactionOutputsSize(transactionOutputDtos)
 	return size
 }
-func calculateTransactionOutputsSize(transactionOutputDtos []dto.TransactionOutputDto) uint64 {
+func calculateTransactionOutputsSize(transactionOutputDtos []*dto.TransactionOutputDto) uint64 {
 	size := uint64(0)
 	if transactionOutputDtos == nil || len(transactionOutputDtos) == 0 {
 		return size
@@ -166,7 +166,7 @@ func calculateTransactionOutputsSize(transactionOutputDtos []dto.TransactionOutp
 	}
 	return size
 }
-func calculateTransactionOutputSize(transactionOutputDto dto.TransactionOutputDto) uint64 {
+func calculateTransactionOutputSize(transactionOutputDto *dto.TransactionOutputDto) uint64 {
 	size := uint64(0)
 	outputScriptDto := transactionOutputDto.OutputScript
 	size += calculateScriptSize(outputScriptDto)
@@ -174,7 +174,7 @@ func calculateTransactionOutputSize(transactionOutputDto dto.TransactionOutputDt
 	size += sizeOfUint64(value)
 	return size
 }
-func calculateTransactionInputsSize(inputs []dto.TransactionInputDto) uint64 {
+func calculateTransactionInputsSize(inputs []*dto.TransactionInputDto) uint64 {
 	size := uint64(0)
 	if inputs == nil || len(inputs) == 0 {
 		return size
@@ -184,7 +184,7 @@ func calculateTransactionInputsSize(inputs []dto.TransactionInputDto) uint64 {
 	}
 	return size
 }
-func calculateTransactionInputSize(input dto.TransactionInputDto) uint64 {
+func calculateTransactionInputSize(input *dto.TransactionInputDto) uint64 {
 	size := uint64(0)
 	transactionHash := input.TransactionHash
 	size += sizeOfString(transactionHash)
@@ -194,12 +194,12 @@ func calculateTransactionInputSize(input dto.TransactionInputDto) uint64 {
 	size += calculateScriptSize(inputScriptDto)
 	return size
 }
-func calculateScriptSize(script []string) uint64 {
+func calculateScriptSize(script *[]string) uint64 {
 	size := uint64(0)
-	if script == nil || len(script) == 0 {
+	if script == nil || len(*script) == 0 {
 		return size
 	}
-	for _, scriptCode := range script {
+	for _, scriptCode := range *script {
 		size += sizeOfString(scriptCode)
 	}
 	return size

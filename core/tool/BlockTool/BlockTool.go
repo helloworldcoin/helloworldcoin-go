@@ -139,7 +139,7 @@ func IsExistDuplicateUtxo(block *Model.Block) bool {
 			if inputs != nil {
 				for _, transactionInput := range inputs {
 					unspentTransactionOutput := transactionInput.UnspentTransactionOutput
-					utxoId := TransactionTool.GetTransactionOutputId(&unspentTransactionOutput)
+					utxoId := TransactionTool.GetTransactionOutputId(unspentTransactionOutput)
 					utxoIds = append(utxoIds, utxoId)
 				}
 			}

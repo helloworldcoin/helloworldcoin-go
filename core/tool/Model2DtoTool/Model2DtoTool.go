@@ -7,7 +7,7 @@ import (
 )
 
 func Block2BlockDto(block *Model.Block) *dto.BlockDto {
-	var transactionDtos []dto.TransactionDto
+	var transactionDtos []*dto.TransactionDto
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
@@ -24,12 +24,12 @@ func Block2BlockDto(block *Model.Block) *dto.BlockDto {
 	return &blockDto
 }
 
-func Transaction2TransactionDto(transaction *Model.Transaction) dto.TransactionDto {
-	var inputs []dto.TransactionInputDto
+func Transaction2TransactionDto(transaction *Model.Transaction) *dto.TransactionDto {
+	var inputs []*dto.TransactionInputDto
 	transactionInputs := transaction.Inputs
 	if transactionInputs != nil {
 		for _, transactionInput := range transactionInputs {
-			var transactionInputDto dto.TransactionInputDto
+			var transactionInputDto *dto.TransactionInputDto
 			transactionInputDto.TransactionHash = transactionInput.UnspentTransactionOutput.TransactionHash
 			transactionInputDto.TransactionOutputIndex = transactionInput.UnspentTransactionOutput.TransactionOutputIndex
 			transactionInputDto.InputScript = InputScript2InputScriptDto(transactionInput.InputScript)
@@ -37,7 +37,7 @@ func Transaction2TransactionDto(transaction *Model.Transaction) dto.TransactionD
 		}
 	}
 
-	var outputs []dto.TransactionOutputDto
+	var outputs []*dto.TransactionOutputDto
 	transactionOutputs := transaction.Outputs
 	if transactionOutputs != nil {
 		for _, transactionOutput := range transactionOutputs {
@@ -46,24 +46,24 @@ func Transaction2TransactionDto(transaction *Model.Transaction) dto.TransactionD
 		}
 	}
 
-	var transactionDto dto.TransactionDto
+	var transactionDto *dto.TransactionDto
 	transactionDto.Inputs = inputs
 	transactionDto.Outputs = outputs
 	return transactionDto
 }
-func TransactionOutput2TransactionOutputDto(transactionOutput *Model.TransactionOutput) dto.TransactionOutputDto {
-	var transactionOutputDto dto.TransactionOutputDto
+func TransactionOutput2TransactionOutputDto(transactionOutput *Model.TransactionOutput) *dto.TransactionOutputDto {
+	var transactionOutputDto *dto.TransactionOutputDto
 	transactionOutputDto.Value = transactionOutput.Value
 	transactionOutputDto.OutputScript = OutputScript2OutputScriptDto(transactionOutput.OutputScript)
 	return transactionOutputDto
 }
-func InputScript2InputScriptDto(inputScript Script.InputScript) dto.InputScriptDto {
+func InputScript2InputScriptDto(inputScript *Script.InputScript) *dto.InputScriptDto {
 	var inputScriptDto dto.InputScriptDto
-	inputScriptDto = append(inputScriptDto, inputScript...)
-	return inputScriptDto
+	inputScriptDto = append(inputScriptDto, *inputScript...)
+	return &inputScriptDto
 }
-func OutputScript2OutputScriptDto(outputScript Script.OutputScript) dto.OutputScriptDto {
+func OutputScript2OutputScriptDto(outputScript *Script.OutputScript) *dto.OutputScriptDto {
 	var outputScriptDto dto.OutputScriptDto
-	outputScriptDto = append(outputScriptDto, outputScript...)
-	return outputScriptDto
+	outputScriptDto = append(outputScriptDto, *outputScript...)
+	return &outputScriptDto
 }

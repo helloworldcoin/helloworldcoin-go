@@ -41,11 +41,11 @@ func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockD
 	}
 	return block
 }
-func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transactionDtos []dto.TransactionDto) []*Model.Transaction {
+func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transactionDtos []*dto.TransactionDto) []*Model.Transaction {
 	var transactions []*Model.Transaction
 	if transactionDtos != nil {
 		for _, transactionDto := range transactionDtos {
-			transaction := TransactionDto2Transaction(blockchainDatabase, &transactionDto)
+			transaction := TransactionDto2Transaction(blockchainDatabase, transactionDto)
 			transactions = append(transactions, transaction)
 		}
 	}
@@ -62,7 +62,7 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 				return nil
 			}
 			var transactionInput Model.TransactionInput
-			transactionInput.UnspentTransactionOutput = *unspentTransactionOutput
+			transactionInput.UnspentTransactionOutput = unspentTransactionOutput
 			transactionInput.InputScript = InputScriptDto2InputScript(transactionInputDto.InputScript)
 			inputs = append(inputs, &transactionInput)
 		}
@@ -84,7 +84,7 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 	return transaction
 }
 
-func transactionOutputDto2TransactionOutput(transactionOutputDto dto.TransactionOutputDto) *Model.TransactionOutput {
+func transactionOutputDto2TransactionOutput(transactionOutputDto *dto.TransactionOutputDto) *Model.TransactionOutput {
 	var transactionOutput Model.TransactionOutput
 	publicKeyHash := ScriptDtoTool.GetPublicKeyHashFromPayToPublicKeyHashOutputScript(transactionOutputDto.OutputScript)
 	address := AccountUtil.AddressFromPublicKeyHash(publicKeyHash)
@@ -134,13 +134,13 @@ func fillBlockProperty(blockchainDatabase *BlockchainDatabase, block *Model.Bloc
 		}
 	}
 }
-func OutputScriptDto2OutputScript(outputScriptDto dto.OutputScriptDto) Script.OutputScript {
+func OutputScriptDto2OutputScript(outputScriptDto *dto.OutputScriptDto) *Script.OutputScript {
 	var outputScript Script.OutputScript
-	outputScript = append(outputScript, outputScriptDto...)
-	return outputScript
+	outputScript = append(outputScript, *outputScriptDto...)
+	return &outputScript
 }
-func InputScriptDto2InputScript(inputScriptDto dto.InputScriptDto) Script.InputScript {
+func InputScriptDto2InputScript(inputScriptDto *dto.InputScriptDto) *Script.InputScript {
 	var inputScript Script.InputScript
-	inputScript = append(inputScript, inputScriptDto...)
-	return inputScript
+	inputScript = append(inputScript, *inputScriptDto...)
+	return &inputScript
 }
