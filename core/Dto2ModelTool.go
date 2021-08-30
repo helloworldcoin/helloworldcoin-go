@@ -111,7 +111,7 @@ func fillBlockProperty(blockchainDatabase *BlockchainDatabase, block *Model.Bloc
 	block.PreviousTransactionHeight = transactionHeight
 	if transactions != nil {
 		for _, transaction := range transactions {
-			transactionIndex := transactionIndex + 1
+			transactionIndex = transactionIndex + 1
 			transactionHeight = transactionHeight + 1
 			transaction.BlockHeight = blockHeight
 			transaction.TransactionIndex = transactionIndex
