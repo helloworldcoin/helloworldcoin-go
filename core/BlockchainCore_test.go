@@ -19,8 +19,7 @@ func TestBlockchainDataFormat(t *testing.T) {
 	block3 := JsonUtil.ToObject(stringBlock3, dto.BlockDto{}).(*dto.BlockDto)
 	block3Hash := "739f3554dae0a4d2b73142ae8be398fccc8971c9fac52baea1741f4205dc0315"
 
-	//TODO 包BlockchainCoreFactory.
-	blockchainCore := CreateBlockchainCore(ResourcePathTool.GetTestDataRootPath())
+	blockchainCore := (&BlockchainCoreFactory{}).CreateBlockchainCore(ResourcePathTool.GetTestDataRootPath())
 	blockchainCore.AddBlockDto(block1)
 	blockchainCore.AddBlockDto(block2)
 	blockchainCore.AddBlockDto(block3)

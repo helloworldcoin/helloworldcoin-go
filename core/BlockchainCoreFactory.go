@@ -1,11 +1,14 @@
 package core
 
+type BlockchainCoreFactory struct {
+}
+
 /**
  * 创建BlockchainCore实例
  *
  * @param corePath BlockchainCore数据存放位置
  */
-func CreateBlockchainCore(corePath string) *BlockchainCore {
+func (b *BlockchainCoreFactory) CreateBlockchainCore(corePath string) *BlockchainCore {
 
 	coreConfiguration := &CoreConfiguration{CorePath: corePath}
 	incentive := &Incentive{}

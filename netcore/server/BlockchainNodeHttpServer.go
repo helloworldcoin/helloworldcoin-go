@@ -19,7 +19,8 @@ type BlockchainNodeHttpServer struct {
 }
 
 func (b *BlockchainNodeHttpServer) Start() {
-	http.HandleFunc("/hello", b.HelloServer)
+	http.HandleFunc(API.PING, b.ping)
+	http.HandleFunc(API.GET_NODES, b.getNodes)
 	http.HandleFunc(API.GET_BLOCK, b.getBlock)
 	http.HandleFunc(API.POST_BLOCK, b.postBlock)
 	http.HandleFunc(API.POST_BLOCKCHAIN_HEIGHT, b.postBlockchainHeight)
@@ -31,10 +32,6 @@ func (b *BlockchainNodeHttpServer) Start() {
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
-}
-
-func (b *BlockchainNodeHttpServer) HelloServer(w http.ResponseWriter, req *http.Request) {
-	io.WriteString(w, "hello, world!\n")
 }
 
 func (b *BlockchainNodeHttpServer) getBlock(w http.ResponseWriter, req *http.Request) {
@@ -94,6 +91,26 @@ func (b *BlockchainNodeHttpServer) getUnconfirmedTransactions(w http.ResponseWri
 	transactions := unconfirmedTransactionDatabase.SelectTransactions(1, BlockSetting.BLOCK_MAX_TRANSACTION_COUNT)
 	var response dto.GetUnconfirmedTransactionsResponse
 	response.Transactions = transactions
+	w.Header().Set("content-type", "text/json")
+	io.WriteString(w, JsonUtil.ToString(response))
+}
+
+func (b *BlockchainNodeHttpServer) ping(w http.ResponseWriter, req *http.Request) {
+	requestBody, _ := ioutil.ReadAll(req.Body)
+	request := JsonUtil.ToObject(string(requestBody), dto.PingRequest{}).(*dto.PingRequest)
+	fmt.Println(request)
+	//TODO
+	var response dto.PingResponse
+	w.Header().Set("content-type", "text/json")
+	io.WriteString(w, JsonUtil.ToString(response))
+}
+
+func (b *BlockchainNodeHttpServer) getNodes(w http.ResponseWriter, req *http.Request) {
+	requestBody, _ := ioutil.ReadAll(req.Body)
+	request := JsonUtil.ToObject(string(requestBody), dto.GetNodesRequest{}).(*dto.GetNodesRequest)
+	fmt.Println(request)
+	//TODO
+	var response dto.GetNodesResponse
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, JsonUtil.ToString(response))
 }

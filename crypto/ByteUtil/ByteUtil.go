@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"math/rand"
+	"strconv"
 )
 
 func BytesToHexString(bytes []byte) string {
@@ -31,6 +32,16 @@ func StringToUtf8Bytes(stringValue string) []byte {
 }
 func Utf8BytesToString(bytesValue []byte) string {
 	return string(bytesValue)
+}
+
+func BooleanToUtf8Bytes(booleanValue bool) []byte {
+
+	return StringToUtf8Bytes(strconv.FormatBool(booleanValue))
+}
+
+func Utf8BytesToBoolean(bytesValue []byte) bool {
+	b, _ := strconv.ParseBool(string(bytesValue))
+	return b
 }
 
 func Concatenate(bytes1 []byte, bytes2 []byte) []byte {
