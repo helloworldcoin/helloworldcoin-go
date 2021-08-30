@@ -8,6 +8,9 @@ import (
 type BlockchainCore struct {
 	BlockchainDatabase             *BlockchainDatabase
 	UnconfirmedTransactionDatabase *UnconfirmedTransactionDatabase
+	CoreConfiguration              *CoreConfiguration
+	Wallet                         *Wallet
+	Miner                          *Miner
 }
 
 func (b BlockchainCore) QueryBlockByBlockHeight(blockHeight uint64) *Model.Block {
@@ -23,4 +26,8 @@ func (b BlockchainCore) QueryBlockchainHeight() uint64 {
 
 func (b BlockchainCore) PostTransaction(transactionDto *dto.TransactionDto) {
 	b.UnconfirmedTransactionDatabase.InsertTransaction(transactionDto)
+}
+
+func (b BlockchainCore) QueryTailBlock() *Model.Block {
+	return b.BlockchainDatabase.QueryTailBlock()
 }

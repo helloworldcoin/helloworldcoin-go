@@ -14,7 +14,7 @@ import (
 func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockDto) *Model.Block {
 	previousHash := blockDto.PreviousHash
 	previousBlock := blockchainDatabase.QueryBlockByBlockHash(previousHash)
-	block := new(Model.Block)
+	block := &Model.Block{}
 	block.Timestamp = blockDto.Timestamp
 	block.PreviousHash = previousHash
 	block.Nonce = blockDto.Nonce
@@ -120,7 +120,7 @@ func fillBlockProperty(blockchainDatabase *BlockchainDatabase, block *Model.Bloc
 			outputs := transaction.Outputs
 			if outputs != nil {
 				for i := 0; i < len(outputs); i = i + 1 {
-					transactionOutputHeight := transactionOutputHeight + 1
+					transactionOutputHeight = transactionOutputHeight + 1
 					output := outputs[i]
 					output.BlockHeight = blockHeight
 					output.BlockHash = blockHash

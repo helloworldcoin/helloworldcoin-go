@@ -1,6 +1,7 @@
 package FileUtil
 
 import (
+	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -32,4 +33,13 @@ func isExist(path string) bool {
 		return false
 	}
 	return true
+}
+
+func Read(path string) string {
+	f, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+	bytesData, _ := ioutil.ReadAll(f)
+	return string(bytesData)
 }

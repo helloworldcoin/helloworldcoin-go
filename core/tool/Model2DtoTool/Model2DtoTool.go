@@ -29,7 +29,7 @@ func Transaction2TransactionDto(transaction *Model.Transaction) *dto.Transaction
 	transactionInputs := transaction.Inputs
 	if transactionInputs != nil {
 		for _, transactionInput := range transactionInputs {
-			var transactionInputDto *dto.TransactionInputDto
+			transactionInputDto := &dto.TransactionInputDto{}
 			transactionInputDto.TransactionHash = transactionInput.UnspentTransactionOutput.TransactionHash
 			transactionInputDto.TransactionOutputIndex = transactionInput.UnspentTransactionOutput.TransactionOutputIndex
 			transactionInputDto.InputScript = InputScript2InputScriptDto(transactionInput.InputScript)
@@ -46,13 +46,13 @@ func Transaction2TransactionDto(transaction *Model.Transaction) *dto.Transaction
 		}
 	}
 
-	var transactionDto *dto.TransactionDto
+	transactionDto := &dto.TransactionDto{}
 	transactionDto.Inputs = inputs
 	transactionDto.Outputs = outputs
 	return transactionDto
 }
 func TransactionOutput2TransactionOutputDto(transactionOutput *Model.TransactionOutput) *dto.TransactionOutputDto {
-	var transactionOutputDto *dto.TransactionOutputDto
+	transactionOutputDto := &dto.TransactionOutputDto{}
 	transactionOutputDto.Value = transactionOutput.Value
 	transactionOutputDto.OutputScript = OutputScript2OutputScriptDto(transactionOutput.OutputScript)
 	return transactionOutputDto

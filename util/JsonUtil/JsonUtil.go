@@ -51,5 +51,11 @@ func ToObject(jsonString string, object interface{}) interface{} {
 		json.Unmarshal([]byte(jsonString), &o8)
 		return &o8
 	}
+
+	o9, ok := object.(dto.BlockDto)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &o9)
+		return &o9
+	}
 	panic("JsonUtil.ToObject can not recognize object type")
 }
