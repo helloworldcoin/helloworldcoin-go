@@ -43,7 +43,7 @@ func (b *BlockBroadcaster) broadcastBlock() {
 			continue
 		}
 		blockDto := Model2DtoTool.Block2BlockDto(block)
-		nodeClient := client.NodeClient{node.Ip}
+		nodeClient := client.NodeClient{Ip: node.Ip}
 		var postBlockRequest dto.PostBlockRequest
 		postBlockRequest.Block = blockDto
 		nodeClient.PostBlock(postBlockRequest)

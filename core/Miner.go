@@ -58,8 +58,7 @@ func (i *Miner) Start() {
 	}
 }
 func (i *Miner) isActive() bool {
-	//TODO
-	return true
+	return i.CoreConfiguration.IsMinerActive()
 }
 
 func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *Model.Block {

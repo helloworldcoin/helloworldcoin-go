@@ -6,8 +6,11 @@ import (
 	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/dto/API"
+	"helloworld-blockchain-go/netcore/model"
+	"helloworld-blockchain-go/netcore/service"
 	"helloworld-blockchain-go/setting/BlockSetting"
 	"helloworld-blockchain-go/util/JsonUtil"
+	"helloworld-blockchain-go/util/LogUtil"
 	"io"
 	"io/ioutil"
 	"log"
@@ -15,7 +18,9 @@ import (
 )
 
 type BlockchainNodeHttpServer struct {
-	BlockchainCore *core.BlockchainCore
+	BlockchainCore       *core.BlockchainCore
+	nodeService          *service.NodeService
+	netCoreConfiguration *service.NetCoreConfiguration
 }
 
 func (b *BlockchainNodeHttpServer) Start() {
@@ -55,12 +60,12 @@ func (b *BlockchainNodeHttpServer) postBlock(w http.ResponseWriter, req *http.Re
 func (b *BlockchainNodeHttpServer) postBlockchainHeight(w http.ResponseWriter, req *http.Request) {
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.PostBlockchainHeightRequest{}).(*dto.PostBlockchainHeightRequest)
+	requestIp := req.Host
 
-	fmt.Println(request)
-	/*	var node Node
-		node.setIp(requestIp)
-		node.setBlockchainHeight(request.getBlockchainHeight())
-		nodeService.updateNode(node)*/
+	var node model.Node
+	node.Ip = requestIp
+	node.BlockchainHeight = request.BlockchainHeight
+	b.nodeService.UpdateNode(&node)
 	var response dto.PostBlockchainHeightResponse
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, JsonUtil.ToString(response))
@@ -98,8 +103,17 @@ func (b *BlockchainNodeHttpServer) getUnconfirmedTransactions(w http.ResponseWri
 func (b *BlockchainNodeHttpServer) ping(w http.ResponseWriter, req *http.Request) {
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.PingRequest{}).(*dto.PingRequest)
+	requestIp := req.Host
 	fmt.Println(request)
-	//TODO
+
+	//将ping的来路作为区块链节点
+	if b.netCoreConfiguration.IsAutoSearchNode() {
+		var node model.Node
+		node.Ip = requestIp
+		node.BlockchainHeight = 0
+		b.nodeService.AddNode(&node)
+		LogUtil.Debug("发现节点[" + requestIp + "]在Ping本地节点，已将发现的节点放入了节点数据库。")
+	}
 	var response dto.PingResponse
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, JsonUtil.ToString(response))
@@ -109,7 +123,15 @@ func (b *BlockchainNodeHttpServer) getNodes(w http.ResponseWriter, req *http.Req
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.GetNodesRequest{}).(*dto.GetNodesRequest)
 	fmt.Println(request)
-	//TODO
+	allNodes := b.nodeService.QueryAllNodes()
+	var nodes []dto.NodeDto
+	if allNodes != nil {
+		for _, node := range allNodes {
+			var n dto.NodeDto
+			n.Ip = node.Ip
+			nodes = append(nodes, n)
+		}
+	}
 	var response dto.GetNodesResponse
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, JsonUtil.ToString(response))

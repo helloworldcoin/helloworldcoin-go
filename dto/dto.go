@@ -29,7 +29,7 @@ type NodeDto struct {
 type GetNodesRequest struct {
 }
 type GetNodesResponse struct {
-	Nodes []string `json:"nodes"`
+	Nodes []NodeDto `json:"nodes"`
 }
 type PingRequest struct {
 }
@@ -64,5 +64,5 @@ type GetBlockchainHeightResponse struct {
 type GetUnconfirmedTransactionsRequest struct {
 }
 type GetUnconfirmedTransactionsResponse struct {
-	Transactions []TransactionDto `json:"transactions"`
+	Transactions []*TransactionDto `json:"transactions"`
 }

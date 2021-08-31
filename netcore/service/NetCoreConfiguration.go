@@ -63,7 +63,7 @@ func (n NetCoreConfiguration) getNetCorePath() string {
 	return n.NetCorePath
 }
 
-func (n NetCoreConfiguration) isAutoSearchBlock() bool {
+func (n NetCoreConfiguration) IsAutoSearchBlock() bool {
 	bytesConfigurationValue := n.getConfigurationValue(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_BLOCK_OPTION_KEY))
 	if bytesConfigurationValue == nil {
 		return AUTO_SEARCH_BLOCK_OPTION_DEFAULT_VALUE
@@ -79,7 +79,7 @@ func (n NetCoreConfiguration) deactiveAutoSearchBlock() {
 	n.addOrUpdateConfiguration(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_BLOCK_OPTION_KEY), ByteUtil.BooleanToUtf8Bytes(false))
 }
 
-func (n NetCoreConfiguration) isAutoSearchNode() bool {
+func (n NetCoreConfiguration) IsAutoSearchNode() bool {
 	bytesConfigurationValue := n.getConfigurationValue(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY))
 	if bytesConfigurationValue == nil {
 		return AUTO_SEARCH_NODE_OPTION_DEFAULT_VALUE
@@ -95,19 +95,19 @@ func (n NetCoreConfiguration) deactiveAutoSearchNode() {
 	n.addOrUpdateConfiguration(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY), ByteUtil.BooleanToUtf8Bytes(false))
 }
 
-func (n NetCoreConfiguration) getSearchNodeTimeInterval() uint64 {
+func (n NetCoreConfiguration) GetSearchNodeTimeInterval() uint64 {
 	return SEARCH_NODE_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) getSearchBlockchainHeightTimeInterval() uint64 {
+func (n NetCoreConfiguration) GetSearchBlockchainHeightTimeInterval() uint64 {
 	return SEARCH_BLOCKCHAIN_HEIGHT_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) getSearchBlockTimeInterval() uint64 {
+func (n NetCoreConfiguration) GetSearchBlockTimeInterval() uint64 {
 	return SEARCH_BLOCKS_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) getBlockchainHeightBroadcastTimeInterval() uint64 {
+func (n NetCoreConfiguration) GetBlockchainHeightBroadcastTimeInterval() uint64 {
 	return BLOCKCHAIN_HEIGHT_BROADCASTER_TIME_INTERVAL
 }
 
@@ -115,23 +115,23 @@ func (n NetCoreConfiguration) GetBlockBroadcastTimeInterval() uint64 {
 	return BLOCK_BROADCASTER_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) getAddSeedNodeTimeInterval() uint64 {
+func (n NetCoreConfiguration) GetAddSeedNodeTimeInterval() uint64 {
 	return ADD_SEED_NODE_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) getNodeBroadcastTimeInterval() uint64 {
+func (n NetCoreConfiguration) GetNodeBroadcastTimeInterval() uint64 {
 	return NODE_BROADCAST_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) getHardForkBlockCount() uint64 {
+func (n NetCoreConfiguration) GetHardForkBlockCount() uint64 {
 	return HARD_FORK_BLOCK_COUNT
 }
 
-func (n NetCoreConfiguration) getSearchUnconfirmedTransactionsTimeInterval() uint64 {
+func (n NetCoreConfiguration) GetSearchUnconfirmedTransactionsTimeInterval() uint64 {
 	return SEARCH_UNCONFIRMED_TRANSACTIONS_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) getNodeCleanTimeInterval() uint64 {
+func (n NetCoreConfiguration) GetNodeCleanTimeInterval() uint64 {
 	return NODE_CLEAN_TIME_INTERVAL
 }
 

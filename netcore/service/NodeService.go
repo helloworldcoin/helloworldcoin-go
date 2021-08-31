@@ -19,7 +19,7 @@ func (n *NodeService) QueryAllNodes() []*model.Node {
 	return n.nodePo2Nodes(nodePos)
 }
 
-func (n *NodeService) addNode(node *model.Node) {
+func (n *NodeService) AddNode(node *model.Node) {
 	if n.nodeDao.QueryNode(node.Ip) != nil {
 		return
 	}
@@ -27,7 +27,7 @@ func (n *NodeService) addNode(node *model.Node) {
 	n.nodeDao.AddNode(nodePo)
 }
 
-func (n *NodeService) updateNode(node *model.Node) {
+func (n *NodeService) UpdateNode(node *model.Node) {
 	nodePo := n.nodeDao.QueryNode(node.Ip)
 	if nodePo == nil {
 		return

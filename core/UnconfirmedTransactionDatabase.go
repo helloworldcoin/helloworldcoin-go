@@ -18,7 +18,6 @@ type UnconfirmedTransactionDatabase struct {
 func (u *UnconfirmedTransactionDatabase) InsertTransaction(transactionDto *dto.TransactionDto) {
 	transactionHash := TransactionDtoTool.CalculateTransactionHash(transactionDto)
 	KvDbUtil.Put(u.getUnconfirmedTransactionDatabasePath(), u.getKey(transactionHash), EncodeDecodeTool.EncodeTransactionDto(transactionDto))
-
 }
 
 func (u *UnconfirmedTransactionDatabase) SelectTransactions(from uint64, size uint64) []dto.TransactionDto {
@@ -46,7 +45,7 @@ func (u *UnconfirmedTransactionDatabase) SelectTransactionByTransactionHash(tran
 }
 
 func (u *UnconfirmedTransactionDatabase) getUnconfirmedTransactionDatabasePath() string {
-	return FileUtil.NewPath(u.CoreConfiguration.CorePath, UNCONFIRMED_TRANSACTION_DATABASE_NAME)
+	return FileUtil.NewPath(u.CoreConfiguration.corePath, UNCONFIRMED_TRANSACTION_DATABASE_NAME)
 }
 
 func (u *UnconfirmedTransactionDatabase) getKey(transactionHash string) []byte {

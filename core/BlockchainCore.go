@@ -2,6 +2,7 @@ package core
 
 import (
 	"helloworld-blockchain-go/core/Model"
+	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 	"helloworld-blockchain-go/dto"
 )
 
@@ -30,4 +31,17 @@ func (b BlockchainCore) PostTransaction(transactionDto *dto.TransactionDto) {
 
 func (b BlockchainCore) QueryTailBlock() *Model.Block {
 	return b.BlockchainDatabase.QueryTailBlock()
+}
+
+func (b BlockchainCore) DeleteTailBlock() {
+	b.BlockchainDatabase.DeleteTailBlock()
+}
+
+func (b BlockchainCore) AddBlock(block *Model.Block) bool {
+	blockDto := Model2DtoTool.Block2BlockDto(block)
+	return b.AddBlockDto(blockDto)
+}
+
+func (b BlockchainCore) DeleteBlocks(blockHeight uint64) {
+	b.BlockchainDatabase.DeleteBlocks(blockHeight)
 }

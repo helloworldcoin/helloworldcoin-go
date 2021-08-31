@@ -147,3 +147,18 @@ func IsExistDuplicateUtxo(block *Model.Block) bool {
 	}
 	return DataStructureUtil.IsExistDuplicateElement(&utxoIds)
 }
+
+/**
+ * 简单的校验两个区块是否相等
+ * 注意：这里没有严格校验,例如没有校验区块中的交易是否完全一样
+ * ，所以即使这里认为两个区块相等，实际上这两个区块还是有可能不相等的。
+ */
+func IsBlockEquals(block1 *Model.Block, block2 *Model.Block) bool {
+	//如果任一区块为为空，则认为两个区块不相等
+	if block1 == nil || block2 == nil {
+		return false
+	}
+	blockDto1 := Model2DtoTool.Block2BlockDto(block1)
+	blockDto2 := Model2DtoTool.Block2BlockDto(block2)
+	return BlockDtoTool.IsBlockEquals(blockDto1, blockDto2)
+}

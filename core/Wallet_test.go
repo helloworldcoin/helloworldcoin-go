@@ -7,7 +7,7 @@ import (
 
 func TestWallet(t *testing.T) {
 	//TODO
-	coreConfiguration := CoreConfiguration{CorePath: "d://abcd"}
+	coreConfiguration := CoreConfiguration{corePath: "d://abcd"}
 	fmt.Println(coreConfiguration)
 	wallet := Wallet{CoreConfiguration: &coreConfiguration}
 	fmt.Println(wallet)
