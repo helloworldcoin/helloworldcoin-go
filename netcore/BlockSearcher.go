@@ -18,9 +18,9 @@ import (
 
 type BlockSearcher struct {
 	netCoreConfiguration *configuration.NetCoreConfiguration
-	nodeService          *service.NodeService
 	blockchainCore       *core.BlockchainCore
 	slaveBlockchainCore  *core.BlockchainCore
+	nodeService          *service.NodeService
 }
 
 func (b *BlockSearcher) start() {

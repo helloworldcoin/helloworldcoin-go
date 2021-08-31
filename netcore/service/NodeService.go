@@ -10,6 +10,10 @@ type NodeService struct {
 	nodeDao *dao.NodeDao
 }
 
+func NewNodeService(nodeDao *dao.NodeDao) *NodeService {
+	return &NodeService{nodeDao}
+}
+
 func (n *NodeService) DeleteNode(ip string) {
 	n.nodeDao.DeleteNode(ip)
 }

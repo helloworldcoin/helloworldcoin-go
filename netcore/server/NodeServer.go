@@ -18,13 +18,17 @@ import (
 	"net/http"
 )
 
-type BlockchainNodeHttpServer struct {
-	BlockchainCore       *core.BlockchainCore
+type NodeServer struct {
+	blockchainCore       *core.BlockchainCore
 	nodeService          *service.NodeService
 	netCoreConfiguration *configuration.NetCoreConfiguration
 }
 
-func (b *BlockchainNodeHttpServer) Start() {
+func NewNodeServer(netCoreConfiguration *configuration.NetCoreConfiguration, blockchainCore *core.BlockchainCore, nodeService *service.NodeService) *NodeServer {
+	return &NodeServer{blockchainCore, nodeService, netCoreConfiguration}
+}
+
+func (b *NodeServer) Start() {
 	http.HandleFunc(API.PING, b.ping)
 	http.HandleFunc(API.GET_NODES, b.getNodes)
 	http.HandleFunc(API.GET_BLOCK, b.getBlock)
@@ -40,25 +44,25 @@ func (b *BlockchainNodeHttpServer) Start() {
 	}
 }
 
-func (b *BlockchainNodeHttpServer) getBlock(w http.ResponseWriter, req *http.Request) {
+func (b *NodeServer) getBlock(w http.ResponseWriter, req *http.Request) {
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.GetBlockRequest{}).(*dto.GetBlockRequest)
-	blockByBlockHeight := b.BlockchainCore.QueryBlockByBlockHeight(request.BlockHeight)
+	blockByBlockHeight := b.blockchainCore.QueryBlockByBlockHeight(request.BlockHeight)
 	block := Model2DtoTool.Block2BlockDto(blockByBlockHeight)
 	var response dto.GetBlockResponse
 	response.Block = block
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, JsonUtil.ToString(response))
 }
-func (b *BlockchainNodeHttpServer) postBlock(w http.ResponseWriter, req *http.Request) {
+func (b *NodeServer) postBlock(w http.ResponseWriter, req *http.Request) {
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.PostBlockRequest{}).(*dto.PostBlockRequest)
-	b.BlockchainCore.AddBlockDto(request.Block)
+	b.blockchainCore.AddBlockDto(request.Block)
 	var response dto.PostBlockResponse
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, JsonUtil.ToString(response))
 }
-func (b *BlockchainNodeHttpServer) postBlockchainHeight(w http.ResponseWriter, req *http.Request) {
+func (b *NodeServer) postBlockchainHeight(w http.ResponseWriter, req *http.Request) {
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.PostBlockchainHeightRequest{}).(*dto.PostBlockchainHeightRequest)
 	requestIp := req.Host
@@ -71,29 +75,29 @@ func (b *BlockchainNodeHttpServer) postBlockchainHeight(w http.ResponseWriter, r
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, JsonUtil.ToString(response))
 }
-func (b *BlockchainNodeHttpServer) getBlockchainHeight(w http.ResponseWriter, req *http.Request) {
+func (b *NodeServer) getBlockchainHeight(w http.ResponseWriter, req *http.Request) {
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.GetBlockchainHeightRequest{}).(*dto.GetBlockchainHeightRequest)
 	fmt.Println(request)
-	blockchainHeight := b.BlockchainCore.QueryBlockchainHeight()
+	blockchainHeight := b.blockchainCore.QueryBlockchainHeight()
 	var response dto.GetBlockchainHeightResponse
 	response.BlockchainHeight = blockchainHeight
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, JsonUtil.ToString(response))
 }
-func (b *BlockchainNodeHttpServer) postTransaction(w http.ResponseWriter, req *http.Request) {
+func (b *NodeServer) postTransaction(w http.ResponseWriter, req *http.Request) {
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.PostTransactionRequest{}).(*dto.PostTransactionRequest)
-	b.BlockchainCore.PostTransaction(request.Transaction)
+	b.blockchainCore.PostTransaction(request.Transaction)
 	var response dto.PostTransactionResponse
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, JsonUtil.ToString(response))
 }
-func (b *BlockchainNodeHttpServer) getUnconfirmedTransactions(w http.ResponseWriter, req *http.Request) {
+func (b *NodeServer) getUnconfirmedTransactions(w http.ResponseWriter, req *http.Request) {
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.GetUnconfirmedTransactionsRequest{}).(*dto.GetUnconfirmedTransactionsRequest)
 	fmt.Println(request)
-	unconfirmedTransactionDatabase := b.BlockchainCore.UnconfirmedTransactionDatabase
+	unconfirmedTransactionDatabase := b.blockchainCore.UnconfirmedTransactionDatabase
 	transactions := unconfirmedTransactionDatabase.SelectTransactions(1, BlockSetting.BLOCK_MAX_TRANSACTION_COUNT)
 	var response dto.GetUnconfirmedTransactionsResponse
 	response.Transactions = transactions
@@ -101,7 +105,7 @@ func (b *BlockchainNodeHttpServer) getUnconfirmedTransactions(w http.ResponseWri
 	io.WriteString(w, JsonUtil.ToString(response))
 }
 
-func (b *BlockchainNodeHttpServer) ping(w http.ResponseWriter, req *http.Request) {
+func (b *NodeServer) ping(w http.ResponseWriter, req *http.Request) {
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.PingRequest{}).(*dto.PingRequest)
 	requestIp := req.Host
@@ -120,7 +124,7 @@ func (b *BlockchainNodeHttpServer) ping(w http.ResponseWriter, req *http.Request
 	io.WriteString(w, JsonUtil.ToString(response))
 }
 
-func (b *BlockchainNodeHttpServer) getNodes(w http.ResponseWriter, req *http.Request) {
+func (b *NodeServer) getNodes(w http.ResponseWriter, req *http.Request) {
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.GetNodesRequest{}).(*dto.GetNodesRequest)
 	fmt.Println(request)

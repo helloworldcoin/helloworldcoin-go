@@ -14,6 +14,10 @@ type NodeDao struct {
 	netCoreConfiguration *configuration.NetCoreConfiguration
 }
 
+func NewNodeDao(netCoreConfiguration *configuration.NetCoreConfiguration) *NodeDao {
+	return &NodeDao{netCoreConfiguration}
+}
+
 const NODE_DATABASE_NAME = "NodeDatabase"
 
 func (n NodeDao) QueryNode(ip string) *po.NodePo {

@@ -28,6 +28,6 @@ func main() {
 	fmt.Println(JsonUtil.ToString(response))
 
 	blockchainCore := &core.BlockchainCore{BlockchainDatabase: blockchainDatabase, UnconfirmedTransactionDatabase: unconfirmedTransactionDatabase}
-	blockchainNodeHttpServer := server.BlockchainNodeHttpServer{BlockchainCore: blockchainCore}
+	blockchainNodeHttpServer := server.NodeServer{BlockchainCore: blockchainCore}
 	blockchainNodeHttpServer.Start()
 }

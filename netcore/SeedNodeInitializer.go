@@ -11,8 +11,8 @@ import (
 )
 
 type SeedNodeInitializer struct {
-	netCoreConfiguration configuration.NetCoreConfiguration
-	nodeService          service.NodeService
+	netCoreConfiguration *configuration.NetCoreConfiguration
+	nodeService          *service.NodeService
 }
 
 func (s *SeedNodeInitializer) start() {

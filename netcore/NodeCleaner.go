@@ -11,8 +11,8 @@ import (
 )
 
 type NodeCleaner struct {
-	netCoreConfiguration configuration.NetCoreConfiguration
-	nodeService          service.NodeService
+	netCoreConfiguration *configuration.NetCoreConfiguration
+	nodeService          *service.NodeService
 }
 
 func (b *NodeCleaner) start() {

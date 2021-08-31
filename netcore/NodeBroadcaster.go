@@ -10,8 +10,8 @@ import (
 )
 
 type NodeBroadcaster struct {
-	netCoreConfiguration configuration.NetCoreConfiguration
-	nodeService          service.NodeService
+	netCoreConfiguration *configuration.NetCoreConfiguration
+	nodeService          *service.NodeService
 }
 
 func (b *NodeBroadcaster) start() {

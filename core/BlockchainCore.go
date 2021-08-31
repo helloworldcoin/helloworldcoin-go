@@ -14,6 +14,10 @@ type BlockchainCore struct {
 	Miner                          *Miner
 }
 
+func (b *BlockchainCore) Start() {
+	//TODO 异常
+	go b.Miner.Start()
+}
 func (b BlockchainCore) QueryBlockByBlockHeight(blockHeight uint64) *Model.Block {
 	return b.BlockchainDatabase.QueryBlockByBlockHeight(blockHeight)
 }

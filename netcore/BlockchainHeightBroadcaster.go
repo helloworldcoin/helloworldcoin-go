@@ -11,9 +11,9 @@ import (
 )
 
 type BlockchainHeightBroadcaster struct {
-	netCoreConfiguration configuration.NetCoreConfiguration
-	blockchainCore       core.BlockchainCore
-	nodeService          service.NodeService
+	netCoreConfiguration *configuration.NetCoreConfiguration
+	blockchainCore       *core.BlockchainCore
+	nodeService          *service.NodeService
 }
 
 func (b *BlockchainHeightBroadcaster) start() {
