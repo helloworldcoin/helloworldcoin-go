@@ -11,7 +11,7 @@ import (
 func main() {
 	consensus := &core.Consensus{}
 	incentive := &core.Incentive{}
-	coreConfiguration := &core.CoreConfiguration{CorePath: "C:\\helloworld-blockchain-go"}
+	coreConfiguration := &core.CoreConfiguration{}
 	blockchainDatabase := &core.BlockchainDatabase{Consensus: consensus, Incentive: incentive, CoreConfiguration: coreConfiguration}
 	wallet := &core.Wallet{CoreConfiguration: coreConfiguration, BlockchainDatabase: blockchainDatabase}
 	unconfirmedTransactionDatabase := &core.UnconfirmedTransactionDatabase{CoreConfiguration: coreConfiguration}

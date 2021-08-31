@@ -10,7 +10,7 @@ type BlockchainCoreFactory struct {
  */
 func (b *BlockchainCoreFactory) CreateBlockchainCore(corePath string) *BlockchainCore {
 
-	coreConfiguration := &CoreConfiguration{CorePath: corePath}
+	coreConfiguration := &CoreConfiguration{corePath: corePath}
 	incentive := &Incentive{}
 	consensus := &Consensus{}
 	virtualMachine := &VirtualMachine{}

@@ -20,13 +20,13 @@ func (u *UnconfirmedTransactionDatabase) InsertTransaction(transactionDto *dto.T
 	KvDbUtil.Put(u.getUnconfirmedTransactionDatabasePath(), u.getKey(transactionHash), EncodeDecodeTool.EncodeTransactionDto(transactionDto))
 }
 
-func (u *UnconfirmedTransactionDatabase) SelectTransactions(from uint64, size uint64) []dto.TransactionDto {
-	var transactionDtos []dto.TransactionDto
+func (u *UnconfirmedTransactionDatabase) SelectTransactions(from uint64, size uint64) []*dto.TransactionDto {
+	var transactionDtos []*dto.TransactionDto
 	bytesTransactionDtos := KvDbUtil.Gets(u.getUnconfirmedTransactionDatabasePath(), from, size)
 	if bytesTransactionDtos != nil {
 		for e := bytesTransactionDtos.Front(); e != nil; e = e.Next() {
 			transactionDto := EncodeDecodeTool.DecodeToTransactionDto(e.Value.([]byte))
-			transactionDtos = append(transactionDtos, *transactionDto)
+			transactionDtos = append(transactionDtos, transactionDto)
 		}
 	}
 	return transactionDtos

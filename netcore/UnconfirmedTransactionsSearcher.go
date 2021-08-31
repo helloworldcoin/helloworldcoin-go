@@ -4,6 +4,7 @@ import (
 	"helloworld-blockchain-go/core"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/netcore-client/client"
+	"helloworld-blockchain-go/netcore/configuration"
 	"helloworld-blockchain-go/netcore/service"
 	"helloworld-blockchain-go/util/JsonUtil"
 	"helloworld-blockchain-go/util/SystemUtil"
@@ -11,7 +12,7 @@ import (
 )
 
 type UnconfirmedTransactionsSearcher struct {
-	netCoreConfiguration *service.NetCoreConfiguration
+	netCoreConfiguration *configuration.NetCoreConfiguration
 	blockchainCore       *core.BlockchainCore
 	nodeService          *service.NodeService
 }

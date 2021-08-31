@@ -5,13 +5,14 @@ import (
 	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/netcore-client/client"
+	"helloworld-blockchain-go/netcore/configuration"
 	"helloworld-blockchain-go/netcore/service"
 	"helloworld-blockchain-go/util/SystemUtil"
 	"helloworld-blockchain-go/util/ThreadUtil"
 )
 
 type BlockBroadcaster struct {
-	netCoreConfiguration service.NetCoreConfiguration
+	netCoreConfiguration configuration.NetCoreConfiguration
 	blockchainCore       core.BlockchainCore
 	nodeService          service.NodeService
 }

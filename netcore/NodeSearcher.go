@@ -3,6 +3,7 @@ package netcore
 import (
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/netcore-client/client"
+	"helloworld-blockchain-go/netcore/configuration"
 	"helloworld-blockchain-go/netcore/model"
 	"helloworld-blockchain-go/netcore/service"
 	"helloworld-blockchain-go/util/LogUtil"
@@ -11,7 +12,7 @@ import (
 )
 
 type NodeSearcher struct {
-	netCoreConfiguration service.NetCoreConfiguration
+	netCoreConfiguration configuration.NetCoreConfiguration
 	nodeService          service.NodeService
 }
 

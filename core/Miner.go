@@ -117,7 +117,7 @@ func (i *Miner) packingTransactions(blockchainDatabase *BlockchainDatabase, unco
 	if forMineBlockTransactionDtos != nil {
 		for _, transactionDto := range forMineBlockTransactionDtos {
 			//TODO exception
-			transaction := TransactionDto2Transaction(blockchainDatabase, &transactionDto)
+			transaction := TransactionDto2Transaction(blockchainDatabase, transactionDto)
 			transactions = append(transactions, transaction)
 		}
 	}

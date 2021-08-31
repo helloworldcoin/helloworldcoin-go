@@ -6,6 +6,7 @@ import (
 	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/dto/API"
+	"helloworld-blockchain-go/netcore/configuration"
 	"helloworld-blockchain-go/netcore/model"
 	"helloworld-blockchain-go/netcore/service"
 	"helloworld-blockchain-go/setting/BlockSetting"
@@ -20,7 +21,7 @@ import (
 type BlockchainNodeHttpServer struct {
 	BlockchainCore       *core.BlockchainCore
 	nodeService          *service.NodeService
-	netCoreConfiguration *service.NetCoreConfiguration
+	netCoreConfiguration *configuration.NetCoreConfiguration
 }
 
 func (b *BlockchainNodeHttpServer) Start() {

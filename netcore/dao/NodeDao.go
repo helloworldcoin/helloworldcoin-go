@@ -2,8 +2,8 @@ package dao
 
 import (
 	"helloworld-blockchain-go/crypto/ByteUtil"
+	"helloworld-blockchain-go/netcore/configuration"
 	"helloworld-blockchain-go/netcore/po"
-	"helloworld-blockchain-go/netcore/service"
 	"helloworld-blockchain-go/util/FileUtil"
 	"helloworld-blockchain-go/util/JsonUtil"
 	"helloworld-blockchain-go/util/KvDbUtil"
@@ -11,7 +11,7 @@ import (
 )
 
 type NodeDao struct {
-	netCoreConfiguration *service.NetCoreConfiguration
+	netCoreConfiguration *configuration.NetCoreConfiguration
 }
 
 const NODE_DATABASE_NAME = "NodeDatabase"

@@ -1,4 +1,4 @@
-package service
+package configuration
 
 import (
 	"helloworld-blockchain-go/crypto/ByteUtil"

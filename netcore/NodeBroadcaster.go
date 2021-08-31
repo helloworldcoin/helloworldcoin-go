@@ -3,13 +3,14 @@ package netcore
 import (
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/netcore-client/client"
+	"helloworld-blockchain-go/netcore/configuration"
 	"helloworld-blockchain-go/netcore/service"
 	"helloworld-blockchain-go/util/SystemUtil"
 	"helloworld-blockchain-go/util/ThreadUtil"
 )
 
 type NodeBroadcaster struct {
-	netCoreConfiguration service.NetCoreConfiguration
+	netCoreConfiguration configuration.NetCoreConfiguration
 	nodeService          service.NodeService
 }
 

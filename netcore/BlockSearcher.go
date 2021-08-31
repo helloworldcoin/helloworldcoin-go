@@ -7,6 +7,7 @@ import (
 	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/netcore-client/client"
+	"helloworld-blockchain-go/netcore/configuration"
 	"helloworld-blockchain-go/netcore/model"
 	"helloworld-blockchain-go/netcore/service"
 	"helloworld-blockchain-go/setting/GenesisBlockSetting"
@@ -16,7 +17,7 @@ import (
 )
 
 type BlockSearcher struct {
-	netCoreConfiguration *service.NetCoreConfiguration
+	netCoreConfiguration *configuration.NetCoreConfiguration
 	nodeService          *service.NodeService
 	blockchainCore       *core.BlockchainCore
 	slaveBlockchainCore  *core.BlockchainCore

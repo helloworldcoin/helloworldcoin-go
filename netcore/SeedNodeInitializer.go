@@ -1,6 +1,7 @@
 package netcore
 
 import (
+	"helloworld-blockchain-go/netcore/configuration"
 	"helloworld-blockchain-go/netcore/model"
 	"helloworld-blockchain-go/netcore/service"
 	"helloworld-blockchain-go/setting/NetworkSetting"
@@ -10,7 +11,7 @@ import (
 )
 
 type SeedNodeInitializer struct {
-	netCoreConfiguration service.NetCoreConfiguration
+	netCoreConfiguration configuration.NetCoreConfiguration
 	nodeService          service.NodeService
 }
 
