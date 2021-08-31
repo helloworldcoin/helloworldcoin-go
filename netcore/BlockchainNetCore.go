@@ -28,7 +28,7 @@ type BlockchainNetCore struct {
 	unconfirmedTransactionsSearcher *UnconfirmedTransactionsSearcher
 }
 
-func (b *BlockchainNetCore) start() {
+func (b *BlockchainNetCore) Start() {
 	//启动本地的单机区块链
 	go b.blockchainCore.Start()
 	//启动区块链节点服务器

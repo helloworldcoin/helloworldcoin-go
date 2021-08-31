@@ -13,7 +13,7 @@ import (
 /**
  * 创建[区块链网络版核心]实例
  */
-func CreateDefaultBlockchainNetCore() BlockchainNetCore {
+func CreateDefaultBlockchainNetCore() *BlockchainNetCore {
 	return CreateBlockchainNetCore(ResourcePathTool.GetDataRootPath())
 }
 
@@ -22,7 +22,7 @@ func CreateDefaultBlockchainNetCore() BlockchainNetCore {
  *
  * @param netcorePath 区块链数据存放位置
  */
-func CreateBlockchainNetCore(netcorePath string) BlockchainNetCore {
+func CreateBlockchainNetCore(netcorePath string) *BlockchainNetCore {
 	netCoreConfiguration := &configuration.NetCoreConfiguration{NetCorePath: netcorePath}
 
 	blockchainCorePath := FileUtil.NewPath(netcorePath, "BlockchainCore")
@@ -48,5 +48,5 @@ func CreateBlockchainNetCore(netcorePath string) BlockchainNetCore {
 	unconfirmedTransactionsSearcher := &UnconfirmedTransactionsSearcher{netCoreConfiguration, blockchainCore, nodeService}
 
 	blockchainNetCore := BlockchainNetCore{netCoreConfiguration, nodeService, blockchainCore, nodeServer, seedNodeInitializer, nodeSearcher, nodeBroadcaster, nodeCleaner, blockchainHeightSearcher, blockchainHeightBroadcaster, blockSearcher, blockBroadcaster, unconfirmedTransactionsSearcher}
-	return blockchainNetCore
+	return &blockchainNetCore
 }
