@@ -40,7 +40,7 @@ func (n *NodeService) UpdateNode(node *model.Node) {
 	n.nodeDao.UpdateNode(nodePo)
 }
 
-func (n *NodeService) queryNode(ip string) *model.Node {
+func (n *NodeService) QueryNode(ip string) *model.Node {
 	nodePo := n.nodeDao.QueryNode(ip)
 	if nodePo == nil {
 		return nil

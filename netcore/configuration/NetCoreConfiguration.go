@@ -71,11 +71,11 @@ func (n NetCoreConfiguration) IsAutoSearchBlock() bool {
 	return ByteUtil.Utf8BytesToBoolean(bytesConfigurationValue)
 }
 
-func (n NetCoreConfiguration) activeAutoSearchBlock() {
+func (n NetCoreConfiguration) ActiveAutoSearchBlock() {
 	n.addOrUpdateConfiguration(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_BLOCK_OPTION_KEY), ByteUtil.BooleanToUtf8Bytes(true))
 }
 
-func (n NetCoreConfiguration) deactiveAutoSearchBlock() {
+func (n NetCoreConfiguration) DeactiveAutoSearchBlock() {
 	n.addOrUpdateConfiguration(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_BLOCK_OPTION_KEY), ByteUtil.BooleanToUtf8Bytes(false))
 }
 
@@ -87,11 +87,11 @@ func (n NetCoreConfiguration) IsAutoSearchNode() bool {
 	return ByteUtil.Utf8BytesToBoolean(bytesConfigurationValue)
 }
 
-func (n NetCoreConfiguration) activeAutoSearchNode() {
+func (n NetCoreConfiguration) ActiveAutoSearchNode() {
 	n.addOrUpdateConfiguration(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY), ByteUtil.BooleanToUtf8Bytes(true))
 }
 
-func (n NetCoreConfiguration) deactiveAutoSearchNode() {
+func (n NetCoreConfiguration) DeactiveAutoSearchNode() {
 	n.addOrUpdateConfiguration(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY), ByteUtil.BooleanToUtf8Bytes(false))
 }
 

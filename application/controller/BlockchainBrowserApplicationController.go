@@ -1,40 +1,51 @@
 package controller
 
 import (
+	"helloworld-blockchain-go/application/service"
 	"helloworld-blockchain-go/application/vo/block"
-	"helloworld-blockchain-go/core"
+	"helloworld-blockchain-go/application/vo/framwork"
+	"helloworld-blockchain-go/application/vo/node"
 	"helloworld-blockchain-go/core/Model"
 	"helloworld-blockchain-go/core/tool/BlockTool"
 	"helloworld-blockchain-go/netcore"
 	"helloworld-blockchain-go/setting/GenesisBlockSetting"
-	"helloworld-blockchain-go/util/JsonUtil"
 	"helloworld-blockchain-go/util/TimeUtil"
 	"io"
 	"net/http"
 )
 
 type BlockchainBrowserApplicationController struct {
-	blockchainNetCore *netcore.BlockchainNetCore
-	blockchainCore    *core.BlockchainCore
-	// BlockchainBrowserApplicationService blockchainBrowserApplicationService
+	blockchainNetCore                   *netcore.BlockchainNetCore
+	BlockchainBrowserApplicationService *service.BlockchainBrowserApplicationService
 }
 
-func NewBlockchainBrowserApplicationController(blockchainNetCore *netcore.BlockchainNetCore, blockchainCore *core.BlockchainCore) *BlockchainBrowserApplicationController {
+func NewBlockchainBrowserApplicationController(blockchainNetCore *netcore.BlockchainNetCore) *BlockchainBrowserApplicationController {
 	var b BlockchainBrowserApplicationController
 	b.blockchainNetCore = blockchainNetCore
-	b.blockchainCore = blockchainCore
 	return &b
+}
+
+func (b *BlockchainBrowserApplicationController) QueryBlockchainHeight(w http.ResponseWriter, req *http.Request) {
+
+	blockchainHeight := b.blockchainNetCore.GetBlockchainCore().QueryBlockchainHeight()
+
+	var response node.QueryBlockchainHeightResponse
+	response.BlockchainHeight = blockchainHeight
+	s := framwork.CreateSuccessResponse("", response)
+
+	w.Header().Set("content-type", "text/json")
+	io.WriteString(w, s)
 }
 
 func (b *BlockchainBrowserApplicationController) QueryTop10Blocks(w http.ResponseWriter, req *http.Request) {
 
 	var blocks []*Model.Block
-	blockHeight := b.blockchainCore.QueryBlockchainHeight()
+	blockHeight := b.blockchainNetCore.GetBlockchainCore().QueryBlockchainHeight()
 	for {
 		if blockHeight <= GenesisBlockSetting.HEIGHT {
 			break
 		}
-		block := b.blockchainCore.QueryBlockByBlockHeight(blockHeight)
+		block := b.blockchainNetCore.GetBlockchainCore().QueryBlockByBlockHeight(blockHeight)
 		blocks = append(blocks, block)
 		if len(blocks) >= 10 {
 			break
@@ -56,7 +67,8 @@ func (b *BlockchainBrowserApplicationController) QueryTop10Blocks(w http.Respons
 
 	var response block.QueryTop10BlocksResponse
 	response.Blocks = blockVos
-	r := "{\"status\":\"SUCCESS\",\"message\":\"message\",\"data\":" + JsonUtil.ToString(response) + "}"
+	s := framwork.CreateSuccessResponse("", response)
+
 	w.Header().Set("content-type", "text/json")
-	io.WriteString(w, r)
+	io.WriteString(w, s)
 }

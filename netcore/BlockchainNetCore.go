@@ -59,3 +59,11 @@ func (b *BlockchainNetCore) Start() {
 func (b *BlockchainNetCore) GetBlockchainCore() *core.BlockchainCore {
 	return b.blockchainCore
 }
+
+func (b *BlockchainNetCore) GetNodeService() *service.NodeService {
+	return b.nodeService
+}
+
+func (b *BlockchainNetCore) GetNetCoreConfiguration() *configuration.NetCoreConfiguration {
+	return b.netCoreConfiguration
+}

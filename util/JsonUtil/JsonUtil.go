@@ -2,6 +2,9 @@ package JsonUtil
 
 import (
 	"encoding/json"
+	"helloworld-blockchain-go/application/vo/block"
+	"helloworld-blockchain-go/application/vo/miner"
+	"helloworld-blockchain-go/application/vo/node"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/netcore/po"
 )
@@ -107,6 +110,78 @@ func ToObject(jsonString string, object interface{}) interface{} {
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0010)
 		return &_0010
+	}
+
+	_0100, ok := object.(node.ActiveAutoSearchNodeRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0100)
+		return &_0100
+	}
+	_0101, ok := object.(node.AddNodeRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0101)
+		return &_0101
+	}
+	_0102, ok := object.(node.DeactiveAutoSearchNodeRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0102)
+		return &_0102
+	}
+	_0103, ok := object.(node.DeleteNodeRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0103)
+		return &_0103
+	}
+	_0104, ok := object.(node.IsAutoSearchNodeRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0104)
+		return &_0104
+	}
+	_0105, ok := object.(node.NodeVo)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0105)
+		return &_0105
+	}
+	_0106, ok := object.(node.QueryAllNodesRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0106)
+		return &_0106
+	}
+	_0107, ok := object.(node.QueryBlockchainHeightRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0107)
+		return &_0107
+	}
+	_0108, ok := object.(node.UpdateNodeRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0108)
+		return &_0108
+	}
+
+	_0150, ok := object.(block.DeleteBlocksRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0150)
+		return &_0150
+	}
+	_0151, ok := object.(block.QueryBlockByBlockHashRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0151)
+		return &_0151
+	}
+	_0152, ok := object.(block.QueryBlockByBlockHeightRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0152)
+		return &_0152
+	}
+	_0153, ok := object.(block.QueryTop10BlocksRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0153)
+		return &_0153
+	}
+	_0200, ok := object.(miner.SetMaxBlockHeightRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0200)
+		return &_0200
 	}
 	panic("JsonUtil.ToObject can not recognize object type")
 }

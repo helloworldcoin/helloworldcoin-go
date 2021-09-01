@@ -49,3 +49,7 @@ func (b BlockchainCore) AddBlock(block *Model.Block) bool {
 func (b BlockchainCore) DeleteBlocks(blockHeight uint64) {
 	b.BlockchainDatabase.DeleteBlocks(blockHeight)
 }
+
+func (b *BlockchainCore) GetMiner() *Miner {
+	return b.Miner
+}

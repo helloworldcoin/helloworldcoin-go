@@ -26,14 +26,21 @@ type Miner struct {
 func (i *Miner) Start() {
 	for {
 		ThreadUtil.MillisecondSleep(10)
-		if !i.isActive() {
+		if !i.IsActive() {
 			continue
 		}
+
+		blockChainHeight := i.BlockchainDatabase.QueryBlockchainHeight()
+		//'当前区块链的高度'是否大于'矿工最大被允许的挖矿高度'
+		if blockChainHeight >= i.CoreConfiguration.getMaxBlockHeight() {
+			continue
+		}
+
 		minerAccount := i.Wallet.CreateAccount()
 		block := i.buildMiningBlock(i.BlockchainDatabase, i.UnconfirmedTransactionDatabase, minerAccount)
 		startTimestamp := TimeUtil.MillisecondTimestamp()
 		for {
-			if !i.isActive() {
+			if !i.IsActive() {
 				break
 			}
 			//在挖矿的期间，可能收集到新的交易。每隔一定的时间，重新组装挖矿中的区块，这样新收集到交易就可以被放进挖矿中的区块了。
@@ -57,8 +64,22 @@ func (i *Miner) Start() {
 		}
 	}
 }
-func (i *Miner) isActive() bool {
+func (i *Miner) IsActive() bool {
 	return i.CoreConfiguration.IsMinerActive()
+}
+func (i *Miner) Deactive() {
+	i.CoreConfiguration.deactiveMiner()
+}
+func (i *Miner) Active() {
+	i.CoreConfiguration.activeMiner()
+}
+
+func (i *Miner) SetMaxBlockHeight(maxHeight uint64) {
+	i.CoreConfiguration.setMaxBlockHeight(maxHeight)
+}
+
+func (i *Miner) GetMaxBlockHeight() uint64 {
+	return i.CoreConfiguration.getMaxBlockHeight()
 }
 
 func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *Model.Block {

@@ -115,7 +115,7 @@
                 let response = await $ajax({
                     url : baseUrl() + "/Api/NodeConsoleApplication/DeleteBlocks",
                     data: `{
-                        "blockHeight":"${height}"
+                        "blockHeight":${height}
                     }`
                 });
                 location.reload();
@@ -161,7 +161,7 @@
                 let response = await $ajax({
                     url : baseUrl() + "/Api/NodeConsoleApplication/SetMaxBlockHeight",
                     data: `{
-                        "maxBlockHeight":"${maxBlockHeight}"
+                        "maxBlockHeight":${maxBlockHeight}
                     }`
                 });
                 location.reload();
