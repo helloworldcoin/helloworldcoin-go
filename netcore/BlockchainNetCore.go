@@ -61,3 +61,6 @@ func (b *BlockchainNetCore) Start() {
 		ThreadUtil.MillisecondSleep(1000)
 	}
 }
+func (b *BlockchainNetCore) GetBlockchainCore() *core.BlockchainCore {
+	return b.blockchainCore
+}

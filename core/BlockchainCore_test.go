@@ -5,17 +5,19 @@ import (
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/util/FileUtil"
 	"helloworld-blockchain-go/util/JsonUtil"
+	"helloworld-blockchain-go/util/SystemUtil"
 	"testing"
 )
 
 func TestBlockchainDataFormat(t *testing.T) {
 	FileUtil.DeleteDirectory(ResourcePathTool.GetTestDataRootPath())
 
-	stringBlock1 := FileUtil.Read("D:\\workspace\\idea\\helloworld-blockchain-java\\helloworld-blockchain-core\\src\\test\\resources\\blocks\\block1.json")
+	//TODO 资源路径存放与java不一致
+	stringBlock1 := FileUtil.Read(SystemUtil.SystemRootDirectory() + "\\core" + "\\test\\resources\\blocks\\block1.json")
 	block1 := JsonUtil.ToObject(stringBlock1, dto.BlockDto{}).(*dto.BlockDto)
-	stringBlock2 := FileUtil.Read("D:\\workspace\\idea\\helloworld-blockchain-java\\helloworld-blockchain-core\\src\\test\\resources\\blocks\\block2.json")
+	stringBlock2 := FileUtil.Read(SystemUtil.SystemRootDirectory() + "\\core" + "\\test\\resources\\blocks\\block2.json")
 	block2 := JsonUtil.ToObject(stringBlock2, dto.BlockDto{}).(*dto.BlockDto)
-	stringBlock3 := FileUtil.Read("D:\\workspace\\idea\\helloworld-blockchain-java\\helloworld-blockchain-core\\src\\test\\resources\\blocks\\block3.json")
+	stringBlock3 := FileUtil.Read(SystemUtil.SystemRootDirectory() + "\\core" + "\\test\\resources\\blocks\\block3.json")
 	block3 := JsonUtil.ToObject(stringBlock3, dto.BlockDto{}).(*dto.BlockDto)
 	block3Hash := "739f3554dae0a4d2b73142ae8be398fccc8971c9fac52baea1741f4205dc0315"
 
@@ -31,5 +33,4 @@ func TestBlockchainDataFormat(t *testing.T) {
 	if block3Hash != tailBlock.Hash {
 		t.Error("test failed")
 	}
-
 }
