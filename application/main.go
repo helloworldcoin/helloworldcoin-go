@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	SystemUtil.CallDefaultBrowser(`http://localhost:8080/`)
 
 	blockchainNetCore := netcore.CreateDefaultBlockchainNetCore()
 	blockchainBrowserApplicationController := controller.NewBlockchainBrowserApplicationController(blockchainNetCore, blockchainNetCore.GetBlockchainCore())
