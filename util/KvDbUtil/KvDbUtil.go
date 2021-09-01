@@ -2,11 +2,17 @@ package KvDbUtil
 
 import (
 	"container/list"
+	"sync"
 
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
 var dbMap = make(map[string]*leveldb.DB)
+var PutLock = sync.Mutex{}
+var DeleteLock = sync.Mutex{}
+var GetLock = sync.Mutex{}
+var GetsLock = sync.Mutex{}
+var WriteLock = sync.Mutex{}
 
 func getDb(dbPath string) *leveldb.DB {
 	db := dbMap[dbPath]
@@ -18,16 +24,24 @@ func getDb(dbPath string) *leveldb.DB {
 	return db
 }
 func Put(dbPath string, bytesKey []byte, bytesValue []byte) {
+	PutLock.Lock()
+	defer PutLock.Unlock()
 	getDb(dbPath).Put(bytesKey, bytesValue, nil)
 }
 func Delete(dbPath string, bytesKey []byte) {
+	DeleteLock.Lock()
+	defer DeleteLock.Unlock()
 	getDb(dbPath).Delete(bytesKey, nil)
 }
 func Get(dbPath string, bytesKey []byte) []byte {
+	GetLock.Lock()
+	defer GetLock.Unlock()
 	bytesValue, _ := getDb(dbPath).Get(bytesKey, nil)
 	return bytesValue
 }
 func Gets(dbPath string, from uint64, size uint64) *list.List {
+	GetsLock.Lock()
+	defer GetsLock.Unlock()
 	bytes := list.New()
 	iter := getDb(dbPath).NewIterator(nil, nil)
 	i := 1
@@ -45,6 +59,8 @@ func Gets(dbPath string, from uint64, size uint64) *list.List {
 }
 
 func Write(dbPath string, kvWriteBatch *KvWriteBatch) {
+	WriteLock.Lock()
+	defer WriteLock.Unlock()
 	batch := new(leveldb.Batch)
 	kvWrites := kvWriteBatch.GetKvWrites()
 	for _, kvWrite := range kvWrites {

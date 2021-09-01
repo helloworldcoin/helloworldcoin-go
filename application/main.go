@@ -12,6 +12,8 @@ func main() {
 	SystemUtil.CallDefaultBrowser(`http://localhost:8080/`)
 
 	blockchainNetCore := netcore.CreateDefaultBlockchainNetCore()
+	blockchainNetCore.Start()
+
 	blockchainBrowserApplicationController := controller.NewBlockchainBrowserApplicationController(blockchainNetCore, blockchainNetCore.GetBlockchainCore())
 
 	apiMux := http.NewServeMux()
