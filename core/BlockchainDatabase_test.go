@@ -1,11 +1,15 @@
 package core
 
 import (
+	"helloworld-blockchain-go/core/tool/ResourcePathTool"
 	"helloworld-blockchain-go/dto"
+	"helloworld-blockchain-go/util/FileUtil"
 	"testing"
 )
 
 func TestQueryBlockByBlockHeight(t *testing.T) {
+	FileUtil.DeleteDirectory(ResourcePathTool.GetTestDataRootPath())
+
 	transactionOutputDto := dto.TransactionOutputDto{OutputScript: &[]string{"01", "02", "00", "82f46bdbb4550d3c552f1764b53fd0005c81ad3d", "03", "04"}, Value: uint64(5000000000)}
 	var outputs []*dto.TransactionOutputDto
 	outputs = append(outputs, &transactionOutputDto)
@@ -18,7 +22,7 @@ func TestQueryBlockByBlockHeight(t *testing.T) {
 
 	consensus := &Consensus{}
 	incentive := &Incentive{}
-	coreConfiguration := &CoreConfiguration{CorePath: "d:"}
+	coreConfiguration := &CoreConfiguration{corePath: ResourcePathTool.GetTestDataRootPath()}
 	blockchainDatabase := BlockchainDatabase{Consensus: consensus, Incentive: incentive, CoreConfiguration: coreConfiguration}
 	blockchainDatabase.AddBlockDto(blockDto)
 

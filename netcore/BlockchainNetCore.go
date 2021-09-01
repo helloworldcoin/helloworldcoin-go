@@ -5,6 +5,7 @@ import (
 	"helloworld-blockchain-go/netcore/configuration"
 	"helloworld-blockchain-go/netcore/server"
 	"helloworld-blockchain-go/netcore/service"
+	"helloworld-blockchain-go/util/ThreadUtil"
 )
 
 type BlockchainNetCore struct {
@@ -55,4 +56,8 @@ func (b *BlockchainNetCore) Start() {
 
 	//未确认交易搜索器
 	go b.unconfirmedTransactionsSearcher.start()
+
+	for {
+		ThreadUtil.MillisecondSleep(1000)
+	}
 }

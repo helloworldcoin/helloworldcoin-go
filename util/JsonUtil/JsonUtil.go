@@ -3,6 +3,7 @@ package JsonUtil
 import (
 	"encoding/json"
 	"helloworld-blockchain-go/dto"
+	"helloworld-blockchain-go/netcore/po"
 )
 
 func ToString(object interface{}) string {
@@ -56,6 +57,12 @@ func ToObject(jsonString string, object interface{}) interface{} {
 	if ok {
 		json.Unmarshal([]byte(jsonString), &o9)
 		return &o9
+	}
+
+	o10, ok := object.(po.NodePo)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &o10)
+		return &o10
 	}
 	panic("JsonUtil.ToObject can not recognize object type")
 }

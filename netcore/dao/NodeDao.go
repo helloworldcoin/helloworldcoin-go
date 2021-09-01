@@ -51,7 +51,7 @@ func (n NodeDao) QueryAllNodes() []*po.NodePo {
 	if bytesNodePos != nil {
 		for e := bytesNodePos.Front(); e != nil; e = e.Next() {
 			nodePo := n.decodeToNodePo(e.Value.([]byte))
-			nodePos = append(nodePos, &nodePo)
+			nodePos = append(nodePos, nodePo)
 		}
 	}
 	return nodePos
@@ -66,8 +66,8 @@ func (n NodeDao) getKeyByIp(ip string) []byte {
 	return ByteUtil.StringToUtf8Bytes(ip)
 }
 func (n NodeDao) encode(node *po.NodePo) []byte {
-	return ByteUtil.StringToUtf8Bytes(JsonUtil.ToString(*node))
+	return ByteUtil.StringToUtf8Bytes(JsonUtil.ToString(node))
 }
-func (n NodeDao) decodeToNodePo(bytesNodePo []byte) po.NodePo {
-	return JsonUtil.ToObject(ByteUtil.Utf8BytesToString(bytesNodePo), po.NodePo{}).(po.NodePo)
+func (n NodeDao) decodeToNodePo(bytesNodePo []byte) *po.NodePo {
+	return JsonUtil.ToObject(ByteUtil.Utf8BytesToString(bytesNodePo), po.NodePo{}).(*po.NodePo)
 }
