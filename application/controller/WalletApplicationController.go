@@ -85,7 +85,7 @@ func (w *WalletApplicationController) DeleteAccount(rw http.ResponseWriter, req 
 
 func (w *WalletApplicationController) QueryAllAccounts(rw http.ResponseWriter, req *http.Request) {
 	wallet := w.blockchainNetCore.GetBlockchainCore().GetWallet()
-	var allAccounts []AccountUtil.Account
+	allAccounts := wallet.GetAllAccounts()
 
 	var accountVos []*account.AccountVo2
 	if allAccounts != nil {

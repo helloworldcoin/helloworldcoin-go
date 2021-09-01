@@ -17,11 +17,11 @@ func main() {
 	blockchainNetCore := netcore.CreateDefaultBlockchainNetCore()
 	blockchainNetCore.Start()
 
-	walletApplicationService := service.WalletApplicationService{}
+	walletApplicationService := service.NewWalletApplicationService(blockchainNetCore)
 
 	blockchainBrowserApplicationController := controller.NewBlockchainBrowserApplicationController(blockchainNetCore)
 	nodeConsoleApplicationController := controller.NewNodeConsoleApplicationController(blockchainNetCore)
-	walletApplicationController := controller.NewWalletApplicationController(blockchainNetCore, &walletApplicationService)
+	walletApplicationController := controller.NewWalletApplicationController(blockchainNetCore, walletApplicationService)
 	apiMux := http.NewServeMux()
 
 	apiMux.HandleFunc(BlockchainBrowserApplicationApi.QUERY_TOP10_BLOCKS, blockchainBrowserApplicationController.QueryTop10Blocks)
