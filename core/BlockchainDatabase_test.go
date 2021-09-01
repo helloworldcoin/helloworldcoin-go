@@ -18,7 +18,7 @@ func TestQueryBlockByBlockHeight(t *testing.T) {
 
 	consensus := &Consensus{}
 	incentive := &Incentive{}
-	coreConfiguration := &CoreConfiguration{CorePath: "d:"}
+	coreConfiguration := &CoreConfiguration{corePath: "d:"}
 	blockchainDatabase := BlockchainDatabase{Consensus: consensus, Incentive: incentive, CoreConfiguration: coreConfiguration}
 	blockchainDatabase.AddBlockDto(blockDto)
 

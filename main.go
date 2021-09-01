@@ -1,12 +1,17 @@
 package main
 
 import (
+	"fmt"
+	"helloworld-blockchain-go/util/SystemUtil"
 	"io"
 	"log"
 	"net/http"
 )
 
 func main() {
+
+	fmt.Println("SystemRootDirectory：" + SystemUtil.SystemRootDirectory())
+
 	//blockchainNetCore := netcore.CreateDefaultBlockchainNetCore()
 	//blockchainNetCore.Start()
 	apiMux := http.NewServeMux()
@@ -26,7 +31,6 @@ func main() {
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
-
 	print(4)
 }
 func get1(w http.ResponseWriter, req *http.Request) {
