@@ -56,3 +56,6 @@ func (b *BlockchainNetCore) Start() {
 	//未确认交易搜索器
 	go b.unconfirmedTransactionsSearcher.start()
 }
+func (b *BlockchainNetCore) GetBlockchainCore() *core.BlockchainCore {
+	return b.blockchainCore
+}

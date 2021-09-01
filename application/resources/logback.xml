@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <property name="APP_Name" value="helloworld-blockchain-application"/>
+    <property name="LOG_HOME" value="logs/"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                [ %-5level] [%date{yyyy-MM-dd HH:mm:ss.SSS}] %logger{96} - %msg%n
+            </pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="errorFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>
+                [ %-5level] [%date{yyyy-MM-dd HH:mm:ss.SSS}] %logger{96} - %msg%n
+            </pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${APP_Name}-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>1 GB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <MaxHistory>7</MaxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <prudent>true</prudent>
+    </appender>
+
+    <appender name="infoFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>
+                [ %-5level] [%date{yyyy-MM-dd HH:mm:ss.SSS}] %logger{96} - %msg%n
+            </pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${APP_Name}-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>1 GB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <MaxHistory>3</MaxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <prudent>true</prudent>
+    </appender>
+
+    <root level="debug">
+        <appender-ref ref="consoleAppender"/>
+        <appender-ref ref="errorFileAppender"/>
+        <appender-ref ref="infoFileAppender"/>
+    </root>
+</configuration>

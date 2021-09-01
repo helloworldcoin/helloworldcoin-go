@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>节点控制台-HelloworldBlockchain</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">HelloworldBlockchain</a>
+                </div>
+
+                <div>
+                    <!-- collapse navbar-collapse -->
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">搜索</a></li>
+                        <li><a href="./miner.html">挖矿</a></li>
+                        <li><a href="./unconfirm-transactions.html">未确认交易池</a></li>
+                        <li><a href="./pay.html">支付</a></li>
+                        <li><a href="./wallet.html">钱包</a></li>
+                        <li><a href="./node-management.html">节点管理</a></li>
+                        <li class="active"><a href="./node-console.html">节点控制台</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">☺节点控制台☺</div>
+            <!-- Table -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td style="width:30%;">当前区块高度</td>
+                        <td style="width:40%;" id="blockHeight"></td>
+                        <td style="width:30%;"><button class="btn btn-primary" type="submit" id="deleteBlocks">删除区块</button></td>
+                    </tr>
+                    <tr>
+                        <td>挖矿状态</td>
+                        <td id="minerStatus"></td>
+                        <td ><button class="btn btn-primary" type="submit"  id="minerSwitch">占位符</button></td>
+                    </tr>
+                    <tr>
+                        <td>区块搜寻策略</td>
+                        <td id="autoSearchBlock"></td>
+                        <td><button class="btn btn-primary" type="submit" id="autoSearchBlockSwitch">占位符</button></td>
+                    </tr>
+                    <tr>
+                        <td>节点搜寻策略</td>
+                        <td id="autoSearchNode"></td>
+                        <td ><button class="btn btn-primary" type="submit" id="autoSearchNodeSwitch">占位符</button></td>
+                    </tr>
+                    <tr>
+                        <td>最大挖矿高度</td>
+                        <td>
+                            <input type="text" id="maxBlockHeight">
+                        </td>
+                        <td ><button class="btn btn-primary" type="submit" id="setMaxBlockHeight">设置最大挖矿高度</button></td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+        <script>
+            let minerInActiveState,autoSearchBlock,autoSearchNode,maxBlockHeight;
+            $(async function(){
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockchainHeight"
+                });
+                $('#blockHeight').text(response.data.blockchainHeight);
+            }());
+            $(async function(){
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/NodeConsoleApplication/IsMinerActive"
+                });
+                minerInActiveState = response.data.minerInActiveState;
+                $('#minerStatus').text(response.data.minerInActiveState ? '挖矿中' : '休息中');
+                $('#minerSwitch').text(response.data.minerInActiveState ? '停止挖矿' : '开启挖矿');
+            }());
+            $(async function(){
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/NodeConsoleApplication/IsAutoSearchBlock"
+                });
+                autoSearchBlock = response.data.autoSearchBlock;
+                $('#autoSearchBlock').text(autoSearchBlock ? '自动搜索新区块' : '已暂停搜索新区块')
+                $('#autoSearchBlockSwitch').text(autoSearchBlock ? '停止搜索新区块' : '自动搜索新区块')
+            }());
+            $(async function(){
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/NodeConsoleApplication/IsAutoSearchNode"
+                });
+                autoSearchNode = response.data.autoSearchNode;
+                $('#autoSearchNode').text(autoSearchNode ? '自动搜索新节点' : '已暂停搜索新节点');
+                $('#autoSearchNodeSwitch').text(autoSearchNode ? '停止搜索新节点' : '自动搜索新节点');
+            }());
+            $(async function(){
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/NodeConsoleApplication/GetMaxBlockHeight"
+                });
+                maxBlockHeight = response.data.maxBlockHeight;
+                $('#maxBlockHeight').val(maxBlockHeight );
+            }());
+
+            $('#deleteBlocks').click(async function(){
+                let height = prompt('删除区块，请输入要删除区块的高度。');
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/NodeConsoleApplication/DeleteBlocks",
+                    data: `{
+                        "blockHeight":"${height}"
+                    }`
+                });
+                location.reload();
+            })
+            $('#minerSwitch').click(async function(){
+                if(minerInActiveState){
+                    await $ajax({
+                        url : baseUrl() + "/Api/NodeConsoleApplication/DeactiveMiner"
+                    });
+                }else{
+                    await $ajax({
+                        url : baseUrl() + "/Api/NodeConsoleApplication/ActiveMiner"
+                    });
+                }
+                location.reload();
+            })
+            $('#autoSearchBlockSwitch').click(async function(){
+                if(autoSearchBlock){
+                    await $ajax({
+                        url : baseUrl() + "/Api/NodeConsoleApplication/DeactiveAutoSearchBlock"
+                    });
+                }else{
+                    await $ajax({
+                        url : baseUrl() + "/Api/NodeConsoleApplicationle/ActiveAutoSearchBlock"
+                    });
+                }
+                location.reload();
+            })
+            $('#autoSearchNodeSwitch').click(async function(){
+                if(autoSearchNode){
+                    await $ajax({
+                        url : baseUrl() + "/Api/NodeConsoleApplication/DeactiveAutoSearchNode"
+                    });
+                }else{
+                    await $ajax({
+                        url : baseUrl() + "/Api/NodeConsoleApplication/ActiveAutoSearchNode"
+                    });
+                }
+                location.reload();
+            })
+            $('#setMaxBlockHeight').click(async function(){
+                maxBlockHeight = $('#maxBlockHeight').val();
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/NodeConsoleApplication/SetMaxBlockHeight",
+                    data: `{
+                        "maxBlockHeight":"${maxBlockHeight}"
+                    }`
+                });
+                location.reload();
+            })
+        </script>
+    </body>
+</html>

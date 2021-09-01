@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>根据高度搜索区块-中转页-HelloworldBlockchain</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+
+        <script src="./js/common.js"></script>
+    </head>
+    <body>
+        <script>
+            $(async function(){
+                let urlParameters = parseUrlParameters(location)
+                let request = `{"blockHeight": ${urlParameters.get("height")}}`;
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockByBlockHeight",
+                    data: request
+                });
+                if(response.data != null){
+                    let {block} = response.data;
+                    let redirectUrl = `./block.html${location.search}&hash=${block.hash}`;
+                    window.location.href = redirectUrl;
+                }else {
+                    alert("请检查区块高度！点击返回首页。");
+                    window.location.href = "./index.html";
+                }
+            }())
+        </script>
+    </body>
+</html>
