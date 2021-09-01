@@ -26,11 +26,6 @@ func NewBlockchainBrowserApplicationController(blockchainNetCore *netcore.Blockc
 	return &b
 }
 
-func (b *BlockchainBrowserApplicationController) Get111(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("content-type", "text/json")
-	io.WriteString(w, "111")
-	println(1111)
-}
 func (b *BlockchainBrowserApplicationController) QueryTop10Blocks(w http.ResponseWriter, req *http.Request) {
 
 	var blocks []*Model.Block

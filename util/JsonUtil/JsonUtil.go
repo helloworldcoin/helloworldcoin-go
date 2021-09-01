@@ -12,57 +12,101 @@ func ToString(object interface{}) string {
 }
 
 func ToObject(jsonString string, object interface{}) interface{} {
-	o1, ok := object.(dto.GetBlockRequest)
+	_0001, ok := object.(dto.GetBlockRequest)
 	if ok {
-		json.Unmarshal([]byte(jsonString), &o1)
-		return &o1
+		json.Unmarshal([]byte(jsonString), &_0001)
+		return &_0001
 	}
-	o2, ok := object.(dto.PostBlockRequest)
+	_1001, ok := object.(dto.GetBlockResponse)
 	if ok {
-		json.Unmarshal([]byte(jsonString), &o2)
-		return &o2
+		json.Unmarshal([]byte(jsonString), &_1001)
+		return &_1001
 	}
-	o3, ok := object.(dto.GetUnconfirmedTransactionsRequest)
+	_0002, ok := object.(dto.PostBlockRequest)
 	if ok {
-		json.Unmarshal([]byte(jsonString), &o3)
-		return &o3
+		json.Unmarshal([]byte(jsonString), &_0002)
+		return &_0002
 	}
-	o4, ok := object.(dto.GetBlockchainHeightRequest)
+	_1002, ok := object.(dto.PostBlockResponse)
 	if ok {
-		json.Unmarshal([]byte(jsonString), &o4)
-		return &o4
+		json.Unmarshal([]byte(jsonString), &_1002)
+		return &_1002
 	}
-	o5, ok := object.(dto.PostTransactionRequest)
+	_0003, ok := object.(dto.GetUnconfirmedTransactionsRequest)
 	if ok {
-		json.Unmarshal([]byte(jsonString), &o5)
-		return &o5
+		json.Unmarshal([]byte(jsonString), &_0003)
+		return &_0003
 	}
-	o6, ok := object.(dto.PostBlockchainHeightRequest)
+	_1003, ok := object.(dto.GetUnconfirmedTransactionsResponse)
 	if ok {
-		json.Unmarshal([]byte(jsonString), &o6)
-		return &o6
+		json.Unmarshal([]byte(jsonString), &_1003)
+		return &_1003
 	}
-	o7, ok := object.(dto.PingRequest)
+	_0004, ok := object.(dto.GetBlockchainHeightRequest)
 	if ok {
-		json.Unmarshal([]byte(jsonString), &o7)
-		return &o7
+		json.Unmarshal([]byte(jsonString), &_0004)
+		return &_0004
 	}
-	o8, ok := object.(dto.GetNodesRequest)
+	_1004, ok := object.(dto.GetBlockchainHeightResponse)
 	if ok {
-		json.Unmarshal([]byte(jsonString), &o8)
-		return &o8
+		json.Unmarshal([]byte(jsonString), &_1004)
+		return &_1004
+	}
+	_0005, ok := object.(dto.PostTransactionRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0005)
+		return &_0005
+	}
+	_1005, ok := object.(dto.PostTransactionResponse)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_1005)
+		return &_1005
+	}
+	_0006, ok := object.(dto.PostBlockchainHeightRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0006)
+		return &_0006
+	}
+	_1006, ok := object.(dto.PostBlockchainHeightResponse)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_1006)
+		return &_1006
+	}
+	_0007, ok := object.(dto.PingRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0007)
+		return &_0007
+	}
+	_1007, ok := object.(dto.PingResponse)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_1007)
+		return &_1007
+	}
+	_0008, ok := object.(dto.GetNodesRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0008)
+		return &_0008
+	}
+	_1008, ok := object.(dto.GetNodesResponse)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_1008)
+		return &_1008
+	}
+	_0009, ok := object.(dto.BlockDto)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0009)
+		return &_0009
+	}
+	_1009, ok := object.(dto.BlockDto)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_1009)
+		return &_1009
 	}
 
-	o9, ok := object.(dto.BlockDto)
+	_0010, ok := object.(po.NodePo)
 	if ok {
-		json.Unmarshal([]byte(jsonString), &o9)
-		return &o9
-	}
-
-	o10, ok := object.(po.NodePo)
-	if ok {
-		json.Unmarshal([]byte(jsonString), &o10)
-		return &o10
+		json.Unmarshal([]byte(jsonString), &_0010)
+		return &_0010
 	}
 	panic("JsonUtil.ToObject can not recognize object type")
 }

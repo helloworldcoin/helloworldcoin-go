@@ -15,7 +15,9 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
+	"strings"
 )
 
 type NodeServer struct {
@@ -65,7 +67,7 @@ func (b *NodeServer) postBlock(w http.ResponseWriter, req *http.Request) {
 func (b *NodeServer) postBlockchainHeight(w http.ResponseWriter, req *http.Request) {
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.PostBlockchainHeightRequest{}).(*dto.PostBlockchainHeightRequest)
-	requestIp := req.Host
+	requestIp := getIP(req)
 
 	var node model.Node
 	node.Ip = requestIp
@@ -108,7 +110,7 @@ func (b *NodeServer) getUnconfirmedTransactions(w http.ResponseWriter, req *http
 func (b *NodeServer) ping(w http.ResponseWriter, req *http.Request) {
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.PingRequest{}).(*dto.PingRequest)
-	requestIp := req.Host
+	requestIp := getIP(req)
 	fmt.Println(request)
 
 	//将ping的来路作为区块链节点
@@ -140,4 +142,27 @@ func (b *NodeServer) getNodes(w http.ResponseWriter, req *http.Request) {
 	var response dto.GetNodesResponse
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, JsonUtil.ToString(response))
+}
+
+func getIP(r *http.Request) string {
+	ip := r.Header.Get("X-Real-IP")
+	if net.ParseIP(ip) != nil {
+		return ip
+	}
+
+	ip = r.Header.Get("X-Forward-For")
+	for _, i := range strings.Split(ip, ",") {
+		if net.ParseIP(i) != nil {
+			return i
+		}
+	}
+
+	ip, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		return "localhost"
+	}
+	if net.ParseIP(ip) != nil {
+		return ip
+	}
+	return "localhost"
 }
