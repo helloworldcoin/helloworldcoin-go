@@ -2,6 +2,7 @@ package core
 
 import (
 	"helloworld-blockchain-go/core/Model"
+	"helloworld-blockchain-go/core/Model/ModelWallet"
 	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 	"helloworld-blockchain-go/dto"
 )
@@ -52,4 +53,11 @@ func (b BlockchainCore) DeleteBlocks(blockHeight uint64) {
 
 func (b *BlockchainCore) GetMiner() *Miner {
 	return b.Miner
+}
+
+func (b *BlockchainCore) GetWallet() *Wallet {
+	return b.Wallet
+}
+func (b *BlockchainCore) AutoBuildTransaction(request *ModelWallet.AutoBuildTransactionRequest) *ModelWallet.AutoBuildTransactionResponse {
+	return b.Wallet.AutoBuildTransaction(request)
 }

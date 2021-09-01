@@ -2,9 +2,11 @@ package JsonUtil
 
 import (
 	"encoding/json"
+	"helloworld-blockchain-go/application/vo/account"
 	"helloworld-blockchain-go/application/vo/block"
 	"helloworld-blockchain-go/application/vo/miner"
 	"helloworld-blockchain-go/application/vo/node"
+	"helloworld-blockchain-go/application/vo/wallet"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/netcore/po"
 )
@@ -182,6 +184,37 @@ func ToObject(jsonString string, object interface{}) interface{} {
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0200)
 		return &_0200
+	}
+
+	_0250, ok := object.(account.CreateAccountRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0250)
+		return &_0250
+	}
+	_0251, ok := object.(account.CreateAndSaveAccountRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0251)
+		return &_0251
+	}
+	_0252, ok := object.(account.DeleteAccountRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0252)
+		return &_0252
+	}
+	_0253, ok := object.(account.QueryAllAccountsRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0253)
+		return &_0253
+	}
+	_0254, ok := object.(account.SaveAccountRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0254)
+		return &_0254
+	}
+	_0300, ok := object.(wallet.AutoBuildTransactionRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0300)
+		return &_0300
 	}
 	panic("JsonUtil.ToObject can not recognize object type")
 }

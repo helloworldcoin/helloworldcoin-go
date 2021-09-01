@@ -2,8 +2,10 @@ package main
 
 import (
 	"helloworld-blockchain-go/application/controller"
+	"helloworld-blockchain-go/application/service"
 	"helloworld-blockchain-go/application/vo/BlockchainBrowserApplicationApi"
 	"helloworld-blockchain-go/application/vo/NodeConsoleApplicationApi"
+	"helloworld-blockchain-go/application/vo/WalletApplicationApi"
 	"helloworld-blockchain-go/netcore"
 	"helloworld-blockchain-go/util/SystemUtil"
 	"net/http"
@@ -15,12 +17,23 @@ func main() {
 	blockchainNetCore := netcore.CreateDefaultBlockchainNetCore()
 	blockchainNetCore.Start()
 
+	walletApplicationService := service.WalletApplicationService{}
+
 	blockchainBrowserApplicationController := controller.NewBlockchainBrowserApplicationController(blockchainNetCore)
 	nodeConsoleApplicationController := controller.NewNodeConsoleApplicationController(blockchainNetCore)
+	walletApplicationController := controller.NewWalletApplicationController(blockchainNetCore, &walletApplicationService)
 	apiMux := http.NewServeMux()
 
 	apiMux.HandleFunc(BlockchainBrowserApplicationApi.QUERY_TOP10_BLOCKS, blockchainBrowserApplicationController.QueryTop10Blocks)
 	apiMux.HandleFunc(BlockchainBrowserApplicationApi.QUERY_BLOCKCHAIN_HEIGHT, blockchainBrowserApplicationController.QueryBlockchainHeight)
+
+	apiMux.HandleFunc(WalletApplicationApi.CREATE_ACCOUNT, walletApplicationController.CreateAccount)
+	apiMux.HandleFunc(WalletApplicationApi.CREATE_AND_SAVE_ACCOUNT, walletApplicationController.CreateAndSaveAccount)
+	apiMux.HandleFunc(WalletApplicationApi.SAVE_ACCOUNT, walletApplicationController.SaveAccount)
+	apiMux.HandleFunc(WalletApplicationApi.DELETE_ACCOUNT, walletApplicationController.DeleteAccount)
+	apiMux.HandleFunc(WalletApplicationApi.QUERY_ALL_ACCOUNTS, walletApplicationController.QueryAllAccounts)
+	apiMux.HandleFunc(WalletApplicationApi.AUTO_BUILD_TRANSACTION, walletApplicationController.AutoBuildTransaction)
+	apiMux.HandleFunc(WalletApplicationApi.SUBMIT_TRANSACTION_TO_BLOCKCHIAIN_NEWWORK, walletApplicationController.SubmitTransactionToBlockchainNetwork)
 
 	apiMux.HandleFunc(NodeConsoleApplicationApi.IS_MINER_ACTIVE, nodeConsoleApplicationController.IsMineActive)
 	apiMux.HandleFunc(NodeConsoleApplicationApi.ACTIVE_MINER, nodeConsoleApplicationController.ActiveMiner)
