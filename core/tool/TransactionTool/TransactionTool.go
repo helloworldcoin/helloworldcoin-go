@@ -14,13 +14,6 @@ import (
 	"helloworld-blockchain-go/core/Model"
 )
 
-func GetTransactionOutputCount(transaction *Model.Transaction) uint64 {
-	outputs := transaction.Outputs
-	if outputs == nil {
-		return uint64(0)
-	}
-	return uint64(len(outputs))
-}
 func CalculateTransactionHash(transaction Model.Transaction) string {
 	transactionDto := Model2DtoTool.Transaction2TransactionDto(&transaction)
 	return TransactionDtoTool.CalculateTransactionHash(transactionDto)
@@ -182,4 +175,58 @@ func SignatureHashAll(transaction *Model.Transaction) string {
 func VerifySignature(transaction *Model.Transaction, publicKey string, bytesSignature []byte) bool {
 	transactionDto := Model2DtoTool.Transaction2TransactionDto(transaction)
 	return TransactionDtoTool.VerifySignature(transactionDto, publicKey, bytesSignature)
+}
+func CalculateTransactionFee(transaction *Model.Transaction) uint64 {
+	if transaction.TransactionType == TransactionType.GENESIS_TRANSACTION {
+		//创世交易没有交易手续费
+		return 0
+	} else if transaction.TransactionType == TransactionType.STANDARD_TRANSACTION {
+		inputsValue := getInputValue(transaction)
+		outputsValue := getOutputValue(transaction)
+		return inputsValue - outputsValue
+	} else {
+		panic("没有该交易类型。")
+	}
+}
+
+/**
+ * 交易输入总额
+ */
+func getInputValue(transaction *Model.Transaction) uint64 {
+	inputs := transaction.Inputs
+	total := uint64(0)
+	if inputs != nil {
+		for _, input := range inputs {
+			total += input.UnspentTransactionOutput.Value
+		}
+	}
+	return total
+}
+
+/**
+ * 交易输出总额
+ */
+func getOutputValue(transaction *Model.Transaction) uint64 {
+	outputs := transaction.Outputs
+	total := uint64(0)
+	if outputs != nil {
+		for _, output := range outputs {
+			total += output.Value
+		}
+	}
+	return total
+}
+func GetTransactionInputCount(transaction *Model.Transaction) uint64 {
+	inputs := transaction.Inputs
+	if inputs == nil {
+		return uint64(0)
+	}
+	return uint64(len(inputs))
+}
+func GetTransactionOutputCount(transaction *Model.Transaction) uint64 {
+	outputs := transaction.Outputs
+	if outputs == nil {
+		return uint64(0)
+	}
+	return uint64(len(outputs))
 }

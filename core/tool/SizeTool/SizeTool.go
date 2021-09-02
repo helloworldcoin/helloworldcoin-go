@@ -28,7 +28,7 @@ func CheckTransactionSize(transaction *Model.Transaction) bool {
 //endregion
 
 //region 计算大小
-func calculateBlockSize(block *Model.Block) uint64 {
+func CalculateBlockSize(block *Model.Block) uint64 {
 	return DtoSizeTool.CalculateBlockSize(Model2DtoTool.Block2BlockDto(block))
 }
 func calculateTransactionSize(transaction *Model.Transaction) uint64 {

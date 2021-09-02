@@ -16,7 +16,6 @@ type BlockchainCore struct {
 }
 
 func (b *BlockchainCore) Start() {
-	//TODO 异常
 	go b.Miner.Start()
 }
 func (b BlockchainCore) QueryBlockByBlockHeight(blockHeight uint64) *Model.Block {
@@ -60,4 +59,34 @@ func (b *BlockchainCore) GetWallet() *Wallet {
 }
 func (b *BlockchainCore) AutoBuildTransaction(request *ModelWallet.AutoBuildTransactionRequest) *ModelWallet.AutoBuildTransactionResponse {
 	return b.Wallet.AutoBuildTransaction(request)
+}
+
+func (b *BlockchainCore) QueryUnconfirmedTransactions(from uint64, size uint64) []*dto.TransactionDto {
+	return b.UnconfirmedTransactionDatabase.SelectTransactions(from, size)
+}
+
+func (b *BlockchainCore) QueryBlockByBlockHash(blockHash string) *Model.Block {
+	return b.BlockchainDatabase.QueryBlockByBlockHash(blockHash)
+}
+
+func (b *BlockchainCore) GetBlockchainDatabase() *BlockchainDatabase {
+	return b.BlockchainDatabase
+}
+
+func (b *BlockchainCore) QueryTransactionByTransactionHash(transactionHash string) *Model.Transaction {
+	return b.BlockchainDatabase.QueryTransactionByTransactionHash(transactionHash)
+
+}
+
+func (b *BlockchainCore) QueryUnconfirmedTransactionByTransactionHash(transactionHash string) *dto.TransactionDto {
+	return b.UnconfirmedTransactionDatabase.SelectTransactionByTransactionHash(transactionHash)
+}
+
+func (b *BlockchainCore) QueryTransactionByTransactionHeight(transactionHeight uint64) *Model.Transaction {
+	return b.BlockchainDatabase.QueryTransactionByTransactionHeight(transactionHeight)
+
+}
+
+func (b *BlockchainCore) QueryTransactionOutputByAddress(address string) *Model.TransactionOutput {
+	return b.BlockchainDatabase.QueryTransactionOutputByAddress(address)
 }

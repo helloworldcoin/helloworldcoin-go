@@ -6,101 +6,111 @@ import (
 )
 
 type TransactionInputVo struct {
-	address                string
-	value                  uint64
-	inputScript            string
-	transactionHash        string
-	transactionOutputIndex uint64
+	Address                string `json:"address"`
+	Value                  uint64 `json:"value"`
+	InputScript            string `json:"inputScript"`
+	TransactionHash        string `json:"transactionHash"`
+	TransactionOutputIndex uint64 `json:"transactionOutputIndex"`
 }
 type TransactionOutputVo struct {
-	address                string
-	value                  uint64
-	outputScript           string
-	transactionHash        string
-	transactionOutputIndex uint64
+	Address                string `json:"address"`
+	Value                  uint64 `json:"value"`
+	OutputScript           string `json:"outputScript"`
+	TransactionHash        string `json:"transactionHash"`
+	TransactionOutputIndex uint64 `json:"transactionOutputIndex"`
 }
 type TransactionVo struct {
-	blockHeight     uint64
-	blockHash       string
-	confirmCount    uint64
-	transactionHash string
-	blockTime       string
+	BlockHeight     uint64 `json:"blockHeight"`
+	BlockHash       string `json:"blockHash"`
+	ConfirmCount    uint64 `json:"confirmCount"`
+	TransactionHash string `json:"transactionHash"`
+	BlockTime       string `json:"blockTime"`
 
-	transactionFee          uint64
-	transactionType         string
-	transactionInputCount   uint64
-	transactionOutputCount  uint64
-	transactionInputValues  uint64
-	transactionOutputValues uint64
+	TransactionFee          uint64 `json:"transactionFee"`
+	TransactionType         string `json:"transactionType"`
+	TransactionInputCount   uint64 `json:"transactionInputCount"`
+	TransactionOutputCount  uint64 `json:"transactionOutputCount"`
+	TransactionInputValues  uint64 `json:"transactionInputValues"`
+	TransactionOutputValues uint64 `json:"transactionOutputValues"`
 
-	transactionInputs  []*TransactionInputVo
-	transactionOutputs []*TransactionOutputVo
+	TransactionInputs  []*TransactionInputVo  `json:"transactionInputs"`
+	TransactionOutputs []*TransactionOutputVo `json:"transactionOutputs"`
 
-	inputScripts  []string
-	outputScripts []string
+	InputScripts  []string `json:"inputScripts"`
+	OutputScripts []string `json:"outputScripts"`
 }
 type TransactionOutputDetailVo struct {
-	value           uint64
-	spent           bool
-	transactionType string
+	Value           uint64 `json:"value"`
+	Spent           bool   `json:"spent"`
+	TransactionType string `json:"transactionType"`
 
-	fromBlockHeight            uint64
-	fromBlockHash              string
-	fromTransactionHash        string
-	fromTransactionOutputIndex uint64
-	fromOutputScript           string
+	FromBlockHeight            uint64 `json:"fromBlockHeight"`
+	FromBlockHash              string `json:"fromBlockHash"`
+	FromTransactionHash        string `json:"fromTransactionHash"`
+	FromTransactionOutputIndex uint64 `json:"fromTransactionOutputIndex"`
+	FromOutputScript           string `json:"fromOutputScript"`
 
-	toBlockHeight           uint64
-	toBlockHash             string
-	toTransactionHash       string
-	toTransactionInputIndex uint64
-	toInputScript           string
+	ToBlockHeight           uint64 `json:"toBlockHeight"`
+	ToBlockHash             string `json:"toBlockHash"`
+	ToTransactionHash       string `json:"toTransactionHash"`
+	ToTransactionInputIndex uint64 `json:"toTransactionInputIndex"`
+	ToInputScript           string `json:"toInputScript"`
 
-	inputTransaction  TransactionVo
-	outputTransaction TransactionVo
+	InputTransaction  *TransactionVo `json:"inputTransaction"`
+	OutputTransaction *TransactionVo `json:"outputTransaction"`
 }
 type UnconfirmedTransactionVo struct {
-	transactionHash string
-	inputs          []*TransactionInputVo
-	outputs         []*TransactionOutputVo
+	TransactionHash string                  `json:"transactionHash"`
+	Inputs          []*TransactionInputVo2  `json:"inputs"`
+	Outputs         []*TransactionOutputVo2 `json:"outputs"`
+}
+type TransactionInputVo2 struct {
+	Value                  uint64 `json:"value"`
+	Address                string `json:"address"`
+	TransactionHash        string `json:"transactionHash"`
+	TransactionOutputIndex uint64 `json:"transactionOutputIndex"`
+}
+type TransactionOutputVo2 struct {
+	Value   uint64 `json:"value"`
+	Address string `json:"address"`
 }
 type QueryTransactionByTransactionHashRequest struct {
-	transactionHash string
+	TransactionHash string `json:"transactionHash"`
 }
 type QueryTransactionByTransactionHashResponse struct {
-	transaction TransactionVo
+	Transaction *TransactionVo `json:"transaction"`
 }
 type QueryTransactionOutputByAddressRequest struct {
-	address string
+	Address string `json:"address"`
 }
 type QueryTransactionOutputByAddressResponse struct {
-	transactionOutputDetail TransactionOutputDetailVo
+	TransactionOutputDetail *TransactionOutputDetailVo `json:"transactionOutputDetail"`
 }
 type QueryTransactionOutputByTransactionOutputIdRequest struct {
-	transactionHash        string
-	transactionOutputIndex uint64
+	TransactionHash        string `json:"transactionHash"`
+	TransactionOutputIndex uint64 `json:"transactionOutputIndex"`
 }
 type QueryTransactionOutputByTransactionOutputIdResponse struct {
-	transactionOutputDetail TransactionOutputDetailVo
+	TransactionOutputDetail *TransactionOutputDetailVo `json:"transactionOutputDetail"`
 }
 type QueryTransactionsByBlockHashTransactionHeightRequest struct {
-	blockHash     string
-	pageCondition framwork.PageCondition
+	BlockHash     string                  `json:"blockHash"`
+	PageCondition *framwork.PageCondition `json:"pageCondition"`
 }
 type QueryTransactionsByBlockHashTransactionHeightResponse struct {
-	transactions []TransactionVo
+	Transactions []*TransactionVo `json:"transactions"`
 }
 type QueryUnconfirmedTransactionByTransactionHashRequest struct {
-	transactionHash string
+	TransactionHash string `json:"transactionHash"`
 }
 type QueryUnconfirmedTransactionByTransactionHashResponse struct {
-	transaction UnconfirmedTransactionVo
+	Transaction *UnconfirmedTransactionVo `json:"transaction"`
 }
 type QueryUnconfirmedTransactionsRequest struct {
-	pageCondition framwork.PageCondition
+	PageCondition *framwork.PageCondition `json:"pageCondition"`
 }
 type QueryUnconfirmedTransactionsResponse struct {
-	unconfirmedTransactions []*UnconfirmedTransactionVo
+	UnconfirmedTransactions []*UnconfirmedTransactionVo `json:"unconfirmedTransactions"`
 }
 type SubmitTransactionToBlockchainNetworkRequest struct {
 	Transaction *dto.TransactionDto `json:"transaction"`

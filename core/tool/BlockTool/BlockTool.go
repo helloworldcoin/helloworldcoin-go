@@ -162,3 +162,12 @@ func IsBlockEquals(block1 *Model.Block, block2 *Model.Block) bool {
 	blockDto2 := Model2DtoTool.Block2BlockDto(block2)
 	return BlockDtoTool.IsBlockEquals(blockDto1, blockDto2)
 }
+
+/**
+ * 格式化难度
+ * 前置填零，返回[长度为64位][十六进制字符串形式的]难度
+ */
+func FormatDifficulty(difficulty string) string {
+	//难度长度是256bit，64位十六进制的字符串数，如果传入的难度长度不够，这里进行前置补充零操作。
+	return StringUtil.PrefixPadding(difficulty, 64, "0")
+}

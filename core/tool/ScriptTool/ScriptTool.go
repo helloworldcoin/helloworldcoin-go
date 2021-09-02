@@ -7,6 +7,7 @@ import (
 	"helloworld-blockchain-go/core/tool/ScriptDtoTool"
 	"helloworld-blockchain-go/crypto/AccountUtil"
 	"helloworld-blockchain-go/crypto/ByteUtil"
+	"helloworld-blockchain-go/util/StringUtil"
 )
 
 func CreatePayToPublicKeyHashOutputScript(address string) *Script.OutputScript {
@@ -46,3 +47,37 @@ func IsPayToPublicKeyHashOutputScript(outputScript *Script.OutputScript) bool {
 	outputScriptDto := Model2DtoTool.OutputScript2OutputScriptDto(outputScript)
 	return ScriptDtoTool.IsPayToPublicKeyHashOutputScript(outputScriptDto)
 }
+
+//region 可视、可阅读的脚本，区块链浏览器使用
+func StringInputScript(inputScript *Script.InputScript) string {
+	return stringScript(inputScript)
+}
+func StringOutputScript(outputScript *Script.OutputScript) string {
+	return stringScript(outputScript)
+}
+func stringScript(script *Script.Script) string {
+	stringScript := ""
+	for i := 0; i < len(*script); i++ {
+		operationCode := (*script)[i]
+		bytesOperationCode := ByteUtil.HexStringToBytes(operationCode)
+		if ByteUtil.IsEquals(OperationCodeEnum.OP_DUP.Code, bytesOperationCode) {
+			stringScript = StringUtil.Concatenate3(stringScript, OperationCodeEnum.OP_DUP.Name, StringUtil.BLANKSPACE)
+		} else if ByteUtil.IsEquals(OperationCodeEnum.OP_HASH160.Code, bytesOperationCode) {
+			stringScript = StringUtil.Concatenate3(stringScript, OperationCodeEnum.OP_HASH160.Name, StringUtil.BLANKSPACE)
+		} else if ByteUtil.IsEquals(OperationCodeEnum.OP_EQUALVERIFY.Code, bytesOperationCode) {
+			stringScript = StringUtil.Concatenate3(stringScript, OperationCodeEnum.OP_EQUALVERIFY.Name, StringUtil.BLANKSPACE)
+		} else if ByteUtil.IsEquals(OperationCodeEnum.OP_CHECKSIG.Code, bytesOperationCode) {
+			stringScript = StringUtil.Concatenate3(stringScript, OperationCodeEnum.OP_CHECKSIG.Name, StringUtil.BLANKSPACE)
+		} else if ByteUtil.IsEquals(OperationCodeEnum.OP_PUSHDATA.Code, bytesOperationCode) {
+			i = i + 1
+			operationData := (*script)[i]
+			stringScript = StringUtil.Concatenate3(stringScript, OperationCodeEnum.OP_PUSHDATA.Name, StringUtil.BLANKSPACE)
+			stringScript = StringUtil.Concatenate3(stringScript, operationData, StringUtil.BLANKSPACE)
+		} else {
+			panic("不能识别的指令")
+		}
+	}
+	return stringScript
+}
+
+//endregion
