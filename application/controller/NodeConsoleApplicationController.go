@@ -2,7 +2,6 @@ package controller
 
 import (
 	"helloworld-blockchain-go/application/vo/block"
-	"helloworld-blockchain-go/application/vo/framwork"
 	"helloworld-blockchain-go/application/vo/miner"
 	"helloworld-blockchain-go/application/vo/node"
 	"helloworld-blockchain-go/application/vo/synchronizer"
@@ -30,7 +29,7 @@ func (n *NodeConsoleApplicationController) IsMineActive(rw http.ResponseWriter, 
 
 	var response miner.IsMinerActiveResponse
 	response.MinerInActiveState = isMineActive
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
@@ -39,7 +38,7 @@ func (n *NodeConsoleApplicationController) ActiveMiner(rw http.ResponseWriter, r
 	n.blockchainNetCore.GetBlockchainCore().GetMiner().Active()
 	var response miner.ActiveMinerResponse
 	response.ActiveMinerSuccess = true
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
@@ -49,7 +48,7 @@ func (n *NodeConsoleApplicationController) DeactiveMiner(rw http.ResponseWriter,
 	var response miner.DeactiveMinerResponse
 	response.DeactiveMinerSuccess = true
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -58,7 +57,7 @@ func (n *NodeConsoleApplicationController) IsAutoSearchBlock(rw http.ResponseWri
 	var response synchronizer.IsAutoSearchBlockResponse
 	response.AutoSearchBlock = isAutoSearchBlock
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -67,7 +66,7 @@ func (n *NodeConsoleApplicationController) ActiveAutoSearchBlock(rw http.Respons
 	var response synchronizer.ActiveAutoSearchBlockResponse
 	response.ActiveAutoSearchBlockSuccess = true
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -76,7 +75,7 @@ func (n *NodeConsoleApplicationController) DeactiveAutoSearchBlock(rw http.Respo
 	var response synchronizer.DeactiveAutoSearchBlockResponse
 	response.DeactiveAutoSearchBlockSuccess = true
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -99,7 +98,7 @@ func (n *NodeConsoleApplicationController) AddNode(rw http.ResponseWriter, req *
 	var response node.AddNodeResponse
 	response.AddNodeSuccess = true
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -117,7 +116,7 @@ func (n *NodeConsoleApplicationController) UpdateNode(rw http.ResponseWriter, re
 	n.blockchainNetCore.GetNodeService().UpdateNode(&nodeTemp)
 	var response node.UpdateNodeResponse
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -128,7 +127,7 @@ func (n *NodeConsoleApplicationController) DeleteNode(rw http.ResponseWriter, re
 	n.blockchainNetCore.GetNodeService().DeleteNode(request.Ip)
 	var response node.DeleteNodeResponse
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -148,7 +147,7 @@ func (n *NodeConsoleApplicationController) QueryAllNodes(rw http.ResponseWriter,
 	var response node.QueryAllNodesResponse
 	response.Nodes = nodeVos
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -158,7 +157,7 @@ func (n *NodeConsoleApplicationController) IsAutoSearchNode(rw http.ResponseWrit
 	var response node.IsAutoSearchNodeResponse
 	response.AutoSearchNode = isAutoSearchNode
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -166,7 +165,7 @@ func (n *NodeConsoleApplicationController) ActiveAutoSearchNode(rw http.Response
 	n.blockchainNetCore.GetNetCoreConfiguration().ActiveAutoSearchNode()
 	var response node.ActiveAutoSearchNodeResponse
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -174,7 +173,7 @@ func (n *NodeConsoleApplicationController) DeactiveAutoSearchNode(rw http.Respon
 	n.blockchainNetCore.GetNetCoreConfiguration().DeactiveAutoSearchNode()
 	var response node.DeactiveAutoSearchNodeResponse
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -186,7 +185,7 @@ func (n *NodeConsoleApplicationController) DeleteBlocks(rw http.ResponseWriter, 
 	n.blockchainNetCore.GetBlockchainCore().DeleteBlocks(request.BlockHeight)
 	var response block.DeleteBlocksResponse
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -196,7 +195,7 @@ func (n *NodeConsoleApplicationController) GetMaxBlockHeight(rw http.ResponseWri
 	var response miner.GetMaxBlockHeightResponse
 	response.MaxBlockHeight = maxBlockHeight
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -208,7 +207,7 @@ func (n *NodeConsoleApplicationController) SetMaxBlockHeight(rw http.ResponseWri
 	n.blockchainNetCore.GetBlockchainCore().GetMiner().SetMaxBlockHeight(height)
 	var response miner.SetMaxBlockHeightResponse
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }

@@ -6,6 +6,7 @@ import (
 	"helloworld-blockchain-go/application/vo/block"
 	"helloworld-blockchain-go/application/vo/miner"
 	"helloworld-blockchain-go/application/vo/node"
+	"helloworld-blockchain-go/application/vo/transaction"
 	"helloworld-blockchain-go/application/vo/wallet"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/netcore/po"
@@ -215,6 +216,42 @@ func ToObject(jsonString string, object interface{}) interface{} {
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0300)
 		return &_0300
+	}
+
+	_0350, ok := object.(transaction.QueryTransactionByTransactionHashRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0350)
+		return &_0350
+	}
+	_0351, ok := object.(transaction.QueryTransactionOutputByAddressRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0351)
+		return &_0351
+	}
+	_0352, ok := object.(transaction.QueryTransactionOutputByTransactionOutputIdRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0352)
+		return &_0352
+	}
+	_0353, ok := object.(transaction.QueryTransactionsByBlockHashTransactionHeightRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0353)
+		return &_0353
+	}
+	_0354, ok := object.(transaction.QueryUnconfirmedTransactionByTransactionHashRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0354)
+		return &_0354
+	}
+	_0355, ok := object.(transaction.QueryUnconfirmedTransactionsRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0355)
+		return &_0355
+	}
+	_0356, ok := object.(transaction.SubmitTransactionToBlockchainNetworkRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0356)
+		return &_0356
 	}
 	panic("JsonUtil.ToObject can not recognize object type")
 }

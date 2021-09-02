@@ -3,7 +3,6 @@ package controller
 import (
 	"helloworld-blockchain-go/application/service"
 	"helloworld-blockchain-go/application/vo/account"
-	"helloworld-blockchain-go/application/vo/framwork"
 	"helloworld-blockchain-go/application/vo/transaction"
 	"helloworld-blockchain-go/core/Model/ModelWallet"
 	"helloworld-blockchain-go/crypto/AccountUtil"
@@ -33,7 +32,7 @@ func (w *WalletApplicationController) CreateAccount(rw http.ResponseWriter, req 
 	var response account.CreateAccountResponse
 	response.Account = &accountVo
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -43,7 +42,7 @@ func (w *WalletApplicationController) CreateAndSaveAccount(rw http.ResponseWrite
 	var response account.CreateAndSaveAccountResponse
 	response.Account = &accountVo
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -61,7 +60,7 @@ func (w *WalletApplicationController) SaveAccount(rw http.ResponseWriter, req *h
 	var response account.SaveAccountResponse
 	response.AddAccountSuccess = true
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -78,7 +77,7 @@ func (w *WalletApplicationController) DeleteAccount(rw http.ResponseWriter, req 
 	var response account.DeleteAccountResponse
 	response.DeleteAccountSuccess = true
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -107,7 +106,7 @@ func (w *WalletApplicationController) QueryAllAccounts(rw http.ResponseWriter, r
 	response.Accounts = accountVos
 	response.Balance = balance
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -122,7 +121,7 @@ func (w *WalletApplicationController) AutoBuildTransaction(rw http.ResponseWrite
 			return Response.createFailResponse(autoBuildTransactionResponse.getMessage())
 		}*/
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
@@ -133,7 +132,7 @@ func (w *WalletApplicationController) SubmitTransactionToBlockchainNetwork(rw ht
 
 	response := w.walletApplicationService.SubmitTransactionToBlockchainNetwork(request)
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }

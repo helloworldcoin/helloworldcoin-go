@@ -3,7 +3,6 @@ package controller
 import (
 	"helloworld-blockchain-go/application/service"
 	"helloworld-blockchain-go/application/vo/block"
-	"helloworld-blockchain-go/application/vo/framwork"
 	"helloworld-blockchain-go/application/vo/node"
 	"helloworld-blockchain-go/application/vo/transaction"
 	"helloworld-blockchain-go/core/Model"
@@ -42,7 +41,7 @@ func (b *BlockchainBrowserApplicationController) QueryTransactionByTransactionHa
 	var response transaction.QueryTransactionByTransactionHashResponse
 	response.Transaction = transactionVo
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, s)
 }
@@ -58,7 +57,7 @@ func (b *BlockchainBrowserApplicationController) QueryTransactionsByBlockHashTra
 	var response transaction.QueryTransactionsByBlockHashTransactionHeightResponse
 	response.Transactions = transactionVos
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, s)
 }
@@ -70,7 +69,7 @@ func (b *BlockchainBrowserApplicationController) QueryTransactionOutputByAddress
 	var response transaction.QueryTransactionOutputByAddressResponse
 	response.TransactionOutputDetail = transactionOutputDetailVo
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, s)
 }
@@ -82,7 +81,7 @@ func (b *BlockchainBrowserApplicationController) QueryTransactionOutputByTransac
 	var response transaction.QueryTransactionOutputByTransactionOutputIdResponse
 	response.TransactionOutputDetail = transactionOutputDetailVo
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, s)
 }
@@ -91,7 +90,7 @@ func (b *BlockchainBrowserApplicationController) QueryBlockchainHeight(w http.Re
 	blockchainHeight := b.blockchainNetCore.GetBlockchainCore().QueryBlockchainHeight()
 	var response node.QueryBlockchainHeightResponse
 	response.BlockchainHeight = blockchainHeight
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, s)
@@ -108,7 +107,7 @@ func (b *BlockchainBrowserApplicationController) QueryUnconfirmedTransactionByTr
 	var response transaction.QueryUnconfirmedTransactionByTransactionHashResponse
 	response.Transaction = unconfirmedTransactionVo
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, s)
 }
@@ -133,7 +132,7 @@ func (b *BlockchainBrowserApplicationController) QueryUnconfirmedTransactions(w 
 	var response transaction.QueryUnconfirmedTransactionsResponse
 	response.UnconfirmedTransactions = unconfirmedTransactionVos
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, s)
 }
@@ -149,7 +148,7 @@ func (b *BlockchainBrowserApplicationController) QueryBlockByBlockHeight(w http.
 	var response block.QueryBlockByBlockHeightResponse
 	response.Block = blockVo
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, s)
 }
@@ -166,7 +165,7 @@ func (b *BlockchainBrowserApplicationController) QueryBlockByBlockHash(w http.Re
 	var response block.QueryBlockByBlockHashResponse
 	response.Block = blockVo
 
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, s)
 }
@@ -201,8 +200,13 @@ func (b *BlockchainBrowserApplicationController) QueryTop10Blocks(w http.Respons
 
 	var response block.QueryTop10BlocksResponse
 	response.Blocks = blockVos
-	s := framwork.CreateSuccessResponse("", response)
+	s := CreateSuccessResponse("", response)
 
 	w.Header().Set("content-type", "text/json")
 	io.WriteString(w, s)
+}
+
+//TODO
+func CreateSuccessResponse(message string, data interface{}) string {
+	return "{\"status\":\"SUCCESS\",\"message\":\"message\",\"data\":" + JsonUtil.ToString(data) + "}"
 }
