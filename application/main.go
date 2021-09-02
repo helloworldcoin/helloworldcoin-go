@@ -12,14 +12,15 @@ import (
 )
 
 func main() {
-	SystemUtil.CallDefaultBrowser(`http://localhost:8080/`)
+	SystemUtil.CallDefaultBrowser(`http://localhost/`)
 
 	blockchainNetCore := netcore.CreateDefaultBlockchainNetCore()
 	blockchainNetCore.Start()
 
 	walletApplicationService := service.NewWalletApplicationService(blockchainNetCore)
+	blockchainBrowserApplicationService := service.NewBlockchainBrowserApplicationService(blockchainNetCore)
 
-	blockchainBrowserApplicationController := controller.NewBlockchainBrowserApplicationController(blockchainNetCore)
+	blockchainBrowserApplicationController := controller.NewBlockchainBrowserApplicationController(blockchainNetCore, blockchainBrowserApplicationService)
 	nodeConsoleApplicationController := controller.NewNodeConsoleApplicationController(blockchainNetCore)
 	walletApplicationController := controller.NewWalletApplicationController(blockchainNetCore, walletApplicationService)
 	apiMux := http.NewServeMux()
@@ -68,12 +69,12 @@ func main() {
 
 	ipInterceptorServeMux := http.NewServeMux()
 	ipInterceptorServeMux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		if req.Host != "localhost:8080" {
+		if req.Host != "localhost" {
 			http.Error(w, "Blocked", 401)
 			return
 		}
 		apiMux.ServeHTTP(w, req)
 	}))
 
-	http.ListenAndServe(":8080", ipInterceptorServeMux)
+	http.ListenAndServe(":80", ipInterceptorServeMux)
 }

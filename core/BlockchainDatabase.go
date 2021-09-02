@@ -31,9 +31,12 @@ type BlockchainDatabase struct {
 	CoreConfiguration *CoreConfiguration
 }
 
+var Mutex = sync.Mutex{}
+
 func (b *BlockchainDatabase) AddBlockDto(blockDto *dto.BlockDto) bool {
-	var lock = sync.Mutex{}
-	lock.Lock()
+	Mutex.Lock()
+	defer Mutex.Unlock()
+
 	block := BlockDto2Block(b, blockDto)
 	checkBlock := b.CheckBlock(block)
 	if !checkBlock {
@@ -41,23 +44,21 @@ func (b *BlockchainDatabase) AddBlockDto(blockDto *dto.BlockDto) bool {
 	}
 	kvWriteBatch := b.createBlockWriteBatch(block, BlockchainActionEnum.ADD_BLOCK)
 	KvDbUtil.Write(b.getBlockchainDatabasePath(), kvWriteBatch)
-	lock.Unlock()
 	return true
 }
 func (b *BlockchainDatabase) DeleteTailBlock() {
-	var lock = sync.Mutex{}
-	lock.Lock()
+	Mutex.Lock()
+	defer Mutex.Unlock()
 	tailBlock := b.QueryTailBlock()
 	if tailBlock == nil {
 		return
 	}
 	kvWriteBatch := b.createBlockWriteBatch(tailBlock, BlockchainActionEnum.DELETE_BLOCK)
 	KvDbUtil.Write(b.getBlockchainDatabasePath(), kvWriteBatch)
-	lock.Unlock()
 }
 func (b *BlockchainDatabase) DeleteBlocks(blockHeight uint64) {
-	var lock = sync.Mutex{}
-	lock.Lock()
+	Mutex.Lock()
+	defer Mutex.Unlock()
 	for {
 		tailBlock := b.QueryTailBlock()
 		if tailBlock == nil {
@@ -69,7 +70,6 @@ func (b *BlockchainDatabase) DeleteBlocks(blockHeight uint64) {
 		kvWriteBatch := b.createBlockWriteBatch(tailBlock, BlockchainActionEnum.DELETE_BLOCK)
 		KvDbUtil.Write(b.getBlockchainDatabasePath(), kvWriteBatch)
 	}
-	lock.Unlock()
 }
 
 func (b *BlockchainDatabase) CheckBlock(block *Model.Block) bool {

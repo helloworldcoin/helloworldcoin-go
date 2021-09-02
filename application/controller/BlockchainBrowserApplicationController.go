@@ -23,9 +23,10 @@ type BlockchainBrowserApplicationController struct {
 	blockchainBrowserApplicationService *service.BlockchainBrowserApplicationService
 }
 
-func NewBlockchainBrowserApplicationController(blockchainNetCore *netcore.BlockchainNetCore) *BlockchainBrowserApplicationController {
+func NewBlockchainBrowserApplicationController(blockchainNetCore *netcore.BlockchainNetCore, blockchainBrowserApplicationService *service.BlockchainBrowserApplicationService) *BlockchainBrowserApplicationController {
 	var b BlockchainBrowserApplicationController
 	b.blockchainNetCore = blockchainNetCore
+	b.blockchainBrowserApplicationService = blockchainBrowserApplicationService
 	return &b
 }
 
@@ -208,5 +209,5 @@ func (b *BlockchainBrowserApplicationController) QueryTop10Blocks(w http.Respons
 
 //TODO
 func CreateSuccessResponse(message string, data interface{}) string {
-	return "{\"status\":\"SUCCESS\",\"message\":\"message\",\"data\":" + JsonUtil.ToString(data) + "}"
+	return "{\"status\":\"success\",\"message\":\"" + message + "\",\"data\":" + JsonUtil.ToString(data) + "}"
 }
