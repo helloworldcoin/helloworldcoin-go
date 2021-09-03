@@ -25,8 +25,8 @@ func NewWalletApplicationController(blockchainNetCore *netcore.BlockchainNetCore
 }
 
 func (w *WalletApplicationController) CreateAccount(rw http.ResponseWriter, req *http.Request) {
-	accountTemp := AccountUtil.RandomAccount()
-	accountVo := vo.AccountVo{accountTemp.PrivateKey, accountTemp.PublicKey, accountTemp.PublicKeyHash, accountTemp.Address}
+	account := AccountUtil.RandomAccount()
+	accountVo := vo.AccountVo{account.PrivateKey, account.PublicKey, account.PublicKeyHash, account.Address}
 	var response vo.CreateAccountResponse
 	response.Account = &accountVo
 
@@ -50,8 +50,8 @@ func (w *WalletApplicationController) SaveAccount(rw http.ResponseWriter, req *h
 		FailedHttpResponse(rw, "账户私钥不能为空。")
 		return
 	}
-	accountTemp := AccountUtil.AccountFromPrivateKey(privateKey)
-	w.blockchainNetCore.GetBlockchainCore().GetWallet().SaveAccount(accountTemp)
+	account := AccountUtil.AccountFromPrivateKey(privateKey)
+	w.blockchainNetCore.GetBlockchainCore().GetWallet().SaveAccount(account)
 	var response vo.SaveAccountResponse
 	response.AddAccountSuccess = true
 
