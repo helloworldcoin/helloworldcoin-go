@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"helloworld-blockchain-go/application/vo/block"
+	"helloworld-blockchain-go/application/vo"
 	"helloworld-blockchain-go/application/vo/miner"
 	"helloworld-blockchain-go/application/vo/node"
 	"helloworld-blockchain-go/application/vo/synchronizer"
@@ -180,10 +180,10 @@ func (n *NodeConsoleApplicationController) DeactiveAutoSearchNode(rw http.Respon
 
 func (n *NodeConsoleApplicationController) DeleteBlocks(rw http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), block.DeleteBlocksRequest{}).(*block.DeleteBlocksRequest)
+	request := JsonUtil.ToObject(string(result), vo.DeleteBlocksRequest{}).(*vo.DeleteBlocksRequest)
 
 	n.blockchainNetCore.GetBlockchainCore().DeleteBlocks(request.BlockHeight)
-	var response block.DeleteBlocksResponse
+	var response vo.DeleteBlocksResponse
 
 	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")

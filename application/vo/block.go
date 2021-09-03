@@ -1,4 +1,4 @@
-package block
+package vo
 
 type BlockVo struct {
 	Height              uint64 `json:"height"`

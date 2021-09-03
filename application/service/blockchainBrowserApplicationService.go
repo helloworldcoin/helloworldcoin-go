@@ -1,7 +1,7 @@
 package service
 
 import (
-	"helloworld-blockchain-go/application/vo/block"
+	"helloworld-blockchain-go/application/vo"
 	"helloworld-blockchain-go/application/vo/transaction"
 	"helloworld-blockchain-go/core"
 	"helloworld-blockchain-go/core/tool/BlockTool"
@@ -100,30 +100,30 @@ func (b *BlockchainBrowserApplicationService) QueryTransactionListByBlockHashTra
 	return transactionVos
 }
 
-func (b *BlockchainBrowserApplicationService) QueryBlockViewByBlockHeight(blockHeight uint64) *block.BlockVo {
-	block1 := b.blockchainNetCore.GetBlockchainCore().QueryBlockByBlockHeight(blockHeight)
-	if block1 == nil {
+func (b *BlockchainBrowserApplicationService) QueryBlockViewByBlockHeight(blockHeight uint64) *vo.BlockVo {
+	block := b.blockchainNetCore.GetBlockchainCore().QueryBlockByBlockHeight(blockHeight)
+	if block == nil {
 		return nil
 	}
-	nextBlock := b.blockchainNetCore.GetBlockchainCore().QueryBlockByBlockHeight(block1.Height + 1)
+	nextBlock := b.blockchainNetCore.GetBlockchainCore().QueryBlockByBlockHeight(block.Height + 1)
 
-	var blockVo block.BlockVo
-	blockVo.Height = block1.Height
-	blockVo.ConfirmCount = BlockTool.GetTransactionCount(block1)
-	blockVo.BlockSize = StringUtil.ValueOfUint64(SizeTool.CalculateBlockSize(block1)) + "字符"
-	blockVo.TransactionCount = BlockTool.GetTransactionCount(block1)
-	blockVo.Time = TimeUtil.FormatMillisecondTimestamp(block1.Timestamp)
-	blockVo.MinerIncentiveValue = BlockTool.GetWritedIncentiveValue(block1)
-	blockVo.Difficulty = BlockTool.FormatDifficulty(block1.Difficulty)
-	blockVo.Nonce = block1.Nonce
-	blockVo.Hash = block1.Hash
-	blockVo.PreviousBlockHash = block1.PreviousHash
+	var blockVo vo.BlockVo
+	blockVo.Height = block.Height
+	blockVo.ConfirmCount = BlockTool.GetTransactionCount(block)
+	blockVo.BlockSize = StringUtil.ValueOfUint64(SizeTool.CalculateBlockSize(block)) + "字符"
+	blockVo.TransactionCount = BlockTool.GetTransactionCount(block)
+	blockVo.Time = TimeUtil.FormatMillisecondTimestamp(block.Timestamp)
+	blockVo.MinerIncentiveValue = BlockTool.GetWritedIncentiveValue(block)
+	blockVo.Difficulty = BlockTool.FormatDifficulty(block.Difficulty)
+	blockVo.Nonce = block.Nonce
+	blockVo.Hash = block.Hash
+	blockVo.PreviousBlockHash = block.PreviousHash
 	if nextBlock == nil {
 		//blockVo.NextBlockHash=nil
 	} else {
 		blockVo.NextBlockHash = nextBlock.Hash
 	}
-	blockVo.MerkleTreeRoot = block1.MerkleTreeRoot
+	blockVo.MerkleTreeRoot = block.MerkleTreeRoot
 	return &blockVo
 }
 

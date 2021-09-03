@@ -2,7 +2,7 @@ package controller
 
 import (
 	"helloworld-blockchain-go/application/service"
-	"helloworld-blockchain-go/application/vo/block"
+	"helloworld-blockchain-go/application/vo"
 	"helloworld-blockchain-go/application/vo/node"
 	"helloworld-blockchain-go/application/vo/transaction"
 	"helloworld-blockchain-go/core/Model"
@@ -140,13 +140,13 @@ func (b *BlockchainBrowserApplicationController) QueryUnconfirmedTransactions(w 
 
 func (b *BlockchainBrowserApplicationController) QueryBlockByBlockHeight(w http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), block.QueryBlockByBlockHeightRequest{}).(*block.QueryBlockByBlockHeightRequest)
+	request := JsonUtil.ToObject(string(result), vo.QueryBlockByBlockHeightRequest{}).(*vo.QueryBlockByBlockHeightRequest)
 
 	blockVo := b.blockchainBrowserApplicationService.QueryBlockViewByBlockHeight(request.BlockHeight)
 	if blockVo == nil {
 		//return Response.createFailResponse("区块链中不存在区块高度["+request.getBlockHeight()+"]，请检查输入高度。");
 	}
-	var response block.QueryBlockByBlockHeightResponse
+	var response vo.QueryBlockByBlockHeightResponse
 	response.Block = blockVo
 
 	s := CreateSuccessResponse("", response)
@@ -156,14 +156,14 @@ func (b *BlockchainBrowserApplicationController) QueryBlockByBlockHeight(w http.
 
 func (b *BlockchainBrowserApplicationController) QueryBlockByBlockHash(w http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), block.QueryBlockByBlockHashRequest{}).(*block.QueryBlockByBlockHashRequest)
+	request := JsonUtil.ToObject(string(result), vo.QueryBlockByBlockHashRequest{}).(*vo.QueryBlockByBlockHashRequest)
 
 	block1 := b.blockchainNetCore.GetBlockchainCore().QueryBlockByBlockHash(request.BlockHash)
 	if block1 == nil {
 		//return Response.createFailResponse("区块链中不存在区块哈希["+request.getBlockHash()+"]，请检查输入哈希。");
 	}
 	blockVo := b.blockchainBrowserApplicationService.QueryBlockViewByBlockHeight(block1.Height)
-	var response block.QueryBlockByBlockHashResponse
+	var response vo.QueryBlockByBlockHashResponse
 	response.Block = blockVo
 
 	s := CreateSuccessResponse("", response)
@@ -187,19 +187,19 @@ func (b *BlockchainBrowserApplicationController) QueryTop10Blocks(w http.Respons
 		blockHeight--
 	}
 
-	var blockVos []block.BlockVo2
-	for _, block1 := range blocks {
-		var blockVo block.BlockVo2
-		blockVo.Height = block1.Height
+	var blockVos []vo.BlockVo2
+	for _, block := range blocks {
+		var blockVo vo.BlockVo2
+		blockVo.Height = block.Height
 		blockVo.BlockSize = "100字符" //TODO SizeTool.CalculateBlockSize(block1) + "字符" TODO
-		blockVo.TransactionCount = BlockTool.GetTransactionCount(block1)
-		blockVo.MinerIncentiveValue = BlockTool.GetWritedIncentiveValue(block1)
-		blockVo.Time = TimeUtil.FormatMillisecondTimestamp(block1.Timestamp)
-		blockVo.Hash = block1.Hash
+		blockVo.TransactionCount = BlockTool.GetTransactionCount(block)
+		blockVo.MinerIncentiveValue = BlockTool.GetWritedIncentiveValue(block)
+		blockVo.Time = TimeUtil.FormatMillisecondTimestamp(block.Timestamp)
+		blockVo.Hash = block.Hash
 		blockVos = append(blockVos, blockVo)
 	}
 
-	var response block.QueryTop10BlocksResponse
+	var response vo.QueryTop10BlocksResponse
 	response.Blocks = blockVos
 	s := CreateSuccessResponse("", response)
 

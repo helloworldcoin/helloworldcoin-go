@@ -3,7 +3,6 @@ package JsonUtil
 import (
 	"encoding/json"
 	"helloworld-blockchain-go/application/vo"
-	"helloworld-blockchain-go/application/vo/block"
 	"helloworld-blockchain-go/application/vo/miner"
 	"helloworld-blockchain-go/application/vo/node"
 	"helloworld-blockchain-go/application/vo/transaction"
@@ -161,22 +160,22 @@ func ToObject(jsonString string, object interface{}) interface{} {
 		return &_0108
 	}
 
-	_0150, ok := object.(block.DeleteBlocksRequest)
+	_0150, ok := object.(vo.DeleteBlocksRequest)
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0150)
 		return &_0150
 	}
-	_0151, ok := object.(block.QueryBlockByBlockHashRequest)
+	_0151, ok := object.(vo.QueryBlockByBlockHashRequest)
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0151)
 		return &_0151
 	}
-	_0152, ok := object.(block.QueryBlockByBlockHeightRequest)
+	_0152, ok := object.(vo.QueryBlockByBlockHeightRequest)
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0152)
 		return &_0152
 	}
-	_0153, ok := object.(block.QueryTop10BlocksRequest)
+	_0153, ok := object.(vo.QueryTop10BlocksRequest)
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0153)
 		return &_0153
