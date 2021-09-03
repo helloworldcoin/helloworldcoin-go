@@ -3,7 +3,6 @@ package controller
 import (
 	"helloworld-blockchain-go/application/service"
 	"helloworld-blockchain-go/application/vo"
-	"helloworld-blockchain-go/application/vo/transaction"
 	"helloworld-blockchain-go/core/Model/ModelWallet"
 	"helloworld-blockchain-go/crypto/AccountUtil"
 	"helloworld-blockchain-go/netcore"
@@ -128,7 +127,7 @@ func (w *WalletApplicationController) AutoBuildTransaction(rw http.ResponseWrite
 
 func (w *WalletApplicationController) SubmitTransactionToBlockchainNetwork(rw http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), transaction.SubmitTransactionToBlockchainNetworkRequest{}).(*transaction.SubmitTransactionToBlockchainNetworkRequest)
+	request := JsonUtil.ToObject(string(result), vo.SubmitTransactionToBlockchainNetworkRequest{}).(*vo.SubmitTransactionToBlockchainNetworkRequest)
 
 	response := w.walletApplicationService.SubmitTransactionToBlockchainNetwork(request)
 

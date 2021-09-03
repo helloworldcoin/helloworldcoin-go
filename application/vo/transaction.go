@@ -1,7 +1,6 @@
-package transaction
+package vo
 
 import (
-	"helloworld-blockchain-go/application/vo/framwork"
 	"helloworld-blockchain-go/dto"
 )
 
@@ -94,8 +93,8 @@ type QueryTransactionOutputByTransactionOutputIdResponse struct {
 	TransactionOutputDetail *TransactionOutputDetailVo `json:"transactionOutputDetail"`
 }
 type QueryTransactionsByBlockHashTransactionHeightRequest struct {
-	BlockHash     string                  `json:"blockHash"`
-	PageCondition *framwork.PageCondition `json:"pageCondition"`
+	BlockHash     string         `json:"blockHash"`
+	PageCondition *PageCondition `json:"pageCondition"`
 }
 type QueryTransactionsByBlockHashTransactionHeightResponse struct {
 	Transactions []*TransactionVo `json:"transactions"`
@@ -107,7 +106,7 @@ type QueryUnconfirmedTransactionByTransactionHashResponse struct {
 	Transaction *UnconfirmedTransactionVo `json:"transaction"`
 }
 type QueryUnconfirmedTransactionsRequest struct {
-	PageCondition *framwork.PageCondition `json:"pageCondition"`
+	PageCondition *PageCondition `json:"pageCondition"`
 }
 type QueryUnconfirmedTransactionsResponse struct {
 	UnconfirmedTransactions []*UnconfirmedTransactionVo `json:"unconfirmedTransactions"`

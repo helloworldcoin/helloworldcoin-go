@@ -1,4 +1,4 @@
-package node
+package vo
 
 type ActiveAutoSearchNodeRequest struct {
 }

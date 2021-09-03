@@ -2,9 +2,6 @@ package controller
 
 import (
 	"helloworld-blockchain-go/application/vo"
-	"helloworld-blockchain-go/application/vo/miner"
-	"helloworld-blockchain-go/application/vo/node"
-	"helloworld-blockchain-go/application/vo/synchronizer"
 	"helloworld-blockchain-go/netcore"
 	"helloworld-blockchain-go/netcore/model"
 	"helloworld-blockchain-go/util/JsonUtil"
@@ -27,7 +24,7 @@ func NewNodeConsoleApplicationController(blockchainNetCore *netcore.BlockchainNe
 func (n *NodeConsoleApplicationController) IsMineActive(rw http.ResponseWriter, req *http.Request) {
 	isMineActive := n.blockchainNetCore.GetBlockchainCore().GetMiner().IsActive()
 
-	var response miner.IsMinerActiveResponse
+	var response vo.IsMinerActiveResponse
 	response.MinerInActiveState = isMineActive
 	s := CreateSuccessResponse("", response)
 
@@ -36,7 +33,7 @@ func (n *NodeConsoleApplicationController) IsMineActive(rw http.ResponseWriter, 
 }
 func (n *NodeConsoleApplicationController) ActiveMiner(rw http.ResponseWriter, req *http.Request) {
 	n.blockchainNetCore.GetBlockchainCore().GetMiner().Active()
-	var response miner.ActiveMinerResponse
+	var response vo.ActiveMinerResponse
 	response.ActiveMinerSuccess = true
 	s := CreateSuccessResponse("", response)
 
@@ -45,7 +42,7 @@ func (n *NodeConsoleApplicationController) ActiveMiner(rw http.ResponseWriter, r
 }
 func (n *NodeConsoleApplicationController) DeactiveMiner(rw http.ResponseWriter, req *http.Request) {
 	n.blockchainNetCore.GetBlockchainCore().GetMiner().Deactive()
-	var response miner.DeactiveMinerResponse
+	var response vo.DeactiveMinerResponse
 	response.DeactiveMinerSuccess = true
 
 	s := CreateSuccessResponse("", response)
@@ -54,7 +51,7 @@ func (n *NodeConsoleApplicationController) DeactiveMiner(rw http.ResponseWriter,
 }
 func (n *NodeConsoleApplicationController) IsAutoSearchBlock(rw http.ResponseWriter, req *http.Request) {
 	isAutoSearchBlock := n.blockchainNetCore.GetNetCoreConfiguration().IsAutoSearchBlock()
-	var response synchronizer.IsAutoSearchBlockResponse
+	var response vo.IsAutoSearchBlockResponse
 	response.AutoSearchBlock = isAutoSearchBlock
 
 	s := CreateSuccessResponse("", response)
@@ -63,7 +60,7 @@ func (n *NodeConsoleApplicationController) IsAutoSearchBlock(rw http.ResponseWri
 }
 func (n *NodeConsoleApplicationController) ActiveAutoSearchBlock(rw http.ResponseWriter, req *http.Request) {
 	n.blockchainNetCore.GetNetCoreConfiguration().ActiveAutoSearchBlock()
-	var response synchronizer.ActiveAutoSearchBlockResponse
+	var response vo.ActiveAutoSearchBlockResponse
 	response.ActiveAutoSearchBlockSuccess = true
 
 	s := CreateSuccessResponse("", response)
@@ -72,7 +69,7 @@ func (n *NodeConsoleApplicationController) ActiveAutoSearchBlock(rw http.Respons
 }
 func (n *NodeConsoleApplicationController) DeactiveAutoSearchBlock(rw http.ResponseWriter, req *http.Request) {
 	n.blockchainNetCore.GetNetCoreConfiguration().DeactiveAutoSearchBlock()
-	var response synchronizer.DeactiveAutoSearchBlockResponse
+	var response vo.DeactiveAutoSearchBlockResponse
 	response.DeactiveAutoSearchBlockSuccess = true
 
 	s := CreateSuccessResponse("", response)
@@ -82,7 +79,7 @@ func (n *NodeConsoleApplicationController) DeactiveAutoSearchBlock(rw http.Respo
 
 func (n *NodeConsoleApplicationController) AddNode(rw http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), node.AddNodeRequest{}).(*node.AddNodeRequest)
+	request := JsonUtil.ToObject(string(result), vo.AddNodeRequest{}).(*vo.AddNodeRequest)
 
 	ip := request.Ip
 	if StringUtil.IsNullOrEmpty(ip) {
@@ -91,11 +88,11 @@ func (n *NodeConsoleApplicationController) AddNode(rw http.ResponseWriter, req *
 	if n.blockchainNetCore.GetNodeService().QueryNode(ip) != nil {
 		//return Response.createFailResponse("节点已经存在，不需要重复添加")
 	}
-	var nodeTemp model.Node
-	nodeTemp.Ip = ip
-	nodeTemp.BlockchainHeight = 0
-	n.blockchainNetCore.GetNodeService().AddNode(&nodeTemp)
-	var response node.AddNodeResponse
+	var node model.Node
+	node.Ip = ip
+	node.BlockchainHeight = 0
+	n.blockchainNetCore.GetNodeService().AddNode(&node)
+	var response vo.AddNodeResponse
 	response.AddNodeSuccess = true
 
 	s := CreateSuccessResponse("", response)
@@ -104,17 +101,17 @@ func (n *NodeConsoleApplicationController) AddNode(rw http.ResponseWriter, req *
 }
 func (n *NodeConsoleApplicationController) UpdateNode(rw http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), node.UpdateNodeRequest{}).(*node.UpdateNodeRequest)
+	request := JsonUtil.ToObject(string(result), vo.UpdateNodeRequest{}).(*vo.UpdateNodeRequest)
 
 	ip := request.Ip
 	if StringUtil.IsNullOrEmpty(ip) {
 		//return Response.createFailResponse("节点IP不能为空");
 	}
-	var nodeTemp model.Node
-	nodeTemp.Ip = ip
-	nodeTemp.BlockchainHeight = request.BlockchainHeight
-	n.blockchainNetCore.GetNodeService().UpdateNode(&nodeTemp)
-	var response node.UpdateNodeResponse
+	var node model.Node
+	node.Ip = ip
+	node.BlockchainHeight = request.BlockchainHeight
+	n.blockchainNetCore.GetNodeService().UpdateNode(&node)
+	var response vo.UpdateNodeResponse
 
 	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
@@ -122,10 +119,10 @@ func (n *NodeConsoleApplicationController) UpdateNode(rw http.ResponseWriter, re
 }
 func (n *NodeConsoleApplicationController) DeleteNode(rw http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), node.DeleteNodeRequest{}).(*node.DeleteNodeRequest)
+	request := JsonUtil.ToObject(string(result), vo.DeleteNodeRequest{}).(*vo.DeleteNodeRequest)
 
 	n.blockchainNetCore.GetNodeService().DeleteNode(request.Ip)
-	var response node.DeleteNodeResponse
+	var response vo.DeleteNodeResponse
 
 	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
@@ -134,17 +131,17 @@ func (n *NodeConsoleApplicationController) DeleteNode(rw http.ResponseWriter, re
 func (n *NodeConsoleApplicationController) QueryAllNodes(rw http.ResponseWriter, req *http.Request) {
 	nodes := n.blockchainNetCore.GetNodeService().QueryAllNodes()
 
-	var nodeVos []node.NodeVo
+	var nodeVos []vo.NodeVo
 	if nodes != nil {
-		for _, nodeTemp := range nodes {
-			var nodeVo node.NodeVo
-			nodeVo.Ip = nodeTemp.Ip
-			nodeVo.BlockchainHeight = nodeTemp.BlockchainHeight
+		for _, node := range nodes {
+			var nodeVo vo.NodeVo
+			nodeVo.Ip = node.Ip
+			nodeVo.BlockchainHeight = node.BlockchainHeight
 			nodeVos = append(nodeVos, nodeVo)
 		}
 	}
 
-	var response node.QueryAllNodesResponse
+	var response vo.QueryAllNodesResponse
 	response.Nodes = nodeVos
 
 	s := CreateSuccessResponse("", response)
@@ -154,7 +151,7 @@ func (n *NodeConsoleApplicationController) QueryAllNodes(rw http.ResponseWriter,
 
 func (n *NodeConsoleApplicationController) IsAutoSearchNode(rw http.ResponseWriter, req *http.Request) {
 	isAutoSearchNode := n.blockchainNetCore.GetNetCoreConfiguration().IsAutoSearchNode()
-	var response node.IsAutoSearchNodeResponse
+	var response vo.IsAutoSearchNodeResponse
 	response.AutoSearchNode = isAutoSearchNode
 
 	s := CreateSuccessResponse("", response)
@@ -163,7 +160,7 @@ func (n *NodeConsoleApplicationController) IsAutoSearchNode(rw http.ResponseWrit
 }
 func (n *NodeConsoleApplicationController) ActiveAutoSearchNode(rw http.ResponseWriter, req *http.Request) {
 	n.blockchainNetCore.GetNetCoreConfiguration().ActiveAutoSearchNode()
-	var response node.ActiveAutoSearchNodeResponse
+	var response vo.ActiveAutoSearchNodeResponse
 
 	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
@@ -171,7 +168,7 @@ func (n *NodeConsoleApplicationController) ActiveAutoSearchNode(rw http.Response
 }
 func (n *NodeConsoleApplicationController) DeactiveAutoSearchNode(rw http.ResponseWriter, req *http.Request) {
 	n.blockchainNetCore.GetNetCoreConfiguration().DeactiveAutoSearchNode()
-	var response node.DeactiveAutoSearchNodeResponse
+	var response vo.DeactiveAutoSearchNodeResponse
 
 	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")
@@ -192,7 +189,7 @@ func (n *NodeConsoleApplicationController) DeleteBlocks(rw http.ResponseWriter, 
 
 func (n *NodeConsoleApplicationController) GetMaxBlockHeight(rw http.ResponseWriter, req *http.Request) {
 	maxBlockHeight := n.blockchainNetCore.GetBlockchainCore().GetMiner().GetMaxBlockHeight()
-	var response miner.GetMaxBlockHeightResponse
+	var response vo.GetMaxBlockHeightResponse
 	response.MaxBlockHeight = maxBlockHeight
 
 	s := CreateSuccessResponse("", response)
@@ -201,11 +198,11 @@ func (n *NodeConsoleApplicationController) GetMaxBlockHeight(rw http.ResponseWri
 }
 func (n *NodeConsoleApplicationController) SetMaxBlockHeight(rw http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), miner.SetMaxBlockHeightRequest{}).(*miner.SetMaxBlockHeightRequest)
+	request := JsonUtil.ToObject(string(result), vo.SetMaxBlockHeightRequest{}).(*vo.SetMaxBlockHeightRequest)
 
 	height := request.MaxBlockHeight
 	n.blockchainNetCore.GetBlockchainCore().GetMiner().SetMaxBlockHeight(height)
-	var response miner.SetMaxBlockHeightResponse
+	var response vo.SetMaxBlockHeightResponse
 
 	s := CreateSuccessResponse("", response)
 	rw.Header().Set("content-type", "text/json")

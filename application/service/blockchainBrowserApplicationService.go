@@ -2,7 +2,6 @@ package service
 
 import (
 	"helloworld-blockchain-go/application/vo"
-	"helloworld-blockchain-go/application/vo/transaction"
 	"helloworld-blockchain-go/core"
 	"helloworld-blockchain-go/core/tool/BlockTool"
 	"helloworld-blockchain-go/core/tool/ScriptTool"
@@ -22,14 +21,14 @@ func NewBlockchainBrowserApplicationService(blockchainNetCore *netcore.Blockchai
 	b.blockchainNetCore = blockchainNetCore
 	return &b
 }
-func (b *BlockchainBrowserApplicationService) QueryTransactionOutputByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *transaction.TransactionOutputDetailVo {
+func (b *BlockchainBrowserApplicationService) QueryTransactionOutputByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *vo.TransactionOutputDetailVo {
 	//查询交易输出
 	transactionOutput := b.blockchainNetCore.GetBlockchainCore().GetBlockchainDatabase().QueryTransactionOutputByTransactionOutputId(transactionHash, transactionOutputIndex)
 	if transactionOutput == nil {
 		return nil
 	}
 
-	var transactionOutputDetailVo transaction.TransactionOutputDetailVo
+	var transactionOutputDetailVo vo.TransactionOutputDetailVo
 	transactionOutputDetailVo.FromBlockHeight = transactionOutput.BlockHeight
 	transactionOutputDetailVo.FromBlockHash = transactionOutput.BlockHash
 	transactionOutputDetailVo.FromTransactionHash = transactionOutput.TransactionHash
@@ -47,7 +46,7 @@ func (b *BlockchainBrowserApplicationService) QueryTransactionOutputByTransactio
 	transactionOutputDetailVo.TransactionType = inputTransactionVo.TransactionType
 
 	//去向
-	var outputTransactionVo *transaction.TransactionVo
+	var outputTransactionVo *vo.TransactionVo
 	if transactionOutputTemp == nil {
 		destinationTransaction := b.blockchainNetCore.GetBlockchainCore().GetBlockchainDatabase().QueryDestinationTransactionByTransactionOutputId(transactionOutput.TransactionHash, transactionOutput.TransactionOutputIndex)
 		inputs := destinationTransaction.Inputs
@@ -73,7 +72,7 @@ func (b *BlockchainBrowserApplicationService) QueryTransactionOutputByTransactio
 
 }
 
-func (b *BlockchainBrowserApplicationService) QueryTransactionOutputByAddress(address string) *transaction.TransactionOutputDetailVo {
+func (b *BlockchainBrowserApplicationService) QueryTransactionOutputByAddress(address string) *vo.TransactionOutputDetailVo {
 	transactionOutput := b.blockchainNetCore.GetBlockchainCore().QueryTransactionOutputByAddress(address)
 	if transactionOutput == nil {
 		return nil
@@ -82,9 +81,9 @@ func (b *BlockchainBrowserApplicationService) QueryTransactionOutputByAddress(ad
 	return transactionOutputDetailVo
 }
 
-func (b *BlockchainBrowserApplicationService) QueryTransactionListByBlockHashTransactionHeight(blockHash string, from uint64, size uint64) []*transaction.TransactionVo {
+func (b *BlockchainBrowserApplicationService) QueryTransactionListByBlockHashTransactionHeight(blockHash string, from uint64, size uint64) []*vo.TransactionVo {
 	block := b.blockchainNetCore.GetBlockchainCore().QueryBlockByBlockHash(blockHash)
-	var transactionVos []*transaction.TransactionVo
+	var transactionVos []*vo.TransactionVo
 	for i := from; i < from+size; i++ {
 		if from < 0 {
 			break
@@ -127,20 +126,20 @@ func (b *BlockchainBrowserApplicationService) QueryBlockViewByBlockHeight(blockH
 	return &blockVo
 }
 
-func (b *BlockchainBrowserApplicationService) QueryUnconfirmedTransactionByTransactionHash(transactionHash string) *transaction.UnconfirmedTransactionVo {
+func (b *BlockchainBrowserApplicationService) QueryUnconfirmedTransactionByTransactionHash(transactionHash string) *vo.UnconfirmedTransactionVo {
 	transactionDto := b.blockchainNetCore.GetBlockchainCore().QueryUnconfirmedTransactionByTransactionHash(transactionHash)
 	if transactionDto == nil {
 		return nil
 	}
 	transaction1 := core.TransactionDto2Transaction(b.blockchainNetCore.GetBlockchainCore().GetBlockchainDatabase(), transactionDto)
-	var transactionDtoVo transaction.UnconfirmedTransactionVo
+	var transactionDtoVo vo.UnconfirmedTransactionVo
 	transactionDtoVo.TransactionHash = transaction1.TransactionHash
 
-	var inputDtos []*transaction.TransactionInputVo2
+	var inputDtos []*vo.TransactionInputVo2
 	inputs := transaction1.Inputs
 	if inputs != nil {
 		for _, input := range inputs {
-			var transactionInputVo transaction.TransactionInputVo2
+			var transactionInputVo vo.TransactionInputVo2
 			transactionInputVo.Address = input.UnspentTransactionOutput.Address
 			transactionInputVo.TransactionHash = input.UnspentTransactionOutput.TransactionHash
 			transactionInputVo.TransactionOutputIndex = input.UnspentTransactionOutput.TransactionOutputIndex
@@ -150,11 +149,11 @@ func (b *BlockchainBrowserApplicationService) QueryUnconfirmedTransactionByTrans
 	}
 	transactionDtoVo.Inputs = inputDtos
 
-	var outputDtos []*transaction.TransactionOutputVo2
+	var outputDtos []*vo.TransactionOutputVo2
 	outputs := transaction1.Outputs
 	if outputs != nil {
 		for _, output := range outputs {
-			var transactionOutputVo transaction.TransactionOutputVo2
+			var transactionOutputVo vo.TransactionOutputVo2
 			transactionOutputVo.Address = output.Address
 			transactionOutputVo.Value = output.Value
 			outputDtos = append(outputDtos, &transactionOutputVo)
@@ -165,34 +164,34 @@ func (b *BlockchainBrowserApplicationService) QueryUnconfirmedTransactionByTrans
 	return &transactionDtoVo
 }
 
-func (b *BlockchainBrowserApplicationService) QueryTransactionByTransactionHash(transactionHash string) *transaction.TransactionVo {
-	transaction1 := b.blockchainNetCore.GetBlockchainCore().QueryTransactionByTransactionHash(transactionHash)
-	if transaction1 == nil {
+func (b *BlockchainBrowserApplicationService) QueryTransactionByTransactionHash(transactionHash string) *vo.TransactionVo {
+	transaction := b.blockchainNetCore.GetBlockchainCore().QueryTransactionByTransactionHash(transactionHash)
+	if transaction == nil {
 		return nil
 	}
 
-	var transactionVo transaction.TransactionVo
-	transactionVo.TransactionHash = transaction1.TransactionHash
-	transactionVo.BlockHeight = transaction1.BlockHeight
+	var transactionVo vo.TransactionVo
+	transactionVo.TransactionHash = transaction.TransactionHash
+	transactionVo.BlockHeight = transaction.BlockHeight
 
-	transactionVo.TransactionFee = TransactionTool.CalculateTransactionFee(transaction1)
-	transactionVo.TransactionType = transaction1.TransactionType
-	transactionVo.TransactionInputCount = TransactionTool.GetTransactionInputCount(transaction1)
-	transactionVo.TransactionOutputCount = TransactionTool.GetTransactionOutputCount(transaction1)
-	transactionVo.TransactionInputValues = TransactionTool.GetInputValue(transaction1)
-	transactionVo.TransactionOutputValues = TransactionTool.GetOutputValue(transaction1)
+	transactionVo.TransactionFee = TransactionTool.CalculateTransactionFee(transaction)
+	transactionVo.TransactionType = transaction.TransactionType
+	transactionVo.TransactionInputCount = TransactionTool.GetTransactionInputCount(transaction)
+	transactionVo.TransactionOutputCount = TransactionTool.GetTransactionOutputCount(transaction)
+	transactionVo.TransactionInputValues = TransactionTool.GetInputValue(transaction)
+	transactionVo.TransactionOutputValues = TransactionTool.GetOutputValue(transaction)
 
 	blockchainHeight := b.blockchainNetCore.GetBlockchainCore().QueryBlockchainHeight()
-	block := b.blockchainNetCore.GetBlockchainCore().QueryBlockByBlockHeight(transaction1.BlockHeight)
+	block := b.blockchainNetCore.GetBlockchainCore().QueryBlockByBlockHeight(transaction.BlockHeight)
 	transactionVo.ConfirmCount = blockchainHeight - block.Height + 1
 	transactionVo.BlockTime = TimeUtil.FormatMillisecondTimestamp(block.Timestamp)
 	transactionVo.BlockHash = block.Hash
 
-	inputs := transaction1.Inputs
-	var transactionInputVos []*transaction.TransactionInputVo
+	inputs := transaction.Inputs
+	var transactionInputVos []*vo.TransactionInputVo
 	if inputs != nil {
 		for _, transactionInput := range inputs {
-			var transactionInputVo transaction.TransactionInputVo
+			var transactionInputVo vo.TransactionInputVo
 			transactionInputVo.Address = transactionInput.UnspentTransactionOutput.Address
 			transactionInputVo.Value = transactionInput.UnspentTransactionOutput.Value
 			transactionInputVo.InputScript = ScriptTool.StringInputScript(transactionInput.InputScript)
@@ -203,11 +202,11 @@ func (b *BlockchainBrowserApplicationService) QueryTransactionByTransactionHash(
 	}
 	transactionVo.TransactionInputs = transactionInputVos
 
-	outputs := transaction1.Outputs
-	var transactionOutputVos []*transaction.TransactionOutputVo
+	outputs := transaction.Outputs
+	var transactionOutputVos []*vo.TransactionOutputVo
 	if outputs != nil {
 		for _, transactionOutput := range outputs {
-			var transactionOutputVo transaction.TransactionOutputVo
+			var transactionOutputVo vo.TransactionOutputVo
 			transactionOutputVo.Address = transactionOutput.Address
 			transactionOutputVo.Value = transactionOutput.Value
 			transactionOutputVo.OutputScript = ScriptTool.StringOutputScript(transactionOutput.OutputScript)

@@ -1,4 +1,4 @@
-package synchronizer
+package vo
 
 type ActiveAutoSearchBlockRequest struct {
 }

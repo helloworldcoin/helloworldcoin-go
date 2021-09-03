@@ -1,4 +1,4 @@
-package wallet
+package vo
 
 import "helloworld-blockchain-go/dto"
 

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"helloworld-blockchain-go/application/vo/transaction"
+	"helloworld-blockchain-go/application/vo"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/netcore"
 	"helloworld-blockchain-go/netcore-client/client"
@@ -17,7 +17,7 @@ func NewWalletApplicationService(blockchainNetCore *netcore.BlockchainNetCore) *
 	return &b
 }
 
-func (w *WalletApplicationService) SubmitTransactionToBlockchainNetwork(request *transaction.SubmitTransactionToBlockchainNetworkRequest) *transaction.SubmitTransactionToBlockchainNetworkResponse {
+func (w *WalletApplicationService) SubmitTransactionToBlockchainNetwork(request *vo.SubmitTransactionToBlockchainNetworkRequest) *vo.SubmitTransactionToBlockchainNetworkResponse {
 	transactionDto := request.Transaction
 	//将交易提交到本地区块链
 	w.blockchainNetCore.GetBlockchainCore().PostTransaction(transactionDto)
@@ -39,7 +39,7 @@ func (w *WalletApplicationService) SubmitTransactionToBlockchainNetwork(request 
 		}
 	}
 
-	var response transaction.SubmitTransactionToBlockchainNetworkResponse
+	var response vo.SubmitTransactionToBlockchainNetworkResponse
 	response.Transaction = transactionDto
 	response.SuccessSubmitNodes = successSubmitNodes
 	response.FailedSubmitNodes = failedSubmitNodes

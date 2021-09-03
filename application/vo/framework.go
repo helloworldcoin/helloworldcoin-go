@@ -1,4 +1,4 @@
-package framwork
+package vo
 
 type PageCondition struct {
 	From uint64

@@ -3,8 +3,6 @@ package controller
 import (
 	"helloworld-blockchain-go/application/service"
 	"helloworld-blockchain-go/application/vo"
-	"helloworld-blockchain-go/application/vo/node"
-	"helloworld-blockchain-go/application/vo/transaction"
 	"helloworld-blockchain-go/core/Model"
 	"helloworld-blockchain-go/core/tool/BlockTool"
 	"helloworld-blockchain-go/core/tool/TransactionDtoTool"
@@ -32,14 +30,14 @@ func NewBlockchainBrowserApplicationController(blockchainNetCore *netcore.Blockc
 
 func (b *BlockchainBrowserApplicationController) QueryTransactionByTransactionHash(w http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), transaction.QueryTransactionByTransactionHashRequest{}).(*transaction.QueryTransactionByTransactionHashRequest)
+	request := JsonUtil.ToObject(string(result), vo.QueryTransactionByTransactionHashRequest{}).(*vo.QueryTransactionByTransactionHashRequest)
 
 	transactionVo := b.blockchainBrowserApplicationService.QueryTransactionByTransactionHash(request.TransactionHash)
 	if transactionVo == nil {
 		//return Response.createFailResponse("根据交易哈希未能查询到交易")
 	}
 
-	var response transaction.QueryTransactionByTransactionHashResponse
+	var response vo.QueryTransactionByTransactionHashResponse
 	response.Transaction = transactionVo
 
 	s := CreateSuccessResponse("", response)
@@ -48,14 +46,14 @@ func (b *BlockchainBrowserApplicationController) QueryTransactionByTransactionHa
 }
 func (b *BlockchainBrowserApplicationController) QueryTransactionsByBlockHashTransactionHeight(w http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), transaction.QueryTransactionsByBlockHashTransactionHeightRequest{}).(*transaction.QueryTransactionsByBlockHashTransactionHeightRequest)
+	request := JsonUtil.ToObject(string(result), vo.QueryTransactionsByBlockHashTransactionHeightRequest{}).(*vo.QueryTransactionsByBlockHashTransactionHeightRequest)
 
 	pageCondition := request.PageCondition
 	if StringUtil.IsNullOrEmpty(request.BlockHash) {
 		//return Response.createFailResponse("区块哈希不能是空");
 	}
 	transactionVos := b.blockchainBrowserApplicationService.QueryTransactionListByBlockHashTransactionHeight(request.BlockHash, pageCondition.From, pageCondition.Size)
-	var response transaction.QueryTransactionsByBlockHashTransactionHeightResponse
+	var response vo.QueryTransactionsByBlockHashTransactionHeightResponse
 	response.Transactions = transactionVos
 
 	s := CreateSuccessResponse("", response)
@@ -64,10 +62,10 @@ func (b *BlockchainBrowserApplicationController) QueryTransactionsByBlockHashTra
 }
 func (b *BlockchainBrowserApplicationController) QueryTransactionOutputByAddress(w http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), transaction.QueryTransactionOutputByAddressRequest{}).(*transaction.QueryTransactionOutputByAddressRequest)
+	request := JsonUtil.ToObject(string(result), vo.QueryTransactionOutputByAddressRequest{}).(*vo.QueryTransactionOutputByAddressRequest)
 
 	transactionOutputDetailVo := b.blockchainBrowserApplicationService.QueryTransactionOutputByAddress(request.Address)
-	var response transaction.QueryTransactionOutputByAddressResponse
+	var response vo.QueryTransactionOutputByAddressResponse
 	response.TransactionOutputDetail = transactionOutputDetailVo
 
 	s := CreateSuccessResponse("", response)
@@ -76,10 +74,10 @@ func (b *BlockchainBrowserApplicationController) QueryTransactionOutputByAddress
 }
 func (b *BlockchainBrowserApplicationController) QueryTransactionOutputByTransactionOutputId(w http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), transaction.QueryTransactionOutputByTransactionOutputIdRequest{}).(*transaction.QueryTransactionOutputByTransactionOutputIdRequest)
+	request := JsonUtil.ToObject(string(result), vo.QueryTransactionOutputByTransactionOutputIdRequest{}).(*vo.QueryTransactionOutputByTransactionOutputIdRequest)
 
 	transactionOutputDetailVo := b.blockchainBrowserApplicationService.QueryTransactionOutputByTransactionOutputId(request.TransactionHash, request.TransactionOutputIndex)
-	var response transaction.QueryTransactionOutputByTransactionOutputIdResponse
+	var response vo.QueryTransactionOutputByTransactionOutputIdResponse
 	response.TransactionOutputDetail = transactionOutputDetailVo
 
 	s := CreateSuccessResponse("", response)
@@ -89,7 +87,7 @@ func (b *BlockchainBrowserApplicationController) QueryTransactionOutputByTransac
 func (b *BlockchainBrowserApplicationController) QueryBlockchainHeight(w http.ResponseWriter, req *http.Request) {
 
 	blockchainHeight := b.blockchainNetCore.GetBlockchainCore().QueryBlockchainHeight()
-	var response node.QueryBlockchainHeightResponse
+	var response vo.QueryBlockchainHeightResponse
 	response.BlockchainHeight = blockchainHeight
 	s := CreateSuccessResponse("", response)
 
@@ -99,13 +97,13 @@ func (b *BlockchainBrowserApplicationController) QueryBlockchainHeight(w http.Re
 
 func (b *BlockchainBrowserApplicationController) QueryUnconfirmedTransactionByTransactionHash(w http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), transaction.QueryUnconfirmedTransactionByTransactionHashRequest{}).(*transaction.QueryUnconfirmedTransactionByTransactionHashRequest)
+	request := JsonUtil.ToObject(string(result), vo.QueryUnconfirmedTransactionByTransactionHashRequest{}).(*vo.QueryUnconfirmedTransactionByTransactionHashRequest)
 
 	unconfirmedTransactionVo := b.blockchainBrowserApplicationService.QueryUnconfirmedTransactionByTransactionHash(request.TransactionHash)
 	if unconfirmedTransactionVo == nil {
 		//return Response.createFailResponse("交易哈希["+request.getTransactionHash()+"]不是未确认交易。");
 	}
-	var response transaction.QueryUnconfirmedTransactionByTransactionHashResponse
+	var response vo.QueryUnconfirmedTransactionByTransactionHashResponse
 	response.Transaction = unconfirmedTransactionVo
 
 	s := CreateSuccessResponse("", response)
@@ -115,7 +113,7 @@ func (b *BlockchainBrowserApplicationController) QueryUnconfirmedTransactionByTr
 
 func (b *BlockchainBrowserApplicationController) QueryUnconfirmedTransactions(w http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), transaction.QueryUnconfirmedTransactionsRequest{}).(*transaction.QueryUnconfirmedTransactionsRequest)
+	request := JsonUtil.ToObject(string(result), vo.QueryUnconfirmedTransactionsRequest{}).(*vo.QueryUnconfirmedTransactionsRequest)
 
 	pageCondition := request.PageCondition
 	transactionDtos := b.blockchainNetCore.GetBlockchainCore().QueryUnconfirmedTransactions(pageCondition.From, pageCondition.Size)
@@ -123,14 +121,14 @@ func (b *BlockchainBrowserApplicationController) QueryUnconfirmedTransactions(w 
 		//return Response.createSuccessResponse("未查询到未确认的交易");
 	}
 
-	var unconfirmedTransactionVos []*transaction.UnconfirmedTransactionVo
+	var unconfirmedTransactionVos []*vo.UnconfirmedTransactionVo
 	for _, transactionDto := range transactionDtos {
 		unconfirmedTransactionVo := b.blockchainBrowserApplicationService.QueryUnconfirmedTransactionByTransactionHash(TransactionDtoTool.CalculateTransactionHash(transactionDto))
 		if unconfirmedTransactionVo != nil {
 			unconfirmedTransactionVos = append(unconfirmedTransactionVos, unconfirmedTransactionVo)
 		}
 	}
-	var response transaction.QueryUnconfirmedTransactionsResponse
+	var response vo.QueryUnconfirmedTransactionsResponse
 	response.UnconfirmedTransactions = unconfirmedTransactionVos
 
 	s := CreateSuccessResponse("", response)
