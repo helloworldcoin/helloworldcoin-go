@@ -131,12 +131,12 @@ func (b *BlockchainBrowserApplicationService) QueryUnconfirmedTransactionByTrans
 	if transactionDto == nil {
 		return nil
 	}
-	transaction1 := core.TransactionDto2Transaction(b.blockchainNetCore.GetBlockchainCore().GetBlockchainDatabase(), transactionDto)
+	transaction := core.TransactionDto2Transaction(b.blockchainNetCore.GetBlockchainCore().GetBlockchainDatabase(), transactionDto)
 	var transactionDtoVo vo.UnconfirmedTransactionVo
-	transactionDtoVo.TransactionHash = transaction1.TransactionHash
+	transactionDtoVo.TransactionHash = transaction.TransactionHash
 
 	var inputDtos []*vo.TransactionInputVo2
-	inputs := transaction1.Inputs
+	inputs := transaction.Inputs
 	if inputs != nil {
 		for _, input := range inputs {
 			var transactionInputVo vo.TransactionInputVo2
@@ -150,7 +150,7 @@ func (b *BlockchainBrowserApplicationService) QueryUnconfirmedTransactionByTrans
 	transactionDtoVo.Inputs = inputDtos
 
 	var outputDtos []*vo.TransactionOutputVo2
-	outputs := transaction1.Outputs
+	outputs := transaction.Outputs
 	if outputs != nil {
 		for _, output := range outputs {
 			var transactionOutputVo vo.TransactionOutputVo2

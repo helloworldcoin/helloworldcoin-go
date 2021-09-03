@@ -3,6 +3,7 @@ package JsonUtil
 import (
 	"encoding/json"
 	"helloworld-blockchain-go/application/vo"
+	"helloworld-blockchain-go/core/model"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/netcore/po"
 )
@@ -247,6 +248,12 @@ func ToObject(jsonString string, object interface{}) interface{} {
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0356)
 		return &_0356
+	}
+
+	_0400, ok := object.(model.AutoBuildTransactionRequest)
+	if ok {
+		json.Unmarshal([]byte(jsonString), &_0400)
+		return &_0400
 	}
 	panic("JsonUtil.ToObject can not recognize object type")
 }

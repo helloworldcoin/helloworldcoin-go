@@ -80,7 +80,7 @@
             async function confirmPayment(){
                 let nonChangePayees = [];
                 Array.from($('[name="nonChangePayee"]')).forEach(item => {
-                    nonChangePayees.push({address:$(item).find('[name="address"]:first').val().trim(),value:$(item).find('[name="money"]:first').val()})
+                    nonChangePayees.push({address:$(item).find('[name="address"]:first').val().trim(),value:parseInt($(item).find('[name="money"]:first').val())})
                 });
                 let request1 = JSON.stringify({nonChangePayees})
                 let response = await $ajax({

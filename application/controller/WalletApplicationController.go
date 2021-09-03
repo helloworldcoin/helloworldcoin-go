@@ -8,7 +8,6 @@ import (
 	"helloworld-blockchain-go/netcore"
 	"helloworld-blockchain-go/util/JsonUtil"
 	"helloworld-blockchain-go/util/StringUtil"
-	"io"
 	"io/ioutil"
 	"net/http"
 )
@@ -31,9 +30,7 @@ func (w *WalletApplicationController) CreateAccount(rw http.ResponseWriter, req 
 	var response vo.CreateAccountResponse
 	response.Account = &accountVo
 
-	s := CreateSuccessResponse("", response)
-	rw.Header().Set("content-type", "text/json")
-	io.WriteString(rw, s)
+	SuccessHttpResponse(rw, "", response)
 }
 func (w *WalletApplicationController) CreateAndSaveAccount(rw http.ResponseWriter, req *http.Request) {
 	account := w.blockchainNetCore.GetBlockchainCore().GetWallet().CreateAndSaveAccount()
@@ -41,9 +38,7 @@ func (w *WalletApplicationController) CreateAndSaveAccount(rw http.ResponseWrite
 	var response vo.CreateAndSaveAccountResponse
 	response.Account = &accountVo
 
-	s := CreateSuccessResponse("", response)
-	rw.Header().Set("content-type", "text/json")
-	io.WriteString(rw, s)
+	SuccessHttpResponse(rw, "", response)
 }
 
 func (w *WalletApplicationController) SaveAccount(rw http.ResponseWriter, req *http.Request) {
@@ -52,16 +47,15 @@ func (w *WalletApplicationController) SaveAccount(rw http.ResponseWriter, req *h
 
 	privateKey := request.PrivateKey
 	if StringUtil.IsNullOrEmpty(privateKey) {
-		//return Response.createFailResponse("账户私钥不能为空。");
+		FailedHttpResponse(rw, "账户私钥不能为空。")
+		return
 	}
 	accountTemp := AccountUtil.AccountFromPrivateKey(privateKey)
 	w.blockchainNetCore.GetBlockchainCore().GetWallet().SaveAccount(accountTemp)
 	var response vo.SaveAccountResponse
 	response.AddAccountSuccess = true
 
-	s := CreateSuccessResponse("", response)
-	rw.Header().Set("content-type", "text/json")
-	io.WriteString(rw, s)
+	SuccessHttpResponse(rw, "", response)
 }
 
 func (w *WalletApplicationController) DeleteAccount(rw http.ResponseWriter, req *http.Request) {
@@ -70,15 +64,14 @@ func (w *WalletApplicationController) DeleteAccount(rw http.ResponseWriter, req 
 
 	address := request.Address
 	if StringUtil.IsNullOrEmpty(address) {
-		//return Response.createFailResponse("请填写需要删除的地址");
+		FailedHttpResponse(rw, "请填写需要删除的地址。")
+		return
 	}
 	w.blockchainNetCore.GetBlockchainCore().GetWallet().DeleteAccountByAddress(address)
 	var response vo.DeleteAccountResponse
 	response.DeleteAccountSuccess = true
 
-	s := CreateSuccessResponse("", response)
-	rw.Header().Set("content-type", "text/json")
-	io.WriteString(rw, s)
+	SuccessHttpResponse(rw, "", response)
 }
 
 func (w *WalletApplicationController) QueryAllAccounts(rw http.ResponseWriter, req *http.Request) {
@@ -105,24 +98,21 @@ func (w *WalletApplicationController) QueryAllAccounts(rw http.ResponseWriter, r
 	response.Accounts = accountVos
 	response.Balance = balance
 
-	s := CreateSuccessResponse("", response)
-	rw.Header().Set("content-type", "text/json")
-	io.WriteString(rw, s)
+	SuccessHttpResponse(rw, "", response)
 }
 func (w *WalletApplicationController) AutoBuildTransaction(rw http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(result), model.AutoBuildTransactionRequest{}).(*model.AutoBuildTransactionRequest)
 
 	response := w.blockchainNetCore.GetBlockchainCore().AutoBuildTransaction(request)
-	/*	if autoBuildTransactionResponse.IsBuildTransactionSuccess() {
-			return Response.createSuccessResponse("构建交易成功", autoBuildTransactionResponse)
-		} else {
-			return Response.createFailResponse(autoBuildTransactionResponse.getMessage())
-		}*/
 
-	s := CreateSuccessResponse("", response)
-	rw.Header().Set("content-type", "text/json")
-	io.WriteString(rw, s)
+	if response.BuildTransactionSuccess {
+		SuccessHttpResponse(rw, "构建交易成功", response)
+		return
+	} else {
+		FailedHttpResponse(rw, response.Message)
+		return
+	}
 }
 
 func (w *WalletApplicationController) SubmitTransactionToBlockchainNetwork(rw http.ResponseWriter, req *http.Request) {
@@ -131,7 +121,5 @@ func (w *WalletApplicationController) SubmitTransactionToBlockchainNetwork(rw ht
 
 	response := w.walletApplicationService.SubmitTransactionToBlockchainNetwork(request)
 
-	s := CreateSuccessResponse("", response)
-	rw.Header().Set("content-type", "text/json")
-	io.WriteString(rw, s)
+	SuccessHttpResponse(rw, "", response)
 }
