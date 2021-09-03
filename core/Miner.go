@@ -1,8 +1,8 @@
 package core
 
 import (
-	"helloworld-blockchain-go/core/Model"
-	"helloworld-blockchain-go/core/Model/TransactionType"
+	"helloworld-blockchain-go/core/model"
+	"helloworld-blockchain-go/core/model/TransactionType"
 	"helloworld-blockchain-go/core/tool/BlockTool"
 	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 	"helloworld-blockchain-go/core/tool/ScriptTool"
@@ -82,11 +82,11 @@ func (i *Miner) GetMaxBlockHeight() uint64 {
 	return i.CoreConfiguration.getMaxBlockHeight()
 }
 
-func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *Model.Block {
+func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *model.Block {
 	timestamp := TimeUtil.MillisecondTimestamp()
 
 	tailBlock := blockchainDatabase.QueryTailBlock()
-	var nonNonceBlock Model.Block
+	var nonNonceBlock model.Block
 	nonNonceBlock.Timestamp = timestamp
 
 	if tailBlock == nil {
@@ -102,7 +102,7 @@ func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfi
 	incentiveValue := incentive.IncentiveValue(blockchainDatabase, &nonNonceBlock)
 
 	mineAwardTransaction := i.buildIncentiveTransaction(minerAccount.Address, incentiveValue)
-	var mineAwardTransactions []*Model.Transaction
+	var mineAwardTransactions []*model.Transaction
 	mineAwardTransactions = append(mineAwardTransactions, mineAwardTransaction)
 
 	packingTransactions = append(mineAwardTransactions, packingTransactions...)
@@ -116,12 +116,12 @@ func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfi
 	return &nonNonceBlock
 }
 
-func (i *Miner) buildIncentiveTransaction(address string, incentiveValue uint64) *Model.Transaction {
-	var transaction Model.Transaction
+func (i *Miner) buildIncentiveTransaction(address string, incentiveValue uint64) *model.Transaction {
+	var transaction model.Transaction
 	transaction.TransactionType = TransactionType.GENESIS_TRANSACTION
 
-	var outputs []*Model.TransactionOutput
-	var output Model.TransactionOutput
+	var outputs []*model.TransactionOutput
+	var output model.TransactionOutput
 	output.Address = address
 	output.Value = incentiveValue
 	output.OutputScript = ScriptTool.CreatePayToPublicKeyHashOutputScript(address)
@@ -131,10 +131,10 @@ func (i *Miner) buildIncentiveTransaction(address string, incentiveValue uint64)
 	transaction.TransactionHash = TransactionTool.CalculateTransactionHash(transaction)
 	return &transaction
 }
-func (i *Miner) packingTransactions(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase) []*Model.Transaction {
+func (i *Miner) packingTransactions(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase) []*model.Transaction {
 	forMineBlockTransactionDtos := unconfirmedTransactionDatabase.SelectTransactions(uint64(1), uint64(10000))
 
-	var transactions []*Model.Transaction
+	var transactions []*model.Transaction
 	if forMineBlockTransactionDtos != nil {
 		for _, transactionDto := range forMineBlockTransactionDtos {
 			//TODO exception

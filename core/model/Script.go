@@ -1,4 +1,4 @@
-package Script
+package model
 
 import (
 	"helloworld-blockchain-go/util/StringStack"

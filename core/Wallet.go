@@ -1,7 +1,7 @@
 package core
 
 import (
-	"helloworld-blockchain-go/core/Model/ModelWallet"
+	"helloworld-blockchain-go/core/model/ModelWallet"
 	"helloworld-blockchain-go/core/tool/EncodeDecodeTool"
 	"helloworld-blockchain-go/core/tool/ScriptDtoTool"
 	"helloworld-blockchain-go/core/tool/TransactionDtoTool"

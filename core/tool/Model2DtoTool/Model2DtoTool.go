@@ -1,12 +1,11 @@
 package Model2DtoTool
 
 import (
-	"helloworld-blockchain-go/core/Model"
-	"helloworld-blockchain-go/core/Model/Script"
+	"helloworld-blockchain-go/core/model"
 	"helloworld-blockchain-go/dto"
 )
 
-func Block2BlockDto(block *Model.Block) *dto.BlockDto {
+func Block2BlockDto(block *model.Block) *dto.BlockDto {
 	var transactionDtos []*dto.TransactionDto
 	transactions := block.Transactions
 	if transactions != nil {
@@ -24,7 +23,7 @@ func Block2BlockDto(block *Model.Block) *dto.BlockDto {
 	return &blockDto
 }
 
-func Transaction2TransactionDto(transaction *Model.Transaction) *dto.TransactionDto {
+func Transaction2TransactionDto(transaction *model.Transaction) *dto.TransactionDto {
 	var inputs []*dto.TransactionInputDto
 	transactionInputs := transaction.Inputs
 	if transactionInputs != nil {
@@ -51,18 +50,18 @@ func Transaction2TransactionDto(transaction *Model.Transaction) *dto.Transaction
 	transactionDto.Outputs = outputs
 	return transactionDto
 }
-func TransactionOutput2TransactionOutputDto(transactionOutput *Model.TransactionOutput) *dto.TransactionOutputDto {
+func TransactionOutput2TransactionOutputDto(transactionOutput *model.TransactionOutput) *dto.TransactionOutputDto {
 	transactionOutputDto := &dto.TransactionOutputDto{}
 	transactionOutputDto.Value = transactionOutput.Value
 	transactionOutputDto.OutputScript = OutputScript2OutputScriptDto(transactionOutput.OutputScript)
 	return transactionOutputDto
 }
-func InputScript2InputScriptDto(inputScript *Script.InputScript) *dto.InputScriptDto {
+func InputScript2InputScriptDto(inputScript *model.InputScript) *dto.InputScriptDto {
 	var inputScriptDto dto.InputScriptDto
 	inputScriptDto = append(inputScriptDto, *inputScript...)
 	return &inputScriptDto
 }
-func OutputScript2OutputScriptDto(outputScript *Script.OutputScript) *dto.OutputScriptDto {
+func OutputScript2OutputScriptDto(outputScript *model.OutputScript) *dto.OutputScriptDto {
 	var outputScriptDto dto.OutputScriptDto
 	outputScriptDto = append(outputScriptDto, *outputScript...)
 	return &outputScriptDto

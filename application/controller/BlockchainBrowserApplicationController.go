@@ -3,7 +3,7 @@ package controller
 import (
 	"helloworld-blockchain-go/application/service"
 	"helloworld-blockchain-go/application/vo"
-	"helloworld-blockchain-go/core/Model"
+	"helloworld-blockchain-go/core/model"
 	"helloworld-blockchain-go/core/tool/BlockTool"
 	"helloworld-blockchain-go/core/tool/TransactionDtoTool"
 	"helloworld-blockchain-go/netcore"
@@ -171,7 +171,7 @@ func (b *BlockchainBrowserApplicationController) QueryBlockByBlockHash(w http.Re
 
 func (b *BlockchainBrowserApplicationController) QueryTop10Blocks(w http.ResponseWriter, req *http.Request) {
 
-	var blocks []*Model.Block
+	var blocks []*model.Block
 	blockHeight := b.blockchainNetCore.GetBlockchainCore().QueryBlockchainHeight()
 	for {
 		if blockHeight <= GenesisBlockSetting.HEIGHT {

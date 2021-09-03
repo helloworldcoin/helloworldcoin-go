@@ -1,7 +1,7 @@
 package TransactionTool
 
 import (
-	"helloworld-blockchain-go/core/Model/TransactionType"
+	"helloworld-blockchain-go/core/model/TransactionType"
 	"helloworld-blockchain-go/core/tool/BlockchainDatabaseKeyTool"
 	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 	"helloworld-blockchain-go/core/tool/ScriptTool"
@@ -11,18 +11,18 @@ import (
 	"helloworld-blockchain-go/util/DataStructureUtil"
 	"helloworld-blockchain-go/util/LogUtil"
 
-	"helloworld-blockchain-go/core/Model"
+	"helloworld-blockchain-go/core/model"
 )
 
-func CalculateTransactionHash(transaction Model.Transaction) string {
+func CalculateTransactionHash(transaction model.Transaction) string {
 	transactionDto := Model2DtoTool.Transaction2TransactionDto(&transaction)
 	return TransactionDtoTool.CalculateTransactionHash(transactionDto)
 }
-func GetTransactionFee(transaction *Model.Transaction) uint64 {
+func GetTransactionFee(transaction *model.Transaction) uint64 {
 	transactionFee := GetInputValue(transaction) - GetOutputValue(transaction)
 	return transactionFee
 }
-func GetInputValue(transaction *Model.Transaction) uint64 {
+func GetInputValue(transaction *model.Transaction) uint64 {
 	inputs := transaction.Inputs
 	total := uint64(0)
 	if inputs != nil {
@@ -32,7 +32,7 @@ func GetInputValue(transaction *Model.Transaction) uint64 {
 	}
 	return total
 }
-func GetOutputValue(transaction *Model.Transaction) uint64 {
+func GetOutputValue(transaction *model.Transaction) uint64 {
 	outputs := transaction.Outputs
 	total := uint64(0)
 	if outputs != nil {
@@ -46,7 +46,7 @@ func GetOutputValue(transaction *Model.Transaction) uint64 {
 /**
  * 区块新产生的地址是否存在重复
  */
-func IsExistDuplicateNewAddress(transaction *Model.Transaction) bool {
+func IsExistDuplicateNewAddress(transaction *model.Transaction) bool {
 	var newAddresss []string
 	outputs := transaction.Outputs
 	if outputs != nil {
@@ -57,14 +57,14 @@ func IsExistDuplicateNewAddress(transaction *Model.Transaction) bool {
 	}
 	return DataStructureUtil.IsExistDuplicateElement(&newAddresss)
 }
-func GetTransactionOutputId(transactionOutput *Model.TransactionOutput) string {
+func GetTransactionOutputId(transactionOutput *model.TransactionOutput) string {
 	return BlockchainDatabaseKeyTool.BuildTransactionOutputId(transactionOutput.TransactionHash, transactionOutput.TransactionOutputIndex)
 }
 
 /**
  * 交易中是否存在重复的[未花费交易输出]
  */
-func IsExistDuplicateUtxo(transaction *Model.Transaction) bool {
+func IsExistDuplicateUtxo(transaction *model.Transaction) bool {
 	var utxoIds []string
 	inputs := transaction.Inputs
 	if inputs != nil {
@@ -80,7 +80,7 @@ func IsExistDuplicateUtxo(transaction *Model.Transaction) bool {
 /**
  * 交易中的金额是否符合系统的约束
  */
-func CheckTransactionValue(transaction *Model.Transaction) bool {
+func CheckTransactionValue(transaction *model.Transaction) bool {
 	inputs := transaction.Inputs
 	if inputs != nil {
 		//校验交易输入的金额
@@ -125,7 +125,7 @@ func CheckTransactionValue(transaction *Model.Transaction) bool {
 /**
  * 校验交易中的地址是否是P2PKH地址
  */
-func CheckPayToPublicKeyHashAddress(transaction *Model.Transaction) bool {
+func CheckPayToPublicKeyHashAddress(transaction *model.Transaction) bool {
 	outputs := transaction.Outputs
 	if outputs != nil {
 		for _, output := range outputs {
@@ -141,7 +141,7 @@ func CheckPayToPublicKeyHashAddress(transaction *Model.Transaction) bool {
 /**
  * 校验交易中的脚本是否是P2PKH脚本
  */
-func CheckPayToPublicKeyHashScript(transaction *Model.Transaction) bool {
+func CheckPayToPublicKeyHashScript(transaction *model.Transaction) bool {
 	inputs := transaction.Inputs
 	if inputs != nil {
 		for _, input := range inputs {
@@ -164,7 +164,7 @@ func CheckPayToPublicKeyHashScript(transaction *Model.Transaction) bool {
 /**
  * 获取待签名数据
  */
-func SignatureHashAll(transaction *Model.Transaction) string {
+func SignatureHashAll(transaction *model.Transaction) string {
 	transactionDto := Model2DtoTool.Transaction2TransactionDto(transaction)
 	return TransactionDtoTool.SignatureHashAll(transactionDto)
 }
@@ -172,11 +172,11 @@ func SignatureHashAll(transaction *Model.Transaction) string {
 /**
  * 验证签名
  */
-func VerifySignature(transaction *Model.Transaction, publicKey string, bytesSignature []byte) bool {
+func VerifySignature(transaction *model.Transaction, publicKey string, bytesSignature []byte) bool {
 	transactionDto := Model2DtoTool.Transaction2TransactionDto(transaction)
 	return TransactionDtoTool.VerifySignature(transactionDto, publicKey, bytesSignature)
 }
-func CalculateTransactionFee(transaction *Model.Transaction) uint64 {
+func CalculateTransactionFee(transaction *model.Transaction) uint64 {
 	if transaction.TransactionType == TransactionType.GENESIS_TRANSACTION {
 		//创世交易没有交易手续费
 		return 0
@@ -192,7 +192,7 @@ func CalculateTransactionFee(transaction *Model.Transaction) uint64 {
 /**
  * 交易输入总额
  */
-func getInputValue(transaction *Model.Transaction) uint64 {
+func getInputValue(transaction *model.Transaction) uint64 {
 	inputs := transaction.Inputs
 	total := uint64(0)
 	if inputs != nil {
@@ -206,7 +206,7 @@ func getInputValue(transaction *Model.Transaction) uint64 {
 /**
  * 交易输出总额
  */
-func getOutputValue(transaction *Model.Transaction) uint64 {
+func getOutputValue(transaction *model.Transaction) uint64 {
 	outputs := transaction.Outputs
 	total := uint64(0)
 	if outputs != nil {
@@ -216,14 +216,14 @@ func getOutputValue(transaction *Model.Transaction) uint64 {
 	}
 	return total
 }
-func GetTransactionInputCount(transaction *Model.Transaction) uint64 {
+func GetTransactionInputCount(transaction *model.Transaction) uint64 {
 	inputs := transaction.Inputs
 	if inputs == nil {
 		return uint64(0)
 	}
 	return uint64(len(inputs))
 }
-func GetTransactionOutputCount(transaction *Model.Transaction) uint64 {
+func GetTransactionOutputCount(transaction *model.Transaction) uint64 {
 	outputs := transaction.Outputs
 	if outputs == nil {
 		return uint64(0)

@@ -1,4 +1,4 @@
-package Wallet
+package model
 
 import "helloworld-blockchain-go/dto"
 

@@ -1,10 +1,9 @@
 package core
 
 import (
-	"helloworld-blockchain-go/core/Model"
-	"helloworld-blockchain-go/core/Model/Script"
-	"helloworld-blockchain-go/core/Model/Script/BooleanCodeEnum"
-	"helloworld-blockchain-go/core/Model/Script/OperationCodeEnum"
+	"helloworld-blockchain-go/core/model"
+	"helloworld-blockchain-go/core/model/Script/BooleanCodeEnum"
+	"helloworld-blockchain-go/core/model/Script/OperationCodeEnum"
 	"helloworld-blockchain-go/core/tool/TransactionTool"
 	"helloworld-blockchain-go/crypto/AccountUtil"
 	"helloworld-blockchain-go/crypto/ByteUtil"
@@ -15,7 +14,7 @@ import (
 type VirtualMachine struct {
 }
 
-func (this *VirtualMachine) ExecuteScript(transactionEnvironment *Model.Transaction, script *Script.Script) *Script.ScriptExecuteResult {
+func (this *VirtualMachine) ExecuteScript(transactionEnvironment *model.Transaction, script *model.Script) *model.ScriptExecuteResult {
 
 	stack := StringStack.NewStringStack()
 	for i := 0; i < len(*script); i++ {

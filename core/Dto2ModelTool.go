@@ -1,9 +1,8 @@
 package core
 
 import (
-	"helloworld-blockchain-go/core/Model"
-	"helloworld-blockchain-go/core/Model/Script"
-	"helloworld-blockchain-go/core/Model/TransactionType"
+	"helloworld-blockchain-go/core/model"
+	"helloworld-blockchain-go/core/model/TransactionType"
 	"helloworld-blockchain-go/core/tool/BlockTool"
 	"helloworld-blockchain-go/core/tool/ScriptDtoTool"
 	"helloworld-blockchain-go/core/tool/TransactionDtoTool"
@@ -11,10 +10,10 @@ import (
 	"helloworld-blockchain-go/dto"
 )
 
-func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockDto) *Model.Block {
+func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockDto) *model.Block {
 	previousHash := blockDto.PreviousHash
 	previousBlock := blockchainDatabase.QueryBlockByBlockHash(previousHash)
-	block := &Model.Block{}
+	block := &model.Block{}
 	block.Timestamp = blockDto.Timestamp
 	block.PreviousHash = previousHash
 	block.Nonce = blockDto.Nonce
@@ -41,8 +40,8 @@ func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockD
 	}
 	return block
 }
-func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transactionDtos []*dto.TransactionDto) []*Model.Transaction {
-	var transactions []*Model.Transaction
+func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transactionDtos []*dto.TransactionDto) []*model.Transaction {
+	var transactions []*model.Transaction
 	if transactionDtos != nil {
 		for _, transactionDto := range transactionDtos {
 			transaction := TransactionDto2Transaction(blockchainDatabase, transactionDto)
@@ -51,8 +50,8 @@ func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transa
 	}
 	return transactions
 }
-func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transactionDto *dto.TransactionDto) *Model.Transaction {
-	var inputs []*Model.TransactionInput
+func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transactionDto *dto.TransactionDto) *model.Transaction {
+	var inputs []*model.TransactionInput
 	transactionInputDtos := transactionDto.Inputs
 	if transactionInputDtos != nil {
 		for _, transactionInputDto := range transactionInputDtos {
@@ -61,13 +60,13 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 				//throw new RuntimeException("非法交易。交易输入并不是一笔未花费交易输出。");
 				return nil
 			}
-			var transactionInput Model.TransactionInput
+			var transactionInput model.TransactionInput
 			transactionInput.UnspentTransactionOutput = unspentTransactionOutput
 			transactionInput.InputScript = InputScriptDto2InputScript(transactionInputDto.InputScript)
 			inputs = append(inputs, &transactionInput)
 		}
 	}
-	var outputs []*Model.TransactionOutput
+	var outputs []*model.TransactionOutput
 	transactionOutputDtos := transactionDto.Outputs
 	if transactionOutputDtos != nil {
 		for _, transactionOutputDto := range transactionOutputDtos {
@@ -75,7 +74,7 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 			outputs = append(outputs, transactionOutput)
 		}
 	}
-	transaction := new(Model.Transaction)
+	transaction := new(model.Transaction)
 	transactionType := obtainTransactionDto(transactionDto)
 	transaction.TransactionType = transactionType
 	transaction.TransactionHash = TransactionDtoTool.CalculateTransactionHash(transactionDto)
@@ -84,8 +83,8 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 	return transaction
 }
 
-func transactionOutputDto2TransactionOutput(transactionOutputDto *dto.TransactionOutputDto) *Model.TransactionOutput {
-	var transactionOutput Model.TransactionOutput
+func transactionOutputDto2TransactionOutput(transactionOutputDto *dto.TransactionOutputDto) *model.TransactionOutput {
+	var transactionOutput model.TransactionOutput
 	publicKeyHash := ScriptDtoTool.GetPublicKeyHashFromPayToPublicKeyHashOutputScript(transactionOutputDto.OutputScript)
 	address := AccountUtil.AddressFromPublicKeyHash(publicKeyHash)
 	transactionOutput.Address = address
@@ -99,7 +98,7 @@ func obtainTransactionDto(transactionDto *dto.TransactionDto) TransactionType.Tr
 	}
 	return TransactionType.STANDARD_TRANSACTION
 }
-func fillBlockProperty(blockchainDatabase *BlockchainDatabase, block *Model.Block) {
+func fillBlockProperty(blockchainDatabase *BlockchainDatabase, block *model.Block) {
 	transactionIndex := uint64(0)
 	transactionHeight := blockchainDatabase.QueryBlockchainTransactionHeight()
 	transactionOutputHeight := blockchainDatabase.QueryBlockchainTransactionOutputHeight()
@@ -134,13 +133,13 @@ func fillBlockProperty(blockchainDatabase *BlockchainDatabase, block *Model.Bloc
 		}
 	}
 }
-func OutputScriptDto2OutputScript(outputScriptDto *dto.OutputScriptDto) *Script.OutputScript {
-	var outputScript Script.OutputScript
+func OutputScriptDto2OutputScript(outputScriptDto *dto.OutputScriptDto) *model.OutputScript {
+	var outputScript model.OutputScript
 	outputScript = append(outputScript, *outputScriptDto...)
 	return &outputScript
 }
-func InputScriptDto2InputScript(inputScriptDto *dto.InputScriptDto) *Script.InputScript {
-	var inputScript Script.InputScript
+func InputScriptDto2InputScript(inputScriptDto *dto.InputScriptDto) *model.InputScript {
+	var inputScript model.InputScript
 	inputScript = append(inputScript, *inputScriptDto...)
 	return &inputScript
 }

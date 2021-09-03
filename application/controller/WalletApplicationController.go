@@ -3,7 +3,7 @@ package controller
 import (
 	"helloworld-blockchain-go/application/service"
 	"helloworld-blockchain-go/application/vo"
-	"helloworld-blockchain-go/core/Model/ModelWallet"
+	"helloworld-blockchain-go/core/model/ModelWallet"
 	"helloworld-blockchain-go/crypto/AccountUtil"
 	"helloworld-blockchain-go/netcore"
 	"helloworld-blockchain-go/util/JsonUtil"

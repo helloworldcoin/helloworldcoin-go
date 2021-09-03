@@ -1,8 +1,7 @@
-package Model
+package model
 
 import (
-	"helloworld-blockchain-go/core/Model/Script"
-	"helloworld-blockchain-go/core/Model/TransactionType"
+	"helloworld-blockchain-go/core/model/TransactionType"
 )
 
 type Block struct {
@@ -31,11 +30,11 @@ type Transaction struct {
 }
 type TransactionInput struct {
 	UnspentTransactionOutput *TransactionOutput
-	InputScript              *Script.InputScript
+	InputScript              *InputScript
 }
 type TransactionOutput struct {
 	Value        uint64
-	OutputScript *Script.OutputScript
+	OutputScript *OutputScript
 
 	BlockHeight             uint64
 	BlockHash               string
