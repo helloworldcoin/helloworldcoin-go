@@ -13,8 +13,8 @@ func TestGetAllAccounts(t *testing.T) {
 	incentive := &Incentive{}
 	consensus := &Consensus{}
 	virtualMachine := &VirtualMachine{}
-	blockchainDatabase := &BlockchainDatabase{Consensus: consensus, Incentive: incentive, CoreConfiguration: coreConfiguration, VirtualMachine: virtualMachine}
-	wallet := &Wallet{CoreConfiguration: coreConfiguration, BlockchainDatabase: blockchainDatabase}
+	blockchainDatabase := NewBlockchainDatabase(consensus, incentive, virtualMachine, coreConfiguration)
+	wallet := NewWallet(coreConfiguration, blockchainDatabase)
 
 	account0 := AccountUtil.RandomAccount()
 	wallet.SaveAccount(account0)

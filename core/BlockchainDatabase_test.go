@@ -22,8 +22,9 @@ func TestQueryBlockByBlockHeight(t *testing.T) {
 
 	consensus := &Consensus{}
 	incentive := &Incentive{}
+	virtualMachine := &VirtualMachine{}
 	coreConfiguration := &CoreConfiguration{corePath: ResourcePathTool.GetTestDataRootPath()}
-	blockchainDatabase := BlockchainDatabase{Consensus: consensus, Incentive: incentive, CoreConfiguration: coreConfiguration}
+	blockchainDatabase := NewBlockchainDatabase(consensus, incentive, virtualMachine, coreConfiguration)
 	blockchainDatabase.AddBlockDto(blockDto)
 
 	block := blockchainDatabase.QueryBlockByBlockHeight(uint64(1))
