@@ -2,7 +2,7 @@ package controller
 
 import (
 	"helloworld-blockchain-go/application/service"
-	"helloworld-blockchain-go/application/vo/account"
+	"helloworld-blockchain-go/application/vo"
 	"helloworld-blockchain-go/application/vo/transaction"
 	"helloworld-blockchain-go/core/Model/ModelWallet"
 	"helloworld-blockchain-go/crypto/AccountUtil"
@@ -28,8 +28,8 @@ func NewWalletApplicationController(blockchainNetCore *netcore.BlockchainNetCore
 
 func (w *WalletApplicationController) CreateAccount(rw http.ResponseWriter, req *http.Request) {
 	accountTemp := AccountUtil.RandomAccount()
-	accountVo := account.AccountVo{accountTemp.PrivateKey, accountTemp.PublicKey, accountTemp.PublicKeyHash, accountTemp.Address}
-	var response account.CreateAccountResponse
+	accountVo := vo.AccountVo{accountTemp.PrivateKey, accountTemp.PublicKey, accountTemp.PublicKeyHash, accountTemp.Address}
+	var response vo.CreateAccountResponse
 	response.Account = &accountVo
 
 	s := CreateSuccessResponse("", response)
@@ -37,9 +37,9 @@ func (w *WalletApplicationController) CreateAccount(rw http.ResponseWriter, req 
 	io.WriteString(rw, s)
 }
 func (w *WalletApplicationController) CreateAndSaveAccount(rw http.ResponseWriter, req *http.Request) {
-	accountTemp := w.blockchainNetCore.GetBlockchainCore().GetWallet().CreateAndSaveAccount()
-	accountVo := account.AccountVo{accountTemp.PrivateKey, accountTemp.PublicKey, accountTemp.PublicKeyHash, accountTemp.Address}
-	var response account.CreateAndSaveAccountResponse
+	account := w.blockchainNetCore.GetBlockchainCore().GetWallet().CreateAndSaveAccount()
+	accountVo := vo.AccountVo{account.PrivateKey, account.PublicKey, account.PublicKeyHash, account.Address}
+	var response vo.CreateAndSaveAccountResponse
 	response.Account = &accountVo
 
 	s := CreateSuccessResponse("", response)
@@ -49,7 +49,7 @@ func (w *WalletApplicationController) CreateAndSaveAccount(rw http.ResponseWrite
 
 func (w *WalletApplicationController) SaveAccount(rw http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), account.SaveAccountRequest{}).(*account.SaveAccountRequest)
+	request := JsonUtil.ToObject(string(result), vo.SaveAccountRequest{}).(*vo.SaveAccountRequest)
 
 	privateKey := request.PrivateKey
 	if StringUtil.IsNullOrEmpty(privateKey) {
@@ -57,7 +57,7 @@ func (w *WalletApplicationController) SaveAccount(rw http.ResponseWriter, req *h
 	}
 	accountTemp := AccountUtil.AccountFromPrivateKey(privateKey)
 	w.blockchainNetCore.GetBlockchainCore().GetWallet().SaveAccount(accountTemp)
-	var response account.SaveAccountResponse
+	var response vo.SaveAccountResponse
 	response.AddAccountSuccess = true
 
 	s := CreateSuccessResponse("", response)
@@ -67,14 +67,14 @@ func (w *WalletApplicationController) SaveAccount(rw http.ResponseWriter, req *h
 
 func (w *WalletApplicationController) DeleteAccount(rw http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), account.DeleteAccountRequest{}).(*account.DeleteAccountRequest)
+	request := JsonUtil.ToObject(string(result), vo.DeleteAccountRequest{}).(*vo.DeleteAccountRequest)
 
 	address := request.Address
 	if StringUtil.IsNullOrEmpty(address) {
 		//return Response.createFailResponse("请填写需要删除的地址");
 	}
 	w.blockchainNetCore.GetBlockchainCore().GetWallet().DeleteAccountByAddress(address)
-	var response account.DeleteAccountResponse
+	var response vo.DeleteAccountResponse
 	response.DeleteAccountSuccess = true
 
 	s := CreateSuccessResponse("", response)
@@ -86,13 +86,13 @@ func (w *WalletApplicationController) QueryAllAccounts(rw http.ResponseWriter, r
 	wallet := w.blockchainNetCore.GetBlockchainCore().GetWallet()
 	allAccounts := wallet.GetAllAccounts()
 
-	var accountVos []*account.AccountVo2
+	var accountVos []*vo.AccountVo2
 	if allAccounts != nil {
-		for _, accountTemp := range allAccounts {
-			var accountVo account.AccountVo2
-			accountVo.Address = accountTemp.Address
-			accountVo.PrivateKey = accountTemp.PrivateKey
-			accountVo.Value = wallet.GetBalanceByAddress(accountTemp.Address)
+		for _, account := range allAccounts {
+			var accountVo vo.AccountVo2
+			accountVo.Address = account.Address
+			accountVo.PrivateKey = account.PrivateKey
+			accountVo.Value = wallet.GetBalanceByAddress(account.Address)
 			accountVos = append(accountVos, &accountVo)
 		}
 	}
@@ -102,7 +102,7 @@ func (w *WalletApplicationController) QueryAllAccounts(rw http.ResponseWriter, r
 		balance = balance + accountVo.Value
 	}
 
-	var response account.QueryAllAccountsResponse
+	var response vo.QueryAllAccountsResponse
 	response.Accounts = accountVos
 	response.Balance = balance
 

@@ -2,7 +2,7 @@ package JsonUtil
 
 import (
 	"encoding/json"
-	"helloworld-blockchain-go/application/vo/account"
+	"helloworld-blockchain-go/application/vo"
 	"helloworld-blockchain-go/application/vo/block"
 	"helloworld-blockchain-go/application/vo/miner"
 	"helloworld-blockchain-go/application/vo/node"
@@ -187,27 +187,27 @@ func ToObject(jsonString string, object interface{}) interface{} {
 		return &_0200
 	}
 
-	_0250, ok := object.(account.CreateAccountRequest)
+	_0250, ok := object.(vo.CreateAccountRequest)
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0250)
 		return &_0250
 	}
-	_0251, ok := object.(account.CreateAndSaveAccountRequest)
+	_0251, ok := object.(vo.CreateAndSaveAccountRequest)
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0251)
 		return &_0251
 	}
-	_0252, ok := object.(account.DeleteAccountRequest)
+	_0252, ok := object.(vo.DeleteAccountRequest)
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0252)
 		return &_0252
 	}
-	_0253, ok := object.(account.QueryAllAccountsRequest)
+	_0253, ok := object.(vo.QueryAllAccountsRequest)
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0253)
 		return &_0253
 	}
-	_0254, ok := object.(account.SaveAccountRequest)
+	_0254, ok := object.(vo.SaveAccountRequest)
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0254)
 		return &_0254

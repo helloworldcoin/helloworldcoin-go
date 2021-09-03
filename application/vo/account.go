@@ -1,4 +1,4 @@
-package account
+package vo
 
 type AccountVo struct {
 	PrivateKey    string `json:"privateKey"`
