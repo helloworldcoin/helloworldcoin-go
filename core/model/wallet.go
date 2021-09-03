@@ -25,6 +25,5 @@ type AutoBuildTransactionResponse struct {
 	NonChangePayees         []Payee
 	ChangePayee             Payee
 	Payees                  []Payee
-	//TODO 合适吗
-	Transaction dto.TransactionDto
+	Transaction             dto.TransactionDto
 }
