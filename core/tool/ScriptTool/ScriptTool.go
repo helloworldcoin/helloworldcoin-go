@@ -2,7 +2,7 @@ package ScriptTool
 
 import (
 	"helloworld-blockchain-go/core/model"
-	"helloworld-blockchain-go/core/model/Script/OperationCodeEnum"
+	"helloworld-blockchain-go/core/model/script/OperationCodeEnum"
 	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 	"helloworld-blockchain-go/core/tool/ScriptDtoTool"
 	"helloworld-blockchain-go/crypto/AccountUtil"

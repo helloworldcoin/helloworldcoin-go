@@ -3,7 +3,7 @@ package core
 import (
 	"helloworld-blockchain-go/core/model"
 	"helloworld-blockchain-go/core/model/BlockchainActionEnum"
-	"helloworld-blockchain-go/core/model/Script/BooleanCodeEnum"
+	"helloworld-blockchain-go/core/model/script/BooleanCodeEnum"
 	"helloworld-blockchain-go/core/tool/BlockTool"
 	"helloworld-blockchain-go/core/tool/BlockchainDatabaseKeyTool"
 	"helloworld-blockchain-go/core/tool/EncodeDecodeTool"
