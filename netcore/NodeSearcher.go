@@ -42,7 +42,7 @@ func (b *NodeSearcher) searchNodes() {
 		if !b.netCoreConfiguration.IsAutoSearchNode() {
 			return
 		}
-		nodeClient := client.NodeClient{Ip: node.Ip}
+		nodeClient := client.NewNodeClient(node.Ip)
 		var getNodesRequest dto.GetNodesRequest
 		getNodesResponse := nodeClient.GetNodes(getNodesRequest)
 		b.handleGetNodesResponse(getNodesResponse)
@@ -61,7 +61,7 @@ func (b *NodeSearcher) handleGetNodesResponse(getNodesResponse *dto.GetNodesResp
 		if !b.netCoreConfiguration.IsAutoSearchNode() {
 			return
 		}
-		nodeClient := client.NodeClient{Ip: node.Ip}
+		nodeClient := client.NewNodeClient(node.Ip)
 		var pingRequest dto.PingRequest
 		pingResponse := nodeClient.PingNode(pingRequest)
 		if pingResponse != nil {

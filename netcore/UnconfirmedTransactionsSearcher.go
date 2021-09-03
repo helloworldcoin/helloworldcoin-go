@@ -36,7 +36,7 @@ func (u *UnconfirmedTransactionsSearcher) searchUnconfirmedTransactions() {
 	}
 
 	for _, node := range nodes {
-		nodeClient := client.NodeClient{Ip: node.Ip}
+		nodeClient := client.NewNodeClient(node.Ip)
 		var getUnconfirmedTransactionsRequest dto.GetUnconfirmedTransactionsRequest
 		getUnconfirmedTransactionsResponse := nodeClient.GetUnconfirmedTransactions(getUnconfirmedTransactionsRequest)
 		if getUnconfirmedTransactionsResponse == nil {

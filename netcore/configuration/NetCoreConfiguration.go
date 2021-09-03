@@ -10,6 +10,14 @@ type NetCoreConfiguration struct {
 	NetCorePath string
 }
 
+func NewNetCoreConfiguration(netCorePath string) *NetCoreConfiguration {
+	FileUtil.MakeDirectory(netCorePath)
+	return &NetCoreConfiguration{NetCorePath: netCorePath}
+}
+func (n *NetCoreConfiguration) getNetCorePath() string {
+	return n.NetCorePath
+}
+
 const NETCORE_CONFIGURATION_DATABASE_NAME = "NetCoreConfigurationDatabase"
 
 //节点搜索器"是否是自动搜索新区块"状态存入到数据库时的主键
@@ -54,16 +62,7 @@ const HARD_FORK_BLOCK_COUNT = 100000000
 //在区块链网络中搜寻未确认交易的间隔时间。
 const SEARCH_UNCONFIRMED_TRANSACTIONS_TIME_INTERVAL = 1000 * 60 * 2
 
-func NewNetCoreConfiguration(netCorePath string) NetCoreConfiguration {
-	FileUtil.MakeDirectory(netCorePath)
-	return NetCoreConfiguration{NetCorePath: netCorePath}
-}
-
-func (n NetCoreConfiguration) getNetCorePath() string {
-	return n.NetCorePath
-}
-
-func (n NetCoreConfiguration) IsAutoSearchBlock() bool {
+func (n *NetCoreConfiguration) IsAutoSearchBlock() bool {
 	bytesConfigurationValue := n.getConfigurationValue(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_BLOCK_OPTION_KEY))
 	if bytesConfigurationValue == nil {
 		return AUTO_SEARCH_BLOCK_OPTION_DEFAULT_VALUE
@@ -71,15 +70,15 @@ func (n NetCoreConfiguration) IsAutoSearchBlock() bool {
 	return ByteUtil.Utf8BytesToBoolean(bytesConfigurationValue)
 }
 
-func (n NetCoreConfiguration) ActiveAutoSearchBlock() {
+func (n *NetCoreConfiguration) ActiveAutoSearchBlock() {
 	n.addOrUpdateConfiguration(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_BLOCK_OPTION_KEY), ByteUtil.BooleanToUtf8Bytes(true))
 }
 
-func (n NetCoreConfiguration) DeactiveAutoSearchBlock() {
+func (n *NetCoreConfiguration) DeactiveAutoSearchBlock() {
 	n.addOrUpdateConfiguration(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_BLOCK_OPTION_KEY), ByteUtil.BooleanToUtf8Bytes(false))
 }
 
-func (n NetCoreConfiguration) IsAutoSearchNode() bool {
+func (n *NetCoreConfiguration) IsAutoSearchNode() bool {
 	bytesConfigurationValue := n.getConfigurationValue(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY))
 	if bytesConfigurationValue == nil {
 		return AUTO_SEARCH_NODE_OPTION_DEFAULT_VALUE
@@ -87,63 +86,63 @@ func (n NetCoreConfiguration) IsAutoSearchNode() bool {
 	return ByteUtil.Utf8BytesToBoolean(bytesConfigurationValue)
 }
 
-func (n NetCoreConfiguration) ActiveAutoSearchNode() {
+func (n *NetCoreConfiguration) ActiveAutoSearchNode() {
 	n.addOrUpdateConfiguration(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY), ByteUtil.BooleanToUtf8Bytes(true))
 }
 
-func (n NetCoreConfiguration) DeactiveAutoSearchNode() {
+func (n *NetCoreConfiguration) DeactiveAutoSearchNode() {
 	n.addOrUpdateConfiguration(ByteUtil.StringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY), ByteUtil.BooleanToUtf8Bytes(false))
 }
 
-func (n NetCoreConfiguration) GetSearchNodeTimeInterval() uint64 {
+func (n *NetCoreConfiguration) GetSearchNodeTimeInterval() uint64 {
 	return SEARCH_NODE_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) GetSearchBlockchainHeightTimeInterval() uint64 {
+func (n *NetCoreConfiguration) GetSearchBlockchainHeightTimeInterval() uint64 {
 	return SEARCH_BLOCKCHAIN_HEIGHT_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) GetSearchBlockTimeInterval() uint64 {
+func (n *NetCoreConfiguration) GetSearchBlockTimeInterval() uint64 {
 	return SEARCH_BLOCKS_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) GetBlockchainHeightBroadcastTimeInterval() uint64 {
+func (n *NetCoreConfiguration) GetBlockchainHeightBroadcastTimeInterval() uint64 {
 	return BLOCKCHAIN_HEIGHT_BROADCASTER_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) GetBlockBroadcastTimeInterval() uint64 {
+func (n *NetCoreConfiguration) GetBlockBroadcastTimeInterval() uint64 {
 	return BLOCK_BROADCASTER_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) GetAddSeedNodeTimeInterval() uint64 {
+func (n *NetCoreConfiguration) GetAddSeedNodeTimeInterval() uint64 {
 	return ADD_SEED_NODE_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) GetNodeBroadcastTimeInterval() uint64 {
+func (n *NetCoreConfiguration) GetNodeBroadcastTimeInterval() uint64 {
 	return NODE_BROADCAST_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) GetHardForkBlockCount() uint64 {
+func (n *NetCoreConfiguration) GetHardForkBlockCount() uint64 {
 	return HARD_FORK_BLOCK_COUNT
 }
 
-func (n NetCoreConfiguration) GetSearchUnconfirmedTransactionsTimeInterval() uint64 {
+func (n *NetCoreConfiguration) GetSearchUnconfirmedTransactionsTimeInterval() uint64 {
 	return SEARCH_UNCONFIRMED_TRANSACTIONS_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) GetNodeCleanTimeInterval() uint64 {
+func (n *NetCoreConfiguration) GetNodeCleanTimeInterval() uint64 {
 	return NODE_CLEAN_TIME_INTERVAL
 }
 
-func (n NetCoreConfiguration) getConfigurationValue(configurationKey []byte) []byte {
+func (n *NetCoreConfiguration) getConfigurationValue(configurationKey []byte) []byte {
 	bytesConfigurationValue := KvDbUtil.Get(n.getNetCoreConfigurationDatabasePath(), configurationKey)
 	return bytesConfigurationValue
 }
 
-func (n NetCoreConfiguration) addOrUpdateConfiguration(configurationKey []byte, configurationValue []byte) {
+func (n *NetCoreConfiguration) addOrUpdateConfiguration(configurationKey []byte, configurationValue []byte) {
 	KvDbUtil.Put(n.getNetCoreConfigurationDatabasePath(), configurationKey, configurationValue)
 }
 
-func (n NetCoreConfiguration) getNetCoreConfigurationDatabasePath() string {
+func (n *NetCoreConfiguration) getNetCoreConfigurationDatabasePath() string {
 	return FileUtil.NewPath(n.NetCorePath, NETCORE_CONFIGURATION_DATABASE_NAME)
 }

@@ -33,7 +33,7 @@ func (b *BlockchainHeightSearcher) searchBlockchainHeight() {
 	}
 
 	for _, node := range nodes {
-		nodeClient := client.NodeClient{Ip: node.Ip}
+		nodeClient := client.NewNodeClient(node.Ip)
 		var getBlockchainHeightRequest dto.GetBlockchainHeightRequest
 		getBlockchainHeightResponse := nodeClient.GetBlockchainHeight(getBlockchainHeightRequest)
 		if getBlockchainHeightResponse != nil {

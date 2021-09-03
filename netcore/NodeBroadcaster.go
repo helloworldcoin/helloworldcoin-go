@@ -33,7 +33,7 @@ func (b *NodeBroadcaster) broadcastNode() {
 	}
 
 	for _, node := range nodes {
-		nodeClient := client.NodeClient{Ip: node.Ip}
+		nodeClient := client.NewNodeClient(node.Ip)
 		var pingRequest dto.PingRequest
 		nodeClient.PingNode(pingRequest)
 	}

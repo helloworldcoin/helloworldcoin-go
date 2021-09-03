@@ -29,7 +29,7 @@ func (w *WalletApplicationService) SubmitTransactionToBlockchainNetwork(request 
 		for _, node := range nodes {
 			var postTransactionRequest dto.PostTransactionRequest
 			postTransactionRequest.Transaction = transactionDto
-			nodeClient := client.NodeClient{Ip: node.Ip}
+			nodeClient := client.NewNodeClient(node.Ip)
 			postTransactionResponse := nodeClient.PostTransaction(postTransactionRequest)
 			if postTransactionResponse != nil {
 				successSubmitNodes = append(successSubmitNodes, node.Ip)

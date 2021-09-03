@@ -10,7 +10,17 @@ import (
 )
 
 type NodeClient struct {
-	Ip string
+	ip string
+}
+
+func NewNodeClient(ip string) *NodeClient {
+	var nodeClient NodeClient
+	nodeClient.ip = ip
+	return &nodeClient
+}
+
+func (n *NodeClient) GetIp() string {
+	return n.ip
 }
 
 func (n *NodeClient) PostTransaction(request dto.PostTransactionRequest) *dto.PostTransactionResponse {
@@ -77,5 +87,5 @@ func (n *NodeClient) GetUnconfirmedTransactions(request dto.GetUnconfirmedTransa
 	return JsonUtil.ToObject(responseHtml, dto.GetUnconfirmedTransactionsResponse{}).(*dto.GetUnconfirmedTransactionsResponse)
 }
 func (n *NodeClient) getUrl(api string) string {
-	return "http://" + n.Ip + ":" + StringUtil.ValueOfUint64(NetworkSetting.PORT) + api
+	return "http://" + n.ip + ":" + StringUtil.ValueOfUint64(NetworkSetting.PORT) + api
 }

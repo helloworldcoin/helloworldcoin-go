@@ -140,7 +140,7 @@ func (b *BlockSearcher) getForkBlockHeight(blockchainCore *core.BlockchainCore, 
 		}
 		var getBlockRequest dto.GetBlockRequest
 		getBlockRequest.BlockHeight = forkBlockHeight
-		nodeClient := client.NodeClient{Ip: node.Ip}
+		nodeClient := client.NewNodeClient(node.Ip)
 
 		getBlockResponse := nodeClient.GetBlock(getBlockRequest)
 		if getBlockResponse == nil {
@@ -164,7 +164,7 @@ func (b *BlockSearcher) synchronizeBlocks(blockchainCore *core.BlockchainCore, n
 	for {
 		var getBlockRequest dto.GetBlockRequest
 		getBlockRequest.BlockHeight = startBlockHeight
-		nodeClient := client.NodeClient{Ip: node.Ip}
+		nodeClient := client.NewNodeClient(node.Ip)
 		getBlockResponse := nodeClient.GetBlock(getBlockRequest)
 		if getBlockResponse == nil {
 			break
@@ -188,7 +188,7 @@ func (b *BlockSearcher) isForkNode(blockchainCore *core.BlockchainCore, node *mo
 	}
 	var getBlockRequest dto.GetBlockRequest
 	getBlockRequest.BlockHeight = block.Height
-	nodeClient := client.NodeClient{Ip: node.Ip}
+	nodeClient := client.NewNodeClient(node.Ip)
 	getBlockResponse := nodeClient.GetBlock(getBlockRequest)
 	//没有查询到区块，这里则认为远程节点没有该高度的区块存在，远程节点的高度没有本地区块链高度高，所以不分叉。
 	if getBlockResponse == nil {
@@ -235,7 +235,7 @@ func (b *BlockSearcher) isHardForkNode(blockchainCore *core.BlockchainCore, node
 	}
 	var getBlockRequest dto.GetBlockRequest
 	getBlockRequest.BlockHeight = criticalPointBlocHeight
-	nodeClient := client.NodeClient{Ip: node.Ip}
+	nodeClient := client.NewNodeClient(node.Ip)
 	getBlockResponse := nodeClient.GetBlock(getBlockRequest)
 	if getBlockResponse == nil {
 		return false

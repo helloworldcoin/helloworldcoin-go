@@ -34,7 +34,7 @@ func (b *NodeCleaner) cleanDeadNodes() {
 	}
 
 	for _, node := range nodes {
-		nodeClient := client.NodeClient{Ip: node.Ip}
+		nodeClient := client.NewNodeClient(node.Ip)
 		var pingRequest dto.PingRequest
 		pingResponse := nodeClient.PingNode(pingRequest)
 		if pingResponse == nil {

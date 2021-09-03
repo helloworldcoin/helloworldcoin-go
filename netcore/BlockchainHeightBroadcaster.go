@@ -39,7 +39,7 @@ func (b *BlockchainHeightBroadcaster) broadcastBlockchainHeight() {
 		if blockchainHeight <= node.BlockchainHeight {
 			continue
 		}
-		nodeClient := client.NodeClient{Ip: node.Ip}
+		nodeClient := client.NewNodeClient(node.Ip)
 		var postBlockchainHeightRequest dto.PostBlockchainHeightRequest
 		postBlockchainHeightRequest.BlockchainHeight = blockchainHeight
 		nodeClient.PostBlockchainHeight(postBlockchainHeightRequest)
