@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"helloworld-blockchain-go/core/Model/ModelWallet"
 	"helloworld-blockchain-go/core/tool/EncodeDecodeTool"
 	"helloworld-blockchain-go/core/tool/ScriptDtoTool"
@@ -10,7 +9,6 @@ import (
 	"helloworld-blockchain-go/crypto/ByteUtil"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/util/FileUtil"
-	"helloworld-blockchain-go/util/JsonUtil"
 	"helloworld-blockchain-go/util/KvDbUtil"
 	"helloworld-blockchain-go/util/StringUtil"
 )
@@ -26,9 +24,7 @@ func (w *Wallet) GetAllAccounts() []*AccountUtil.Account {
 	var accounts []*AccountUtil.Account
 	bytesAccounts := KvDbUtil.Gets(w.getWalletDatabasePath(), 1, 100000000)
 	for e := bytesAccounts.Front(); e != nil; e = e.Next() {
-		println(&e.Value)
 		account := EncodeDecodeTool.DecodeToAccount(e.Value.([]byte))
-		println(JsonUtil.ToString(*account))
 		accounts = append(accounts, account)
 	}
 	return accounts
@@ -54,7 +50,6 @@ func (w *Wallet) CreateAndSaveAccount() *AccountUtil.Account {
 	return account
 }
 func (w *Wallet) SaveAccount(account *AccountUtil.Account) {
-	fmt.Println(string(EncodeDecodeTool.EncodeAccount(account)))
 	KvDbUtil.Put(w.getWalletDatabasePath(), w.getKeyByAccount(account), EncodeDecodeTool.EncodeAccount(account))
 }
 func (w *Wallet) DeleteAccountByAddress(address string) {

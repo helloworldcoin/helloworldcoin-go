@@ -2,10 +2,8 @@ package KvDbUtil
 
 import (
 	"container/list"
-	"helloworld-blockchain-go/util/JsonUtil"
-	"sync"
-
 	"github.com/syndtr/goleveldb/leveldb"
+	"sync"
 )
 
 var dbMap = make(map[string]*leveldb.DB)
@@ -49,8 +47,8 @@ func Gets(dbPath string, from uint64, size uint64) *list.List {
 		if i > int(from+size) {
 			break
 		}
-		JsonUtil.ToString(string(iter.Value()))
-		bytes.PushBack(iter.Value())
+		//TODO
+		bytes.PushBack([]byte(string(iter.Value())))
 		i = i + 1
 	}
 	return bytes
