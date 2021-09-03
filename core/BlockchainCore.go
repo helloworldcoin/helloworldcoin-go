@@ -7,37 +7,50 @@ import (
 )
 
 type BlockchainCore struct {
-	BlockchainDatabase             *BlockchainDatabase
-	UnconfirmedTransactionDatabase *UnconfirmedTransactionDatabase
-	CoreConfiguration              *CoreConfiguration
-	Wallet                         *Wallet
-	Miner                          *Miner
+	blockchainDatabase             *BlockchainDatabase
+	unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase
+	coreConfiguration              *CoreConfiguration
+	wallet                         *Wallet
+	miner                          *Miner
+}
+
+func NewBlockchainCore(coreConfiguration *CoreConfiguration, blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, wallet *Wallet, miner *Miner) *BlockchainCore {
+	var blockchainCore BlockchainCore
+	blockchainCore.coreConfiguration = coreConfiguration
+	blockchainCore.blockchainDatabase = blockchainDatabase
+	blockchainCore.unconfirmedTransactionDatabase = unconfirmedTransactionDatabase
+	blockchainCore.wallet = wallet
+	blockchainCore.miner = miner
+	return &blockchainCore
+}
+func (b *BlockchainCore) GetUnconfirmedTransactionDatabase() *UnconfirmedTransactionDatabase {
+	return b.unconfirmedTransactionDatabase
 }
 
 func (b *BlockchainCore) Start() {
-	go b.Miner.Start()
+	go b.miner.Start()
 }
 func (b *BlockchainCore) QueryBlockByBlockHeight(blockHeight uint64) *model.Block {
-	return b.BlockchainDatabase.QueryBlockByBlockHeight(blockHeight)
+	return b.blockchainDatabase.QueryBlockByBlockHeight(blockHeight)
 }
 func (b *BlockchainCore) AddBlockDto(blockDto *dto.BlockDto) bool {
-	return b.BlockchainDatabase.AddBlockDto(blockDto)
+	return b.blockchainDatabase.AddBlockDto(blockDto)
 }
 
 func (b *BlockchainCore) QueryBlockchainHeight() uint64 {
-	return b.BlockchainDatabase.QueryBlockchainHeight()
+	return b.blockchainDatabase.QueryBlockchainHeight()
 }
 
 func (b *BlockchainCore) PostTransaction(transactionDto *dto.TransactionDto) {
-	b.UnconfirmedTransactionDatabase.InsertTransaction(transactionDto)
+	b.unconfirmedTransactionDatabase.InsertTransaction(transactionDto)
 }
 
 func (b *BlockchainCore) QueryTailBlock() *model.Block {
-	return b.BlockchainDatabase.QueryTailBlock()
+	return b.blockchainDatabase.QueryTailBlock()
 }
 
 func (b *BlockchainCore) DeleteTailBlock() {
-	b.BlockchainDatabase.DeleteTailBlock()
+	b.blockchainDatabase.DeleteTailBlock()
 }
 
 func (b *BlockchainCore) AddBlock(block *model.Block) bool {
@@ -46,45 +59,45 @@ func (b *BlockchainCore) AddBlock(block *model.Block) bool {
 }
 
 func (b *BlockchainCore) DeleteBlocks(blockHeight uint64) {
-	b.BlockchainDatabase.DeleteBlocks(blockHeight)
+	b.blockchainDatabase.DeleteBlocks(blockHeight)
 }
 
 func (b *BlockchainCore) GetMiner() *Miner {
-	return b.Miner
+	return b.miner
 }
 
 func (b *BlockchainCore) GetWallet() *Wallet {
-	return b.Wallet
+	return b.wallet
 }
 func (b *BlockchainCore) AutoBuildTransaction(request *model.AutoBuildTransactionRequest) *model.AutoBuildTransactionResponse {
-	return b.Wallet.AutoBuildTransaction(request)
+	return b.wallet.AutoBuildTransaction(request)
 }
 
 func (b *BlockchainCore) QueryUnconfirmedTransactions(from uint64, size uint64) []*dto.TransactionDto {
-	return b.UnconfirmedTransactionDatabase.SelectTransactions(from, size)
+	return b.unconfirmedTransactionDatabase.SelectTransactions(from, size)
 }
 
 func (b *BlockchainCore) QueryBlockByBlockHash(blockHash string) *model.Block {
-	return b.BlockchainDatabase.QueryBlockByBlockHash(blockHash)
+	return b.blockchainDatabase.QueryBlockByBlockHash(blockHash)
 }
 
 func (b *BlockchainCore) GetBlockchainDatabase() *BlockchainDatabase {
-	return b.BlockchainDatabase
+	return b.blockchainDatabase
 }
 
 func (b *BlockchainCore) QueryTransactionByTransactionHash(transactionHash string) *model.Transaction {
-	return b.BlockchainDatabase.QueryTransactionByTransactionHash(transactionHash)
+	return b.blockchainDatabase.QueryTransactionByTransactionHash(transactionHash)
 
 }
 
 func (b *BlockchainCore) QueryUnconfirmedTransactionByTransactionHash(transactionHash string) *dto.TransactionDto {
-	return b.UnconfirmedTransactionDatabase.SelectTransactionByTransactionHash(transactionHash)
+	return b.unconfirmedTransactionDatabase.SelectTransactionByTransactionHash(transactionHash)
 }
 
 func (b *BlockchainCore) QueryTransactionByTransactionHeight(transactionHeight uint64) *model.Transaction {
-	return b.BlockchainDatabase.QueryTransactionByTransactionHeight(transactionHeight)
+	return b.blockchainDatabase.QueryTransactionByTransactionHeight(transactionHeight)
 }
 
 func (b *BlockchainCore) QueryTransactionOutputByAddress(address string) *model.TransactionOutput {
-	return b.BlockchainDatabase.QueryTransactionOutputByAddress(address)
+	return b.blockchainDatabase.QueryTransactionOutputByAddress(address)
 }

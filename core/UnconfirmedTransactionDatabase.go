@@ -12,7 +12,13 @@ import (
 const UNCONFIRMED_TRANSACTION_DATABASE_NAME = "UnconfirmedTransactionDatabase"
 
 type UnconfirmedTransactionDatabase struct {
-	CoreConfiguration *CoreConfiguration
+	coreConfiguration *CoreConfiguration
+}
+
+func NewUnconfirmedTransactionDatabase(coreConfiguration *CoreConfiguration) *UnconfirmedTransactionDatabase {
+	var unconfirmedTransactionDatabase UnconfirmedTransactionDatabase
+	unconfirmedTransactionDatabase.coreConfiguration = coreConfiguration
+	return &unconfirmedTransactionDatabase
 }
 
 func (u *UnconfirmedTransactionDatabase) InsertTransaction(transactionDto *dto.TransactionDto) {
@@ -45,7 +51,7 @@ func (u *UnconfirmedTransactionDatabase) SelectTransactionByTransactionHash(tran
 }
 
 func (u *UnconfirmedTransactionDatabase) getUnconfirmedTransactionDatabasePath() string {
-	return FileUtil.NewPath(u.CoreConfiguration.corePath, UNCONFIRMED_TRANSACTION_DATABASE_NAME)
+	return FileUtil.NewPath(u.coreConfiguration.corePath, UNCONFIRMED_TRANSACTION_DATABASE_NAME)
 }
 
 func (u *UnconfirmedTransactionDatabase) getKey(transactionHash string) []byte {

@@ -25,10 +25,25 @@ import (
 const BLOCKCHAIN_DATABASE_NAME = "BlockchainDatabase"
 
 type BlockchainDatabase struct {
-	Consensus         *Consensus
-	Incentive         *Incentive
-	VirtualMachine    *VirtualMachine
-	CoreConfiguration *CoreConfiguration
+	consensus         *Consensus
+	incentive         *Incentive
+	virtualMachine    *VirtualMachine
+	coreConfiguration *CoreConfiguration
+}
+
+func NewBlockchainDatabase(consensus *Consensus, incentive *Incentive, virtualMachine *VirtualMachine, coreConfiguration *CoreConfiguration) *BlockchainDatabase {
+	var blockchainDatabase BlockchainDatabase
+	blockchainDatabase.consensus = consensus
+	blockchainDatabase.incentive = incentive
+	blockchainDatabase.virtualMachine = virtualMachine
+	blockchainDatabase.coreConfiguration = coreConfiguration
+	return &blockchainDatabase
+}
+func (b *BlockchainDatabase) GetIncentive() *Incentive {
+	return b.incentive
+}
+func (b *BlockchainDatabase) GetConsensus() *Consensus {
+	return b.consensus
 }
 
 var Mutex = sync.Mutex{}
@@ -123,12 +138,12 @@ func (b *BlockchainDatabase) CheckBlock(block *model.Block) bool {
 		return false
 	}
 	//校验共识
-	if !b.Consensus.CheckConsensus(b, block) {
+	if !b.consensus.CheckConsensus(b, block) {
 		LogUtil.Debug("区块数据异常，未满足共识规则。")
 		return false
 	}
 	//校验激励
-	if !b.Incentive.CheckIncentive(b, block) {
+	if !b.incentive.CheckIncentive(b, block) {
 		LogUtil.Debug("区块数据异常，激励校验失败。")
 		return false
 	}
@@ -317,15 +332,8 @@ func (b *BlockchainDatabase) QuerySpentTransactionOutputByAddress(address string
 	return b.QueryTransactionOutputByTransactionOutputHeight(ByteUtil.BytesToUint64(bytesTransactionOutputHeight))
 }
 
-func (b *BlockchainDatabase) GetIncentive() *Incentive {
-	return b.Incentive
-}
-func (b *BlockchainDatabase) GetConsensus() *Consensus {
-	return b.Consensus
-}
-
 func (b *BlockchainDatabase) getBlockchainDatabasePath() string {
-	return FileUtil.NewPath(b.CoreConfiguration.getCorePath(), BLOCKCHAIN_DATABASE_NAME)
+	return FileUtil.NewPath(b.coreConfiguration.getCorePath(), BLOCKCHAIN_DATABASE_NAME)
 }
 func (b *BlockchainDatabase) createBlockWriteBatch(block *model.Block, blockchainActionEnum BlockchainActionEnum.BlockchainActionEnum) *KvDbUtil.KvWriteBatch {
 	//b.fillBlockProperty(block)
@@ -873,7 +881,7 @@ func (b *BlockchainDatabase) checkTransactionScript(transaction *model.Transacti
 			//完整脚本
 			script := ScriptTool.CreateScript(inputScript, outputScript)
 			//执行脚本
-			scriptExecuteResult := b.VirtualMachine.ExecuteScript(transaction, script)
+			scriptExecuteResult := b.virtualMachine.ExecuteScript(transaction, script)
 			/*fmt.Println(ByteUtil.HexStringToBytes(*scriptExecuteResult.Pop()))
 			fmt.Println(BooleanCodeEnum.TRUE.Code)*/
 

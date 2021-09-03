@@ -53,7 +53,7 @@ func (u *UnconfirmedTransactionsSearcher) searchUnconfirmedTransactions() {
 					SystemUtil.ErrorExit("交易["+JsonUtil.ToString(transaction)+"]放入交易池异常。", err)
 				}
 			}()
-			u.blockchainCore.UnconfirmedTransactionDatabase.InsertTransaction(transaction)
+			u.blockchainCore.GetUnconfirmedTransactionDatabase().InsertTransaction(transaction)
 		}
 	}
 }

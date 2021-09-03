@@ -99,7 +99,7 @@ func (b *NodeServer) getUnconfirmedTransactions(w http.ResponseWriter, req *http
 	requestBody, _ := ioutil.ReadAll(req.Body)
 	request := JsonUtil.ToObject(string(requestBody), dto.GetUnconfirmedTransactionsRequest{}).(*dto.GetUnconfirmedTransactionsRequest)
 	fmt.Println(request)
-	unconfirmedTransactionDatabase := b.blockchainCore.UnconfirmedTransactionDatabase
+	unconfirmedTransactionDatabase := b.blockchainCore.GetUnconfirmedTransactionDatabase()
 	transactions := unconfirmedTransactionDatabase.SelectTransactions(1, BlockSetting.BLOCK_MAX_TRANSACTION_COUNT)
 	var response dto.GetUnconfirmedTransactionsResponse
 	response.Transactions = transactions

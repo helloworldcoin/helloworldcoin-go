@@ -29,12 +29,12 @@ func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockD
 	blockHash := BlockTool.CalculateBlockHash(block)
 	block.Hash = blockHash
 
-	difficult := blockchainDatabase.Consensus.CalculateDifficult(blockchainDatabase, block)
+	difficult := blockchainDatabase.consensus.CalculateDifficult(blockchainDatabase, block)
 	block.Difficulty = difficult
 
 	fillBlockProperty(blockchainDatabase, block)
 
-	if !blockchainDatabase.Consensus.CheckConsensus(blockchainDatabase, block) {
+	if !blockchainDatabase.consensus.CheckConsensus(blockchainDatabase, block) {
 		//throw new RuntimeException("区块预检失败。")
 		return nil
 	}

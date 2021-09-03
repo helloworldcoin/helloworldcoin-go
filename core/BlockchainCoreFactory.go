@@ -14,11 +14,11 @@ func (b *BlockchainCoreFactory) CreateBlockchainCore(corePath string) *Blockchai
 	incentive := &Incentive{}
 	consensus := &Consensus{}
 	virtualMachine := &VirtualMachine{}
-	blockchainDatabase := &BlockchainDatabase{Consensus: consensus, Incentive: incentive, CoreConfiguration: coreConfiguration, VirtualMachine: virtualMachine}
+	blockchainDatabase := NewBlockchainDatabase(consensus, incentive, virtualMachine, coreConfiguration)
 
-	unconfirmedTransactionDatabase := &UnconfirmedTransactionDatabase{CoreConfiguration: coreConfiguration}
-	wallet := &Wallet{CoreConfiguration: coreConfiguration, BlockchainDatabase: blockchainDatabase}
-	miner := &Miner{CoreConfiguration: coreConfiguration, Wallet: wallet, BlockchainDatabase: blockchainDatabase, UnconfirmedTransactionDatabase: unconfirmedTransactionDatabase}
-	blockchainCore := &BlockchainCore{CoreConfiguration: coreConfiguration, BlockchainDatabase: blockchainDatabase, UnconfirmedTransactionDatabase: unconfirmedTransactionDatabase, Wallet: wallet, Miner: miner}
+	unconfirmedTransactionDatabase := NewUnconfirmedTransactionDatabase(coreConfiguration)
+	wallet := NewWallet(coreConfiguration, blockchainDatabase)
+	miner := NewMiner(coreConfiguration, wallet, blockchainDatabase, unconfirmedTransactionDatabase)
+	blockchainCore := NewBlockchainCore(coreConfiguration, blockchainDatabase, unconfirmedTransactionDatabase, wallet, miner)
 	return blockchainCore
 }

@@ -16,8 +16,15 @@ import (
 const WALLET_DATABASE_NAME = "WalletDatabase"
 
 type Wallet struct {
-	CoreConfiguration  *CoreConfiguration
-	BlockchainDatabase *BlockchainDatabase
+	coreConfiguration  *CoreConfiguration
+	blockchainDatabase *BlockchainDatabase
+}
+
+func NewWallet(coreConfiguration *CoreConfiguration, blockchainDatabase *BlockchainDatabase) *Wallet {
+	var wallet Wallet
+	wallet.coreConfiguration = coreConfiguration
+	wallet.blockchainDatabase = blockchainDatabase
+	return &wallet
 }
 
 func (w *Wallet) GetAllAccounts() []*AccountUtil.Account {
@@ -34,7 +41,7 @@ func (w *Wallet) GetNonZeroBalanceAccounts() []*AccountUtil.Account {
 	bytesAccounts := KvDbUtil.Gets(w.getWalletDatabasePath(), 1, 100000000)
 	for e := bytesAccounts.Front(); e != nil; e = e.Next() {
 		account := EncodeDecodeTool.DecodeToAccount(e.Value.([]byte))
-		utxo := w.BlockchainDatabase.QueryUnspentTransactionOutputByAddress(account.Address)
+		utxo := w.blockchainDatabase.QueryUnspentTransactionOutputByAddress(account.Address)
 		if utxo != nil && utxo.Value > 0 {
 			accounts = append(accounts, account)
 		}
@@ -56,14 +63,14 @@ func (w *Wallet) DeleteAccountByAddress(address string) {
 	KvDbUtil.Delete(w.getWalletDatabasePath(), w.getKeyByAddress(address))
 }
 func (w *Wallet) GetBalanceByAddress(address string) uint64 {
-	utxo := w.BlockchainDatabase.QueryUnspentTransactionOutputByAddress(address)
+	utxo := w.blockchainDatabase.QueryUnspentTransactionOutputByAddress(address)
 	if utxo != nil {
 		return utxo.Value
 	}
 	return uint64(0)
 }
 func (w *Wallet) getWalletDatabasePath() string {
-	return FileUtil.NewPath(w.CoreConfiguration.getCorePath(), WALLET_DATABASE_NAME)
+	return FileUtil.NewPath(w.coreConfiguration.getCorePath(), WALLET_DATABASE_NAME)
 }
 func (w *Wallet) getKeyByAddress(address string) []byte {
 	return ByteUtil.StringToUtf8Bytes(address)
@@ -101,7 +108,7 @@ func (w *Wallet) AutoBuildTransaction(request *model.AutoBuildTransactionRequest
 	allAccounts := w.GetNonZeroBalanceAccounts()
 	if allAccounts != nil {
 		for _, account := range allAccounts {
-			utxo := w.BlockchainDatabase.QueryUnspentTransactionOutputByAddress(account.Address)
+			utxo := w.blockchainDatabase.QueryUnspentTransactionOutputByAddress(account.Address)
 			//构建一个新的付款方
 			var payer model.Payer
 			payer.PrivateKey = account.PrivateKey

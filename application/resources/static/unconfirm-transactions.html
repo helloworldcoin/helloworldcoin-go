@@ -1,87 +1,66 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>未确认交易池-HelloworldBlockchain</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>未确认交易池-HelloworldBlockchain</title>
 
-        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
-        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
-        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
-        <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
+    <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+    <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+    <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
 
-        <script src="./js/common.js"></script>
-        <link rel="stylesheet" href="./css/common.css">
-    </head>
-    <body>
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="./index.html">HelloworldBlockchain</a>
-                </div>
-
-                <div>
-                    <ul class="nav navbar-nav">
-                        <li><a href="./search.html">搜索</a></li>
-                        <li><a href="./miner.html">挖矿</a></li>
-                        <li class="active"><a href="./unconfirm-transactions.html">未确认交易池</a></li>
-                        <li><a href="./pay.html">支付</a></li>
-                        <li><a href="./wallet.html">钱包</a></li>
-                        <li><a href="./node-management.html">节点管理</a></li>
-                        <li><a href="./node-console.html">节点控制台</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <div class="panel panel-default">
-            <div class="panel-heading">未确认交易</div>
+    <script src="./js/common.js"></script>
+    <link rel="stylesheet" href="./css/common.css">
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="./index.html">HelloworldBlockchain</a>
         </div>
-        <div style="width: 100%;" id="container">
-        </div>
-        <div style="margin-top: 10px; " class="page" id="page"><button class="btn btn-primary" onclick="load()">加载更多</button></div>
-        <script>
-            let request = `{"pageCondition":{"from":1,"size":10}}`
-            load();
-            async function load(){
-                let response = await $ajax({
-                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryUnconfirmedTransactions",
-                    data: request
-                });
-                let {unconfirmedTransactions} = response.data;
-                if(unconfirmedTransactions == null || unconfirmedTransactions.length == 0){
-                    $("#page button").html("未确认交易数据加载完毕。");
-                }
-                unconfirmedTransactions.forEach(item => {
-                    $('#container').append(unconfirmedTransactionHtml(item))
-                })
 
-                let jsonObjectRequest = JSON.parse(request);
-                jsonObjectRequest.pageCondition.from += jsonObjectRequest.pageCondition.size;
-                request = JSON.stringify(jsonObjectRequest);
-            }
-            function unconfirmedTransactionHtml(item){
-                let left = '';
-                item.inputs.forEach(item1 => {
-                    left += `<div>付：<span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>&nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;<span>${item1.value}</span></div>`
-                })
-                let right = ''
-                item.outputs.forEach(item1 => {
-                    right += `<div style="display:flex">收：<span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>&nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;<span>${item1.value}</span></div>`
-                });
-                let transactionHtml = `
-                    <div style="font-size: 14px; line-height: 40px; margin-top: 10px;">
-                        <!-- 开头 -->
-                        <div style="display: flex; background-color: #f5f5f5; flex-wrap: wrap; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
-                            <div style="min-width: 40%;"><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${item.transactionHash}">${item.transactionHash}</a></div>
-                        </div>
-                        <div style="display: flex; flex-wrap:wrap;">
-                            <div style="width:auto; min-width:50%;">${left}</div>
-                            <div style="width:auto; min-width:40%;">${right}</div>
-                        </div>
-                    </div>
-                `;
-                return transactionHtml;
-            };
-        </script>
-    </body>
+        <div>
+            <ul class="nav navbar-nav">
+                <li><a href="./search.html">搜索</a></li>
+                <li><a href="./miner.html">挖矿</a></li>
+                <li class="active"><a href="./unconfirm-transactions.html">未确认交易池</a></li>
+                <li><a href="./pay.html">支付</a></li>
+                <li><a href="./wallet.html">钱包</a></li>
+                <li><a href="./node-management.html">节点管理</a></li>
+                <li><a href="./node-console.html">节点控制台</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="panel panel-default">
+    <div class="panel-heading">未确认交易</div>
+</div>
+<div style="width: 100%;" id="container">
+</div>
+<div style="margin-top: 10px; " class="page" id="page"><button class="btn btn-primary" onclick="load()">加载更多</button></div>
+<script>
+    let request = `{"pageCondition":{"from":1,"size":10}}`
+    load();
+    async function load(){
+        let response = await $ajax({
+            url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryUnconfirmedTransactions",
+            data: request
+        });
+        let {unconfirmedTransactions} = response.data;
+        if(unconfirmedTransactions == null || unconfirmedTransactions.length == 0){
+            $("#page button").html("未确认交易数据加载完毕。");
+        }
+        if(!isNullOrUndefined(unconfirmedTransactions)){
+            unconfirmedTransactions.forEach(item => {
+                $('#container').append(unconfirmedTransactionHtml(item))
+            })
+        }
+
+        let jsonObjectRequest = JSON.parse(request);
+        jsonObjectRequest.pageCondition.from += jsonObjectRequest.pageCondition.size;
+        request = JSON.stringify(jsonObjectRequest);
+    }
+</script>
+</body>
 </html>

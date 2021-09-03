@@ -17,10 +17,19 @@ import (
 )
 
 type Miner struct {
-	CoreConfiguration              *CoreConfiguration
-	Wallet                         *Wallet
-	BlockchainDatabase             *BlockchainDatabase
-	UnconfirmedTransactionDatabase *UnconfirmedTransactionDatabase
+	coreConfiguration              *CoreConfiguration
+	wallet                         *Wallet
+	blockchainDatabase             *BlockchainDatabase
+	unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase
+}
+
+func NewMiner(coreConfiguration *CoreConfiguration, wallet *Wallet, blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase) *Miner {
+	var miner Miner
+	miner.coreConfiguration = coreConfiguration
+	miner.wallet = wallet
+	miner.blockchainDatabase = blockchainDatabase
+	miner.unconfirmedTransactionDatabase = unconfirmedTransactionDatabase
+	return &miner
 }
 
 func (i *Miner) Start() {
@@ -30,32 +39,32 @@ func (i *Miner) Start() {
 			continue
 		}
 
-		blockChainHeight := i.BlockchainDatabase.QueryBlockchainHeight()
+		blockChainHeight := i.blockchainDatabase.QueryBlockchainHeight()
 		//'当前区块链的高度'是否大于'矿工最大被允许的挖矿高度'
-		if blockChainHeight >= i.CoreConfiguration.getMaxBlockHeight() {
+		if blockChainHeight >= i.coreConfiguration.getMaxBlockHeight() {
 			continue
 		}
 
-		minerAccount := i.Wallet.CreateAccount()
-		block := i.buildMiningBlock(i.BlockchainDatabase, i.UnconfirmedTransactionDatabase, minerAccount)
+		minerAccount := i.wallet.CreateAccount()
+		block := i.buildMiningBlock(i.blockchainDatabase, i.unconfirmedTransactionDatabase, minerAccount)
 		startTimestamp := TimeUtil.MillisecondTimestamp()
 		for {
 			if !i.IsActive() {
 				break
 			}
 			//在挖矿的期间，可能收集到新的交易。每隔一定的时间，重新组装挖矿中的区块，这样新收集到交易就可以被放进挖矿中的区块了。
-			if TimeUtil.MillisecondTimestamp()-startTimestamp > i.CoreConfiguration.GetMinerMineTimeInterval() {
+			if TimeUtil.MillisecondTimestamp()-startTimestamp > i.coreConfiguration.GetMinerMineTimeInterval() {
 				break
 			}
 			//随机数
 			block.Nonce = ByteUtil.BytesToHexString(ByteUtil.Random32Bytes())
 			block.Hash = BlockTool.CalculateBlockHash(block)
 			//挖矿成功
-			if i.BlockchainDatabase.Consensus.CheckConsensus(i.BlockchainDatabase, block) {
-				i.Wallet.SaveAccount(minerAccount)
+			if i.blockchainDatabase.consensus.CheckConsensus(i.blockchainDatabase, block) {
+				i.wallet.SaveAccount(minerAccount)
 				LogUtil.Debug("祝贺您！挖矿成功！！！区块高度:" + StringUtil.ValueOfUint64(block.Height) + ",区块哈希:" + block.Hash)
 				blockDto := Model2DtoTool.Block2BlockDto(block)
-				isAddBlockToBlockchainSuccess := i.BlockchainDatabase.AddBlockDto(blockDto)
+				isAddBlockToBlockchainSuccess := i.blockchainDatabase.AddBlockDto(blockDto)
 				if !isAddBlockToBlockchainSuccess {
 					LogUtil.Debug("挖矿成功，但是区块放入区块链失败。")
 				}
@@ -65,21 +74,21 @@ func (i *Miner) Start() {
 	}
 }
 func (i *Miner) IsActive() bool {
-	return i.CoreConfiguration.IsMinerActive()
+	return i.coreConfiguration.IsMinerActive()
 }
 func (i *Miner) Deactive() {
-	i.CoreConfiguration.deactiveMiner()
+	i.coreConfiguration.deactiveMiner()
 }
 func (i *Miner) Active() {
-	i.CoreConfiguration.activeMiner()
+	i.coreConfiguration.activeMiner()
 }
 
 func (i *Miner) SetMaxBlockHeight(maxHeight uint64) {
-	i.CoreConfiguration.setMaxBlockHeight(maxHeight)
+	i.coreConfiguration.setMaxBlockHeight(maxHeight)
 }
 
 func (i *Miner) GetMaxBlockHeight() uint64 {
-	return i.CoreConfiguration.getMaxBlockHeight()
+	return i.coreConfiguration.getMaxBlockHeight()
 }
 
 func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, minerAccount *AccountUtil.Account) *model.Block {
@@ -98,7 +107,7 @@ func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfi
 	}
 	packingTransactions := i.packingTransactions(blockchainDatabase, unconfirmedTransactionDatabase)
 
-	incentive := blockchainDatabase.Incentive
+	incentive := blockchainDatabase.incentive
 	incentiveValue := incentive.IncentiveValue(blockchainDatabase, &nonNonceBlock)
 
 	mineAwardTransaction := i.buildIncentiveTransaction(minerAccount.Address, incentiveValue)
@@ -112,7 +121,7 @@ func (i *Miner) buildMiningBlock(blockchainDatabase *BlockchainDatabase, unconfi
 	nonNonceBlock.MerkleTreeRoot = merkleTreeRoot
 
 	//计算挖矿难度
-	nonNonceBlock.Difficulty = blockchainDatabase.Consensus.CalculateDifficult(blockchainDatabase, &nonNonceBlock)
+	nonNonceBlock.Difficulty = blockchainDatabase.consensus.CalculateDifficult(blockchainDatabase, &nonNonceBlock)
 	return &nonNonceBlock
 }
 
