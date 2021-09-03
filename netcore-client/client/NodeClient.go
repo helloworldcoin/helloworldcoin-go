@@ -18,7 +18,6 @@ func NewNodeClient(ip string) *NodeClient {
 	nodeClient.ip = ip
 	return &nodeClient
 }
-
 func (n *NodeClient) GetIp() string {
 	return n.ip
 }
