@@ -2,7 +2,6 @@ package core
 
 import (
 	"helloworld-blockchain-go/core/model"
-	"helloworld-blockchain-go/core/model/ModelWallet"
 	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 	"helloworld-blockchain-go/dto"
 )
@@ -57,7 +56,7 @@ func (b *BlockchainCore) GetMiner() *Miner {
 func (b *BlockchainCore) GetWallet() *Wallet {
 	return b.Wallet
 }
-func (b *BlockchainCore) AutoBuildTransaction(request *ModelWallet.AutoBuildTransactionRequest) *ModelWallet.AutoBuildTransactionResponse {
+func (b *BlockchainCore) AutoBuildTransaction(request *model.AutoBuildTransactionRequest) *model.AutoBuildTransactionResponse {
 	return b.Wallet.AutoBuildTransaction(request)
 }
 

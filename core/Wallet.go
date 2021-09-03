@@ -1,7 +1,7 @@
 package core
 
 import (
-	"helloworld-blockchain-go/core/model/ModelWallet"
+	"helloworld-blockchain-go/core/model"
 	"helloworld-blockchain-go/core/tool/EncodeDecodeTool"
 	"helloworld-blockchain-go/core/tool/ScriptDtoTool"
 	"helloworld-blockchain-go/core/tool/TransactionDtoTool"
@@ -72,38 +72,38 @@ func (w *Wallet) getKeyByAccount(account *AccountUtil.Account) []byte {
 	return ByteUtil.StringToUtf8Bytes(account.Address)
 }
 
-func (w *Wallet) AutoBuildTransaction(request *ModelWallet.AutoBuildTransactionRequest) *ModelWallet.AutoBuildTransactionResponse {
+func (w *Wallet) AutoBuildTransaction(request *model.AutoBuildTransactionRequest) *model.AutoBuildTransactionResponse {
 	//校验[非找零]收款方
 	nonChangePayees := (*request).NonChangePayees
 	if nonChangePayees == nil || len(nonChangePayees) == 0 {
-		var response ModelWallet.AutoBuildTransactionResponse
+		var response model.AutoBuildTransactionResponse
 		response.BuildTransactionSuccess = false
 		response.Message = "收款方不能为空。"
 		return &response
 	}
 	for _, payee := range nonChangePayees {
 		if StringUtil.IsNullOrEmpty(payee.Address) {
-			var response ModelWallet.AutoBuildTransactionResponse
+			var response model.AutoBuildTransactionResponse
 			response.BuildTransactionSuccess = false
 			response.Message = "收款方不能为空。"
 			return &response
 		}
 		if payee.Value <= 0 {
-			var response ModelWallet.AutoBuildTransactionResponse
+			var response model.AutoBuildTransactionResponse
 			response.BuildTransactionSuccess = false
 			response.Message = "收款方不能为空。"
 			return &response
 		}
 	}
 	//创建付款方
-	var payers []ModelWallet.Payer
+	var payers []model.Payer
 	//遍历钱包里的账户,用钱包里的账户付款
 	allAccounts := w.GetNonZeroBalanceAccounts()
 	if allAccounts != nil {
 		for _, account := range allAccounts {
 			utxo := w.BlockchainDatabase.QueryUnspentTransactionOutputByAddress(account.Address)
 			//构建一个新的付款方
-			var payer ModelWallet.Payer
+			var payer model.Payer
 			payer.PrivateKey = account.PrivateKey
 			payer.Address = account.Address
 			payer.TransactionHash = utxo.TransactionHash
@@ -119,14 +119,14 @@ func (w *Wallet) AutoBuildTransaction(request *ModelWallet.AutoBuildTransactionR
 				//创建一个找零收款方
 				changePayee := w.createChangePayee(payers, nonChangePayees, changeAccount.Address, fee)
 				//创建收款方(收款方=[非找零]收款方+[找零]收款方)
-				var payees []ModelWallet.Payee
+				var payees []model.Payee
 				payees = append(payees, nonChangePayees...)
 				if changePayee != nil {
 					payees = append(payees, *changePayee)
 				}
 				//构造交易
 				var transactionDto dto.TransactionDto
-				var response ModelWallet.AutoBuildTransactionResponse
+				var response model.AutoBuildTransactionResponse
 				response.BuildTransactionSuccess = true
 				response.Message = "构建交易成功"
 				response.Transaction = transactionDto
@@ -140,25 +140,25 @@ func (w *Wallet) AutoBuildTransaction(request *ModelWallet.AutoBuildTransactionR
 			}
 		}
 	}
-	var response ModelWallet.AutoBuildTransactionResponse
+	var response model.AutoBuildTransactionResponse
 	response.Message = "没有足够的金额去支付！"
 	response.BuildTransactionSuccess = false
 	return &response
 }
 
-func (w *Wallet) haveEnoughMoneyToPay(payers []ModelWallet.Payer, payees []ModelWallet.Payee, fee uint64) bool {
+func (w *Wallet) haveEnoughMoneyToPay(payers []model.Payer, payees []model.Payee, fee uint64) bool {
 	//计算找零金额
 	changeValue := w.changeValue(payers, payees, fee)
 	//判断是否有足够的金额去支付
 	haveEnoughMoneyToPay := changeValue >= 0
 	return haveEnoughMoneyToPay
 }
-func (w *Wallet) createChangePayee(payers []ModelWallet.Payer, payees []ModelWallet.Payee, changeAddress string, fee uint64) *ModelWallet.Payee {
+func (w *Wallet) createChangePayee(payers []model.Payer, payees []model.Payee, changeAddress string, fee uint64) *model.Payee {
 	//计算找零金额
 	changeValue := w.changeValue(payers, payees, fee)
 	if changeValue > 0 {
 		//构造找零收款方
-		var changePayee ModelWallet.Payee
+		var changePayee model.Payee
 		changePayee.Address = changeAddress
 		changePayee.Value = changeValue
 		return &changePayee
@@ -166,7 +166,7 @@ func (w *Wallet) createChangePayee(payers []ModelWallet.Payer, payees []ModelWal
 	return nil
 }
 
-func (w *Wallet) changeValue(payers []ModelWallet.Payer, payees []ModelWallet.Payee, fee uint64) uint64 {
+func (w *Wallet) changeValue(payers []model.Payer, payees []model.Payee, fee uint64) uint64 {
 	//交易输入总金额
 	transactionInputValues := uint64(0)
 	for _, payer := range payers {
@@ -183,7 +183,7 @@ func (w *Wallet) changeValue(payers []ModelWallet.Payer, payees []ModelWallet.Pa
 	changeValue := transactionInputValues - payeeValues - fee
 	return changeValue
 }
-func (w *Wallet) buildTransaction(payers []ModelWallet.Payer, payees []ModelWallet.Payee) dto.TransactionDto {
+func (w *Wallet) buildTransaction(payers []model.Payer, payees []model.Payee) dto.TransactionDto {
 	//构建交易输入
 	var transactionInputs []*dto.TransactionInputDto
 	for _, payer := range payers {

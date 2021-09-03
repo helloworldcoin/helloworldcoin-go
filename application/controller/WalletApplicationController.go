@@ -3,7 +3,7 @@ package controller
 import (
 	"helloworld-blockchain-go/application/service"
 	"helloworld-blockchain-go/application/vo"
-	"helloworld-blockchain-go/core/model/ModelWallet"
+	"helloworld-blockchain-go/core/model"
 	"helloworld-blockchain-go/crypto/AccountUtil"
 	"helloworld-blockchain-go/netcore"
 	"helloworld-blockchain-go/util/JsonUtil"
@@ -111,7 +111,7 @@ func (w *WalletApplicationController) QueryAllAccounts(rw http.ResponseWriter, r
 }
 func (w *WalletApplicationController) AutoBuildTransaction(rw http.ResponseWriter, req *http.Request) {
 	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), ModelWallet.AutoBuildTransactionRequest{}).(*ModelWallet.AutoBuildTransactionRequest)
+	request := JsonUtil.ToObject(string(result), model.AutoBuildTransactionRequest{}).(*model.AutoBuildTransactionRequest)
 
 	response := w.blockchainNetCore.GetBlockchainCore().AutoBuildTransaction(request)
 	/*	if autoBuildTransactionResponse.IsBuildTransactionSuccess() {
