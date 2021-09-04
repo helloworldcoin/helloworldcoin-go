@@ -20,6 +20,14 @@ type BlockchainHeightBroadcaster struct {
 	nodeService          *service.NodeService
 }
 
+func NewBlockchainHeightBroadcaster(netCoreConfiguration *configuration.NetCoreConfiguration, blockchainCore *core.BlockchainCore, nodeService *service.NodeService) *BlockchainHeightBroadcaster {
+	var blockchainHeightBroadcaster BlockchainHeightBroadcaster
+	blockchainHeightBroadcaster.netCoreConfiguration = netCoreConfiguration
+	blockchainHeightBroadcaster.blockchainCore = blockchainCore
+	blockchainHeightBroadcaster.nodeService = nodeService
+	return &blockchainHeightBroadcaster
+}
+
 func (b *BlockchainHeightBroadcaster) start() {
 	defer func() {
 		if err := recover(); err != nil {

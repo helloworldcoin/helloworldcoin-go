@@ -19,6 +19,13 @@ type NodeCleaner struct {
 	nodeService          *service.NodeService
 }
 
+func NewNodeCleaner(netCoreConfiguration *configuration.NetCoreConfiguration, nodeService *service.NodeService) *NodeCleaner {
+	var nodeCleaner NodeCleaner
+	nodeCleaner.netCoreConfiguration = netCoreConfiguration
+	nodeCleaner.nodeService = nodeService
+	return &nodeCleaner
+}
+
 func (b *NodeCleaner) start() {
 	defer func() {
 		if err := recover(); err != nil {

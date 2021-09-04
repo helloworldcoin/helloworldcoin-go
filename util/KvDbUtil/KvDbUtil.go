@@ -42,17 +42,17 @@ func Gets(dbPath string, from uint64, size uint64) *list.List {
 	Mutex.Lock()
 	defer Mutex.Unlock()
 	bytes := list.New()
-	iter := getDb(dbPath).NewIterator(nil, nil)
+	iterator := getDb(dbPath).NewIterator(nil, nil)
 	i := 1
-	for iter.Next() {
+	for iterator.Next() {
 		if i < int(from) {
 			continue
 		}
 		if i > int(from+size) {
 			break
 		}
-		//TODO
-		bytes.PushBack([]byte(string(iter.Value())))
+		//deep clone value
+		bytes.PushBack([]byte(string(iterator.Value())))
 		i = i + 1
 	}
 	return bytes

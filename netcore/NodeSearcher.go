@@ -20,6 +20,13 @@ type NodeSearcher struct {
 	nodeService          *service.NodeService
 }
 
+func NewNodeSearcher(netCoreConfiguration *configuration.NetCoreConfiguration, nodeService *service.NodeService) *NodeSearcher {
+	var nodeSearcher NodeSearcher
+	nodeSearcher.netCoreConfiguration = netCoreConfiguration
+	nodeSearcher.nodeService = nodeService
+	return &nodeSearcher
+}
+
 func (b *NodeSearcher) start() {
 	defer func() {
 		if err := recover(); err != nil {

@@ -19,6 +19,13 @@ type SeedNodeInitializer struct {
 	nodeService          *service.NodeService
 }
 
+func NewSeedNodeInitializer(netCoreConfiguration *configuration.NetCoreConfiguration, nodeService *service.NodeService) *SeedNodeInitializer {
+	var seedNodeInitializer SeedNodeInitializer
+	seedNodeInitializer.netCoreConfiguration = netCoreConfiguration
+	seedNodeInitializer.nodeService = nodeService
+	return &seedNodeInitializer
+}
+
 func (s *SeedNodeInitializer) start() {
 	defer func() {
 		if err := recover(); err != nil {

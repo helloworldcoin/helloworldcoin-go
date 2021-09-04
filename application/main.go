@@ -10,7 +10,7 @@ import (
 	"helloworld-blockchain-go/application/vo/BlockchainBrowserApplicationApi"
 	"helloworld-blockchain-go/application/vo/NodeConsoleApplicationApi"
 	"helloworld-blockchain-go/application/vo/WalletApplicationApi"
-	"helloworld-blockchain-go/netcore"
+	"helloworld-blockchain-go/netcore/BlockchainNetCoreFactory"
 	"helloworld-blockchain-go/util/SystemUtil"
 	"net/http"
 )
@@ -18,7 +18,7 @@ import (
 func main() {
 	SystemUtil.CallDefaultBrowser(`http://localhost/`)
 
-	blockchainNetCore := netcore.CreateDefaultBlockchainNetCore()
+	blockchainNetCore := BlockchainNetCoreFactory.CreateDefaultBlockchainNetCore()
 	blockchainNetCore.Start()
 
 	walletApplicationService := service.NewWalletApplicationService(blockchainNetCore)

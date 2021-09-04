@@ -20,6 +20,14 @@ type UnconfirmedTransactionsSearcher struct {
 	nodeService          *service.NodeService
 }
 
+func NewUnconfirmedTransactionsSearcher(netCoreConfiguration *configuration.NetCoreConfiguration, blockchainCore *core.BlockchainCore, nodeService *service.NodeService) *UnconfirmedTransactionsSearcher {
+	var unconfirmedTransactionsSearcher UnconfirmedTransactionsSearcher
+	unconfirmedTransactionsSearcher.netCoreConfiguration = netCoreConfiguration
+	unconfirmedTransactionsSearcher.blockchainCore = blockchainCore
+	unconfirmedTransactionsSearcher.nodeService = nodeService
+	return &unconfirmedTransactionsSearcher
+}
+
 func (u *UnconfirmedTransactionsSearcher) start() {
 	defer func() {
 		if err := recover(); err != nil {

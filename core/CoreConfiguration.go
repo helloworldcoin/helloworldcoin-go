@@ -14,6 +14,12 @@ type CoreConfiguration struct {
 	corePath string
 }
 
+func NewCoreConfiguration(corePath string) *CoreConfiguration {
+	var coreConfiguration CoreConfiguration
+	coreConfiguration.corePath = corePath
+	return &coreConfiguration
+}
+
 //配置数据库名字
 const CONFIGURATION_DATABASE_NAME = "ConfigurationDatabase"
 

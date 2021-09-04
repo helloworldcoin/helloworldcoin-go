@@ -13,6 +13,11 @@ import (
 type Incentive struct {
 }
 
+func NewIncentive() *Incentive {
+	var incentive Incentive
+	return &incentive
+}
+
 func (incentive *Incentive) IncentiveValue(blockchainDatabase *BlockchainDatabase, block *model.Block) uint64 {
 	minerSubsidy := getMinerSubsidy(block)
 	minerFee := BlockTool.GetBlockFee(block)

@@ -18,6 +18,13 @@ type NodeBroadcaster struct {
 	nodeService          *service.NodeService
 }
 
+func NewNodeBroadcaster(netCoreConfiguration *configuration.NetCoreConfiguration, nodeService *service.NodeService) *NodeBroadcaster {
+	var nodeBroadcaster NodeBroadcaster
+	nodeBroadcaster.netCoreConfiguration = netCoreConfiguration
+	nodeBroadcaster.nodeService = nodeService
+	return &nodeBroadcaster
+}
+
 func (b *NodeBroadcaster) start() {
 	defer func() {
 		if err := recover(); err != nil {

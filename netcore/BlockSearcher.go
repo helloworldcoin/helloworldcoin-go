@@ -27,6 +27,15 @@ type BlockSearcher struct {
 	nodeService          *service.NodeService
 }
 
+func NewBlockSearcher(netCoreConfiguration *configuration.NetCoreConfiguration, blockchainCore *core.BlockchainCore, slaveBlockchainCore *core.BlockchainCore, nodeService *service.NodeService) *BlockSearcher {
+	var blockSearcher BlockSearcher
+	blockSearcher.netCoreConfiguration = netCoreConfiguration
+	blockSearcher.blockchainCore = blockchainCore
+	blockSearcher.slaveBlockchainCore = slaveBlockchainCore
+	blockSearcher.nodeService = nodeService
+	return &blockSearcher
+}
+
 func (b *BlockSearcher) start() {
 	defer func() {
 		if err := recover(); err != nil {

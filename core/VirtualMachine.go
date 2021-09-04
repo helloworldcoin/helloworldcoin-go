@@ -18,6 +18,11 @@ import (
 type VirtualMachine struct {
 }
 
+func NewVirtualMachine() *VirtualMachine {
+	var virtualMachine VirtualMachine
+	return &virtualMachine
+}
+
 func (this *VirtualMachine) ExecuteScript(transactionEnvironment *model.Transaction, script *model.Script) *model.ScriptExecuteResult {
 
 	stack := StringStack.NewStringStack()

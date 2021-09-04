@@ -18,6 +18,13 @@ type BlockchainHeightSearcher struct {
 	nodeService          *service.NodeService
 }
 
+func NewBlockchainHeightSearcher(netCoreConfiguration *configuration.NetCoreConfiguration, nodeService *service.NodeService) *BlockchainHeightSearcher {
+	var blockchainHeightSearcher BlockchainHeightSearcher
+	blockchainHeightSearcher.netCoreConfiguration = netCoreConfiguration
+	blockchainHeightSearcher.nodeService = nodeService
+	return &blockchainHeightSearcher
+}
+
 func (b *BlockchainHeightSearcher) start() {
 	defer func() {
 		if err := recover(); err != nil {

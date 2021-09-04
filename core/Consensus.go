@@ -18,6 +18,11 @@ import (
 type Consensus struct {
 }
 
+func NewConsensus() *Consensus {
+	var consensus Consensus
+	return &consensus
+}
+
 func (c *Consensus) CheckConsensus(blockchainDatabase *BlockchainDatabase, block *model.Block) bool {
 	difficulty := block.Difficulty
 	if StringUtil.IsNullOrEmpty(difficulty) {

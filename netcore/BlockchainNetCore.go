@@ -32,6 +32,34 @@ type BlockchainNetCore struct {
 	unconfirmedTransactionsSearcher *UnconfirmedTransactionsSearcher
 }
 
+func NewBlockchainNetCore(netCoreConfiguration *configuration.NetCoreConfiguration, nodeService *service.NodeService,
+	blockchainCore *core.BlockchainCore, nodeServer *server.NodeServer, seedNodeInitializer *SeedNodeInitializer, nodeSearcher *NodeSearcher,
+	nodeBroadcaster *NodeBroadcaster, nodeCleaner *NodeCleaner,
+	blockchainHeightSearcher *BlockchainHeightSearcher, blockchainHeightBroadcaster *BlockchainHeightBroadcaster,
+	blockSearcher *BlockSearcher, blockBroadcaster *BlockBroadcaster,
+	unconfirmedTransactionsSearcher *UnconfirmedTransactionsSearcher) *BlockchainNetCore {
+	var blockchainNetCore BlockchainNetCore
+	blockchainNetCore.netCoreConfiguration = netCoreConfiguration
+	blockchainNetCore.nodeService = nodeService
+
+	blockchainNetCore.blockchainCore = blockchainCore
+	blockchainNetCore.nodeServer = nodeServer
+
+	blockchainNetCore.seedNodeInitializer = seedNodeInitializer
+	blockchainNetCore.nodeSearcher = nodeSearcher
+	blockchainNetCore.nodeBroadcaster = nodeBroadcaster
+	blockchainNetCore.nodeCleaner = nodeCleaner
+
+	blockchainNetCore.blockchainHeightSearcher = blockchainHeightSearcher
+	blockchainNetCore.blockchainHeightBroadcaster = blockchainHeightBroadcaster
+
+	blockchainNetCore.blockSearcher = blockSearcher
+	blockchainNetCore.blockBroadcaster = blockBroadcaster
+
+	blockchainNetCore.unconfirmedTransactionsSearcher = unconfirmedTransactionsSearcher
+	return &blockchainNetCore
+}
+
 func (b *BlockchainNetCore) Start() {
 	//启动本地的单机区块链
 	go b.blockchainCore.Start()
