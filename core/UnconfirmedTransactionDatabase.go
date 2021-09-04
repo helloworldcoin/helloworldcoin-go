@@ -12,7 +12,7 @@ import (
 	"helloworld-blockchain-go/util/FileUtil"
 	"helloworld-blockchain-go/util/JsonUtil"
 	"helloworld-blockchain-go/util/KvDbUtil"
-	"helloworld-blockchain-go/util/SystemUtil"
+	"helloworld-blockchain-go/util/LogUtil"
 )
 
 const UNCONFIRMED_TRANSACTION_DATABASE_NAME = "UnconfirmedTransactionDatabase"
@@ -28,10 +28,10 @@ func NewUnconfirmedTransactionDatabase(coreConfiguration *CoreConfiguration) *Un
 }
 
 func (u *UnconfirmedTransactionDatabase) InsertTransaction(transaction *dto.TransactionDto) bool {
-	//TODO 出现异常会返回false吗
 	defer func() {
+		//it's mean default return value is false
 		if err := recover(); err != nil {
-			SystemUtil.ErrorExit("交易["+JsonUtil.ToString(transaction)+"]放入交易池异常。", err)
+			LogUtil.Error("交易["+JsonUtil.ToString(transaction)+"]放入交易池异常。", err)
 		}
 	}()
 	transactionHash := TransactionDtoTool.CalculateTransactionHash(transaction)

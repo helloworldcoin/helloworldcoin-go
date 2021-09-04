@@ -45,8 +45,8 @@ func (b *BlockchainCore) QueryBlockchainHeight() uint64 {
 	return b.blockchainDatabase.QueryBlockchainHeight()
 }
 
-func (b *BlockchainCore) PostTransaction(transactionDto *dto.TransactionDto) {
-	b.unconfirmedTransactionDatabase.InsertTransaction(transactionDto)
+func (b *BlockchainCore) PostTransaction(transactionDto *dto.TransactionDto) bool {
+	return b.unconfirmedTransactionDatabase.InsertTransaction(transactionDto)
 }
 
 func (b *BlockchainCore) QueryTailBlock() *model.Block {
