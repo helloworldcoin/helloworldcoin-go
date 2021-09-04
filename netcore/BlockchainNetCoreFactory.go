@@ -27,7 +27,7 @@ func CreateDefaultBlockchainNetCore() *BlockchainNetCore {
  * @param netcorePath 区块链数据存放位置
  */
 func CreateBlockchainNetCore(netcorePath string) *BlockchainNetCore {
-	netCoreConfiguration := &configuration.NetCoreConfiguration{NetCorePath: netcorePath}
+	netCoreConfiguration := configuration.NewNetCoreConfiguration(netcorePath)
 
 	blockchainCorePath := FileUtil.NewPath(netcorePath, "BlockchainCore")
 	blockchainCore := (&core.BlockchainCoreFactory{}).CreateBlockchainCore(blockchainCorePath)

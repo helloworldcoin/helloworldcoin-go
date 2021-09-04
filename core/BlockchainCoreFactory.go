@@ -3,7 +3,7 @@ package core
 /*
  @author king 409060350@qq.com
 */
-
+//TODO 提取到包BlockchainCoreFactory？
 type BlockchainCoreFactory struct {
 }
 

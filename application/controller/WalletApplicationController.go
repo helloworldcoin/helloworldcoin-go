@@ -9,9 +9,7 @@ import (
 	"helloworld-blockchain-go/core/model"
 	"helloworld-blockchain-go/crypto/AccountUtil"
 	"helloworld-blockchain-go/netcore"
-	"helloworld-blockchain-go/util/JsonUtil"
 	"helloworld-blockchain-go/util/StringUtil"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -45,8 +43,7 @@ func (w *WalletApplicationController) CreateAndSaveAccount(rw http.ResponseWrite
 }
 
 func (w *WalletApplicationController) SaveAccount(rw http.ResponseWriter, req *http.Request) {
-	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), vo.SaveAccountRequest{}).(*vo.SaveAccountRequest)
+	request := GetRequest(req, vo.SaveAccountRequest{}).(*vo.SaveAccountRequest)
 
 	privateKey := request.PrivateKey
 	if StringUtil.IsNullOrEmpty(privateKey) {
@@ -62,8 +59,7 @@ func (w *WalletApplicationController) SaveAccount(rw http.ResponseWriter, req *h
 }
 
 func (w *WalletApplicationController) DeleteAccount(rw http.ResponseWriter, req *http.Request) {
-	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), vo.DeleteAccountRequest{}).(*vo.DeleteAccountRequest)
+	request := GetRequest(req, vo.DeleteAccountRequest{}).(*vo.DeleteAccountRequest)
 
 	address := request.Address
 	if StringUtil.IsNullOrEmpty(address) {
@@ -104,8 +100,7 @@ func (w *WalletApplicationController) QueryAllAccounts(rw http.ResponseWriter, r
 	SuccessHttpResponse(rw, "", response)
 }
 func (w *WalletApplicationController) AutoBuildTransaction(rw http.ResponseWriter, req *http.Request) {
-	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), model.AutoBuildTransactionRequest{}).(*model.AutoBuildTransactionRequest)
+	request := GetRequest(req, model.AutoBuildTransactionRequest{}).(*model.AutoBuildTransactionRequest)
 
 	response := w.blockchainNetCore.GetBlockchainCore().AutoBuildTransaction(request)
 
@@ -119,8 +114,7 @@ func (w *WalletApplicationController) AutoBuildTransaction(rw http.ResponseWrite
 }
 
 func (w *WalletApplicationController) SubmitTransactionToBlockchainNetwork(rw http.ResponseWriter, req *http.Request) {
-	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), vo.SubmitTransactionToBlockchainNetworkRequest{}).(*vo.SubmitTransactionToBlockchainNetworkRequest)
+	request := GetRequest(req, vo.SubmitTransactionToBlockchainNetworkRequest{}).(*vo.SubmitTransactionToBlockchainNetworkRequest)
 
 	response := w.walletApplicationService.SubmitTransactionToBlockchainNetwork(request)
 

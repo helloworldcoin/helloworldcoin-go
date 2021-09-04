@@ -7,9 +7,7 @@ import (
 	"helloworld-blockchain-go/application/vo"
 	"helloworld-blockchain-go/netcore"
 	"helloworld-blockchain-go/netcore/model"
-	"helloworld-blockchain-go/util/JsonUtil"
 	"helloworld-blockchain-go/util/StringUtil"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -68,8 +66,7 @@ func (n *NodeConsoleApplicationController) DeactiveAutoSearchBlock(rw http.Respo
 }
 
 func (n *NodeConsoleApplicationController) AddNode(rw http.ResponseWriter, req *http.Request) {
-	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), vo.AddNodeRequest{}).(*vo.AddNodeRequest)
+	request := GetRequest(req, vo.AddNodeRequest{}).(*vo.AddNodeRequest)
 
 	ip := request.Ip
 	if StringUtil.IsNullOrEmpty(ip) {
@@ -90,8 +87,7 @@ func (n *NodeConsoleApplicationController) AddNode(rw http.ResponseWriter, req *
 	SuccessHttpResponse(rw, "", response)
 }
 func (n *NodeConsoleApplicationController) UpdateNode(rw http.ResponseWriter, req *http.Request) {
-	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), vo.UpdateNodeRequest{}).(*vo.UpdateNodeRequest)
+	request := GetRequest(req, vo.UpdateNodeRequest{}).(*vo.UpdateNodeRequest)
 
 	ip := request.Ip
 	if StringUtil.IsNullOrEmpty(ip) {
@@ -107,8 +103,7 @@ func (n *NodeConsoleApplicationController) UpdateNode(rw http.ResponseWriter, re
 	SuccessHttpResponse(rw, "", response)
 }
 func (n *NodeConsoleApplicationController) DeleteNode(rw http.ResponseWriter, req *http.Request) {
-	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), vo.DeleteNodeRequest{}).(*vo.DeleteNodeRequest)
+	request := GetRequest(req, vo.DeleteNodeRequest{}).(*vo.DeleteNodeRequest)
 
 	n.blockchainNetCore.GetNodeService().DeleteNode(request.Ip)
 	var response vo.DeleteNodeResponse
@@ -155,8 +150,7 @@ func (n *NodeConsoleApplicationController) DeactiveAutoSearchNode(rw http.Respon
 }
 
 func (n *NodeConsoleApplicationController) DeleteBlocks(rw http.ResponseWriter, req *http.Request) {
-	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), vo.DeleteBlocksRequest{}).(*vo.DeleteBlocksRequest)
+	request := GetRequest(req, vo.DeleteBlocksRequest{}).(*vo.DeleteBlocksRequest)
 
 	n.blockchainNetCore.GetBlockchainCore().DeleteBlocks(request.BlockHeight)
 	var response vo.DeleteBlocksResponse
@@ -172,8 +166,7 @@ func (n *NodeConsoleApplicationController) GetMaxBlockHeight(rw http.ResponseWri
 	SuccessHttpResponse(rw, "", response)
 }
 func (n *NodeConsoleApplicationController) SetMaxBlockHeight(rw http.ResponseWriter, req *http.Request) {
-	result, _ := ioutil.ReadAll(req.Body)
-	request := JsonUtil.ToObject(string(result), vo.SetMaxBlockHeightRequest{}).(*vo.SetMaxBlockHeightRequest)
+	request := GetRequest(req, vo.SetMaxBlockHeightRequest{}).(*vo.SetMaxBlockHeightRequest)
 
 	height := request.MaxBlockHeight
 	n.blockchainNetCore.GetBlockchainCore().GetMiner().SetMaxBlockHeight(height)
