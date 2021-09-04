@@ -132,7 +132,7 @@ func (w *Wallet) AutoBuildTransaction(request *model.AutoBuildTransactionRequest
 					payees = append(payees, *changePayee)
 				}
 				//构造交易
-				var transactionDto dto.TransactionDto
+				transactionDto := w.buildTransaction(payers, payees)
 				var response model.AutoBuildTransactionResponse
 				response.BuildTransactionSuccess = true
 				response.Message = "构建交易成功"
@@ -194,21 +194,21 @@ func (w *Wallet) buildTransaction(payers []model.Payer, payees []model.Payee) dt
 	//构建交易输入
 	var transactionInputs []*dto.TransactionInputDto
 	for _, payer := range payers {
-		var transactionInput *dto.TransactionInputDto
+		var transactionInput dto.TransactionInputDto
 		transactionInput.TransactionHash = payer.TransactionHash
 		transactionInput.TransactionOutputIndex = payer.TransactionOutputIndex
-		transactionInputs = append(transactionInputs, transactionInput)
+		transactionInputs = append(transactionInputs, &transactionInput)
 	}
 	//构建交易输出
 	var transactionOutputs []*dto.TransactionOutputDto
 	//构造收款方交易输出
 	if payees != nil {
 		for _, payee := range payees {
-			var transactionOutput *dto.TransactionOutputDto
+			var transactionOutput dto.TransactionOutputDto
 			outputScript := ScriptDtoTool.CreatePayToPublicKeyHashOutputScript(payee.Address)
 			transactionOutput.Value = payee.Value
 			transactionOutput.OutputScript = outputScript
-			transactionOutputs = append(transactionOutputs, transactionOutput)
+			transactionOutputs = append(transactionOutputs, &transactionOutput)
 		}
 	}
 	//构造交易

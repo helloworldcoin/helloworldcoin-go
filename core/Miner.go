@@ -6,6 +6,7 @@ import (
 	"helloworld-blockchain-go/core/tool/BlockTool"
 	"helloworld-blockchain-go/core/tool/Model2DtoTool"
 	"helloworld-blockchain-go/core/tool/ScriptTool"
+	"helloworld-blockchain-go/core/tool/TransactionDtoTool"
 	"helloworld-blockchain-go/core/tool/TransactionTool"
 	"helloworld-blockchain-go/crypto/AccountUtil"
 	"helloworld-blockchain-go/crypto/ByteUtil"
@@ -147,6 +148,13 @@ func (i *Miner) packingTransactions(blockchainDatabase *BlockchainDatabase, unco
 	if forMineBlockTransactionDtos != nil {
 		for _, transactionDto := range forMineBlockTransactionDtos {
 			//TODO exception
+			defer func() {
+				if err := recover(); err != nil {
+					transactionHash := TransactionDtoTool.CalculateTransactionHash(transactionDto)
+					LogUtil.Error("类型转换异常,将从挖矿交易数据库中删除该交易["+transactionHash+"]。", err)
+					unconfirmedTransactionDatabase.DeleteByTransactionHash(transactionHash)
+				}
+			}()
 			transaction := TransactionDto2Transaction(blockchainDatabase, transactionDto)
 			transactions = append(transactions, transaction)
 		}

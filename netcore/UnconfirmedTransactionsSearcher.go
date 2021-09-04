@@ -6,7 +6,6 @@ import (
 	"helloworld-blockchain-go/netcore-client/client"
 	"helloworld-blockchain-go/netcore/configuration"
 	"helloworld-blockchain-go/netcore/service"
-	"helloworld-blockchain-go/util/JsonUtil"
 	"helloworld-blockchain-go/util/SystemUtil"
 	"helloworld-blockchain-go/util/ThreadUtil"
 )
@@ -47,12 +46,6 @@ func (u *UnconfirmedTransactionsSearcher) searchUnconfirmedTransactions() {
 			continue
 		}
 		for _, transaction := range transactions {
-			//TODO
-			defer func() {
-				if err := recover(); err != nil {
-					SystemUtil.ErrorExit("交易["+JsonUtil.ToString(transaction)+"]放入交易池异常。", err)
-				}
-			}()
 			u.blockchainCore.GetUnconfirmedTransactionDatabase().InsertTransaction(transaction)
 		}
 	}

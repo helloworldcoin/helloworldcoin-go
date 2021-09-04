@@ -6,7 +6,9 @@ import (
 	"helloworld-blockchain-go/crypto/ByteUtil"
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/util/FileUtil"
+	"helloworld-blockchain-go/util/JsonUtil"
 	"helloworld-blockchain-go/util/KvDbUtil"
+	"helloworld-blockchain-go/util/SystemUtil"
 )
 
 const UNCONFIRMED_TRANSACTION_DATABASE_NAME = "UnconfirmedTransactionDatabase"
@@ -21,9 +23,16 @@ func NewUnconfirmedTransactionDatabase(coreConfiguration *CoreConfiguration) *Un
 	return &unconfirmedTransactionDatabase
 }
 
-func (u *UnconfirmedTransactionDatabase) InsertTransaction(transactionDto *dto.TransactionDto) {
-	transactionHash := TransactionDtoTool.CalculateTransactionHash(transactionDto)
-	KvDbUtil.Put(u.getUnconfirmedTransactionDatabasePath(), u.getKey(transactionHash), EncodeDecodeTool.EncodeTransactionDto(transactionDto))
+func (u *UnconfirmedTransactionDatabase) InsertTransaction(transaction *dto.TransactionDto) bool {
+	//TODO 出现异常会返回false吗
+	defer func() {
+		if err := recover(); err != nil {
+			SystemUtil.ErrorExit("交易["+JsonUtil.ToString(transaction)+"]放入交易池异常。", err)
+		}
+	}()
+	transactionHash := TransactionDtoTool.CalculateTransactionHash(transaction)
+	KvDbUtil.Put(u.getUnconfirmedTransactionDatabasePath(), u.getKey(transactionHash), EncodeDecodeTool.EncodeTransactionDto(transaction))
+	return true
 }
 
 func (u *UnconfirmedTransactionDatabase) SelectTransactions(from uint64, size uint64) []*dto.TransactionDto {

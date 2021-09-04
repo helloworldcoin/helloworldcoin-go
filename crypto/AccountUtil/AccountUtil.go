@@ -25,7 +25,7 @@ func RandomAccount() *Account {
 	return &account
 }
 func AccountFromPrivateKey(privateKey string) *Account {
-	privateKey0, _ := btcec.PrivKeyFromBytes(btcec.S256(), []byte(privateKey))
+	privateKey0 := decodePrivateKey0(privateKey)
 	publicKey0 := privateKey0.PubKey().SerializeCompressed()
 
 	publicKey := encodePublicKey0(publicKey0)
