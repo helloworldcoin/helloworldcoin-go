@@ -27,8 +27,8 @@ func NewBlockchainHeightSearcher(netCoreConfiguration *configuration.NetCoreConf
 
 func (b *BlockchainHeightSearcher) start() {
 	defer func() {
-		if err := recover(); err != nil {
-			SystemUtil.ErrorExit("在区块链网络中搜索节点的高度异常", err)
+		if e := recover(); e != nil {
+			SystemUtil.ErrorExit("在区块链网络中搜索节点的高度异常", e)
 		}
 	}()
 	for {

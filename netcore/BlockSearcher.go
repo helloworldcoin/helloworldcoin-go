@@ -38,8 +38,8 @@ func NewBlockSearcher(netCoreConfiguration *configuration.NetCoreConfiguration, 
 
 func (b *BlockSearcher) start() {
 	defer func() {
-		if err := recover(); err != nil {
-			SystemUtil.ErrorExit("在区块链网络中同步节点的区块出现异常", err)
+		if e := recover(); e != nil {
+			SystemUtil.ErrorExit("在区块链网络中同步节点的区块出现异常", e)
 		}
 	}()
 	for {

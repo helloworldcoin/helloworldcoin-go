@@ -31,8 +31,8 @@ func NewBlockBroadcaster(netCoreConfiguration *configuration.NetCoreConfiguratio
 
 func (b *BlockBroadcaster) start() {
 	defer func() {
-		if err := recover(); err != nil {
-			SystemUtil.ErrorExit("在区块链网络中广播自己的区块出现异常", err)
+		if e := recover(); e != nil {
+			SystemUtil.ErrorExit("在区块链网络中广播自己的区块出现异常", e)
 		}
 	}()
 	for {

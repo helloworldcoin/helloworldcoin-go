@@ -151,11 +151,10 @@ func (i *Miner) packingTransactions(blockchainDatabase *BlockchainDatabase, unco
 	var transactions []*model.Transaction
 	if forMineBlockTransactionDtos != nil {
 		for _, transactionDto := range forMineBlockTransactionDtos {
-			//TODO exception
 			defer func() {
-				if err := recover(); err != nil {
+				if e := recover(); e != nil {
 					transactionHash := TransactionDtoTool.CalculateTransactionHash(transactionDto)
-					LogUtil.Error("类型转换异常,将从挖矿交易数据库中删除该交易["+transactionHash+"]。", err)
+					LogUtil.Error("类型转换异常,将从挖矿交易数据库中删除该交易["+transactionHash+"]。", e)
 					unconfirmedTransactionDatabase.DeleteByTransactionHash(transactionHash)
 				}
 			}()

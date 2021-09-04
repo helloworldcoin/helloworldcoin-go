@@ -29,8 +29,8 @@ func NewNodeSearcher(netCoreConfiguration *configuration.NetCoreConfiguration, n
 
 func (b *NodeSearcher) start() {
 	defer func() {
-		if err := recover(); err != nil {
-			SystemUtil.ErrorExit("在区块链网络中搜索新的节点出现异常", err)
+		if e := recover(); e != nil {
+			SystemUtil.ErrorExit("在区块链网络中搜索新的节点出现异常", e)
 		}
 	}()
 	for {

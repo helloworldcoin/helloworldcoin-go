@@ -32,5 +32,5 @@ func TestGetAllAccounts(t *testing.T) {
 	if 3 != len(accounts) {
 		t.Error("test failed")
 	}
-	//TODO 校验三个账户
+	//TODO test
 }

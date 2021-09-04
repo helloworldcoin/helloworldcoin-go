@@ -28,8 +28,8 @@ func NewSeedNodeInitializer(netCoreConfiguration *configuration.NetCoreConfigura
 
 func (s *SeedNodeInitializer) start() {
 	defer func() {
-		if err := recover(); err != nil {
-			SystemUtil.ErrorExit("定时将种子节点加入区块链网络出现异常", err)
+		if e := recover(); e != nil {
+			SystemUtil.ErrorExit("定时将种子节点加入区块链网络出现异常", e)
 		}
 	}()
 	for {

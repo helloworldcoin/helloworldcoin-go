@@ -30,8 +30,8 @@ func NewUnconfirmedTransactionDatabase(coreConfiguration *CoreConfiguration) *Un
 func (u *UnconfirmedTransactionDatabase) InsertTransaction(transaction *dto.TransactionDto) bool {
 	defer func() {
 		//it's mean default return value is false
-		if err := recover(); err != nil {
-			LogUtil.Error("交易["+JsonUtil.ToString(transaction)+"]放入交易池异常。", err)
+		if e := recover(); e != nil {
+			LogUtil.Error("交易["+JsonUtil.ToString(transaction)+"]放入交易池异常。", e)
 		}
 	}()
 	transactionHash := TransactionDtoTool.CalculateTransactionHash(transaction)

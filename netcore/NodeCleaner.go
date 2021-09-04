@@ -28,8 +28,8 @@ func NewNodeCleaner(netCoreConfiguration *configuration.NetCoreConfiguration, no
 
 func (b *NodeCleaner) start() {
 	defer func() {
-		if err := recover(); err != nil {
-			SystemUtil.ErrorExit("清理死亡节点出现异常", err)
+		if e := recover(); e != nil {
+			SystemUtil.ErrorExit("清理死亡节点出现异常", e)
 		}
 	}()
 	for {
