@@ -1,5 +1,9 @@
 package core
 
+/*
+ @author king 409060350@qq.com
+*/
+
 type BlockchainCoreFactory struct {
 }
 

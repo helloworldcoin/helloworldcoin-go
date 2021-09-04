@@ -1,5 +1,9 @@
 package vo
 
+/*
+ @author king 409060350@qq.com
+*/
+
 type AccountVo struct {
 	PrivateKey    string `json:"privateKey"`
 	PublicKey     string `json:"publicKey"`

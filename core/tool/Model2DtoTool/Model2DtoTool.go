@@ -1,5 +1,9 @@
 package Model2DtoTool
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"helloworld-blockchain-go/core/model"
 	"helloworld-blockchain-go/dto"

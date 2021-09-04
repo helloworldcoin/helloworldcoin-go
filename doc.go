@@ -1,6 +1,10 @@
-// Helloworld project doc.go
+// helloworld-blockchain-go project doc.go
 
 /*
-Helloworld document
+ @author king 409060350@qq.com
+*/
+
+/*
+helloworld-blockchain-go document
 */
 package main

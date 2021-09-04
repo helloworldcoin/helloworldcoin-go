@@ -1,5 +1,9 @@
 package AccountUtil
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"helloworld-blockchain-go/crypto/Base58Util"
 	"helloworld-blockchain-go/crypto/ByteUtil"

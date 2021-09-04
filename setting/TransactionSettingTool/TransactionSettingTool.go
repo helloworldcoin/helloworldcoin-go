@@ -1,5 +1,9 @@
 package TransactionSettingTool
 
+/*
+ @author king 409060350@qq.com
+*/
+
 /**
  * 校验交易金额是否是一个合法的交易金额：这里用于限制交易金额的最大值、最小值、小数保留位等
  */

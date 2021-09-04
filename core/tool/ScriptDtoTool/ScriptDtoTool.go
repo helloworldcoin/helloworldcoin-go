@@ -1,5 +1,9 @@
 package ScriptDtoTool
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"helloworld-blockchain-go/core/model/script/OperationCodeEnum"
 	"helloworld-blockchain-go/crypto/AccountUtil"

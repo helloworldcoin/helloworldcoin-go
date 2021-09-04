@@ -1,5 +1,9 @@
 package BooleanCodeEnum
 
+/*
+ @author king 409060350@qq.com
+*/
+
 type BooleanCode struct {
 	Code []byte
 	Name string

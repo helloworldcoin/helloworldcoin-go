@@ -1,5 +1,9 @@
 package vo
 
+/*
+ @author king 409060350@qq.com
+*/
+
 type BlockVo struct {
 	Height              uint64 `json:"height"`
 	ConfirmCount        uint64 `json:"confirmCount"`

@@ -1,5 +1,9 @@
 package LogUtil
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"fmt"
 	"helloworld-blockchain-go/util/JsonUtil"

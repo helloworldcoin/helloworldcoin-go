@@ -1,5 +1,9 @@
 package core
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"helloworld-blockchain-go/core/tool/ResourcePathTool"
 	"helloworld-blockchain-go/crypto/AccountUtil"

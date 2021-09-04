@@ -1,5 +1,9 @@
 package TransactionDtoTool
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"helloworld-blockchain-go/core/tool/ScriptDtoTool"
 	"helloworld-blockchain-go/crypto/AccountUtil"

@@ -1,5 +1,9 @@
 package WalletApplicationApi
 
+/*
+ @author king 409060350@qq.com
+*/
+
 //生成账户(公钥、私钥、地址)
 const CREATE_ACCOUNT = "/Api/WalletApplication/CreateAccount"
 

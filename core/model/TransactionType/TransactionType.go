@@ -1,5 +1,9 @@
 package TransactionType
 
+/*
+ @author king 409060350@qq.com
+*/
+
 type TransactionType = string
 
 const (

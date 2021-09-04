@@ -1,5 +1,9 @@
 package API
 
+/*
+ @author king 409060350@qq.com
+*/
+
 const PING = "/ping"
 const GET_NODES = "/get_nodes"
 

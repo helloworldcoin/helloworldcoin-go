@@ -1,5 +1,9 @@
 package Base58Util
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"github.com/btcsuite/btcutil/base58"
 )

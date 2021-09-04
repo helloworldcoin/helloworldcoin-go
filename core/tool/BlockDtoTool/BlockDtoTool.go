@@ -1,5 +1,9 @@
 package BlockDtoTool
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"helloworld-blockchain-go/core/tool/TransactionDtoTool"
 	"helloworld-blockchain-go/crypto/ByteUtil"

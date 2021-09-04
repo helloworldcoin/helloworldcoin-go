@@ -1,5 +1,9 @@
 package dto
 
+/*
+ @author king 409060350@qq.com
+*/
+
 type BlockDto struct {
 	Timestamp    uint64            `json:"timestamp"`
 	PreviousHash string            `json:"previousHash"`

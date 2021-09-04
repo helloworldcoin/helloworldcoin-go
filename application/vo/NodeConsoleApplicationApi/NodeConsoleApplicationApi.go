@@ -1,5 +1,9 @@
 package NodeConsoleApplicationApi
 
+/*
+ @author king 409060350@qq.com
+*/
+
 //矿工是否激活
 const IS_MINER_ACTIVE = "/Api/NodeConsoleApplication/IsMinerActive"
 

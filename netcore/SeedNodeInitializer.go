@@ -1,5 +1,9 @@
 package netcore
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"helloworld-blockchain-go/netcore/configuration"
 	"helloworld-blockchain-go/netcore/model"

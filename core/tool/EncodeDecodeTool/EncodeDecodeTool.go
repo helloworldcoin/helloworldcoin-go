@@ -1,5 +1,9 @@
 package EncodeDecodeTool
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"bytes"
 	"helloworld-blockchain-go/core/model"

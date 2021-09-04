@@ -1,5 +1,9 @@
 package BlockchainBrowserApplicationApi
 
+/*
+ @author king 409060350@qq.com
+*/
+
 //查询区块链高度
 const QUERY_BLOCKCHAIN_HEIGHT = "/Api/BlockchainBrowserApplication/QueryBlockchainHeight"
 

@@ -1,5 +1,9 @@
 package OperationCodeEnum
 
+/*
+ @author king 409060350@qq.com
+*/
+
 type OperationCode struct {
 	Code []byte
 	Name string

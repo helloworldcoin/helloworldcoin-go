@@ -1,5 +1,9 @@
 package StringStack
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import "testing"
 
 func TestStack(t *testing.T) {

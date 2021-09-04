@@ -1,5 +1,9 @@
 package BlockchainActionEnum
 
+/*
+ @author king 409060350@qq.com
+*/
+
 type BlockchainActionEnum = bool
 
 const (

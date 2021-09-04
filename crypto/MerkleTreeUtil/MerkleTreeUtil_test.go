@@ -1,5 +1,9 @@
 package MerkleTreeUtil
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"helloworld-blockchain-go/crypto/ByteUtil"
 	"testing"

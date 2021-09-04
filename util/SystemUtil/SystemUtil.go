@@ -1,5 +1,9 @@
 package SystemUtil
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"helloworld-blockchain-go/util/LogUtil"
 	"os"

@@ -1,5 +1,9 @@
 package ByteUtil
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"bytes"
 	"encoding/binary"

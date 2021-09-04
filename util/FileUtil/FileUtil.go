@@ -1,5 +1,9 @@
 package FileUtil
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"io/ioutil"
 	"os"

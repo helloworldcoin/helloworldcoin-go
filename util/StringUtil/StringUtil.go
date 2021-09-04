@@ -1,5 +1,9 @@
 package StringUtil
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"strconv"
 	"unicode/utf8"

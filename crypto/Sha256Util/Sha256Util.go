@@ -1,5 +1,9 @@
 package Sha256Util
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"crypto/sha256"
 )

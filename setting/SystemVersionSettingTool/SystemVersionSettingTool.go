@@ -1,5 +1,9 @@
 package SystemVersionSettingTool
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import "helloworld-blockchain-go/setting/SystemVersionSetting"
 
 func CheckSystemVersion(blockHeight uint64) bool {

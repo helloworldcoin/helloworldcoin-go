@@ -1,5 +1,9 @@
 package DtoSizeTool
 
+/*
+ @author king 409060350@qq.com
+*/
+
 import (
 	"helloworld-blockchain-go/dto"
 	"helloworld-blockchain-go/setting/BlockSetting"
