@@ -63,9 +63,9 @@ type TransactionOutputDetailVo struct {
 	OutputTransaction *TransactionVo `json:"outputTransaction"`
 }
 type UnconfirmedTransactionVo struct {
-	TransactionHash string                  `json:"transactionHash"`
-	Inputs          []*TransactionInputVo2  `json:"inputs"`
-	Outputs         []*TransactionOutputVo2 `json:"outputs"`
+	TransactionHash    string                  `json:"transactionHash"`
+	TransactionInputs  []*TransactionInputVo2  `json:"transactionInputs"`
+	TransactionOutputs []*TransactionOutputVo2 `json:"transactionOutputs"`
 }
 type TransactionInputVo2 struct {
 	Value                  uint64 `json:"value"`

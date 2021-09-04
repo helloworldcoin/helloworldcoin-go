@@ -149,7 +149,7 @@ func (b *BlockchainBrowserApplicationService) QueryUnconfirmedTransactionByTrans
 			inputDtos = append(inputDtos, &transactionInputVo)
 		}
 	}
-	transactionDtoVo.Inputs = inputDtos
+	transactionDtoVo.TransactionInputs = inputDtos
 
 	var outputDtos []*vo.TransactionOutputVo2
 	outputs := transaction.Outputs
@@ -161,7 +161,7 @@ func (b *BlockchainBrowserApplicationService) QueryUnconfirmedTransactionByTrans
 			outputDtos = append(outputDtos, &transactionOutputVo)
 		}
 	}
-	transactionDtoVo.Outputs = outputDtos
+	transactionDtoVo.TransactionOutputs = outputDtos
 
 	return &transactionDtoVo
 }
