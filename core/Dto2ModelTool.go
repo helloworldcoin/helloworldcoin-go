@@ -10,9 +10,9 @@ import (
 	"helloworld-blockchain-go/dto"
 )
 
-func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockDto) *model.Block {
+func (b *BlockchainDatabase) BlockDto2Block(blockDto *dto.BlockDto) *model.Block {
 	previousHash := blockDto.PreviousHash
-	previousBlock := blockchainDatabase.QueryBlockByBlockHash(previousHash)
+	previousBlock := b.QueryBlockByBlockHash(previousHash)
 	block := &model.Block{}
 	block.Timestamp = blockDto.Timestamp
 	block.PreviousHash = previousHash
@@ -20,7 +20,7 @@ func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockD
 
 	blockHeight := BlockTool.GetNextBlockHeight(previousBlock)
 	block.Height = blockHeight
-	transactions := transactionDtos2Transactions(blockchainDatabase, blockDto.Transactions)
+	transactions := b.transactionDtos2Transactions(blockDto.Transactions)
 	block.Transactions = transactions
 
 	merkleTreeRoot := BlockTool.CalculateBlockMerkleTreeRoot(block)
@@ -29,40 +29,40 @@ func BlockDto2Block(blockchainDatabase *BlockchainDatabase, blockDto *dto.BlockD
 	blockHash := BlockTool.CalculateBlockHash(block)
 	block.Hash = blockHash
 
-	difficult := blockchainDatabase.consensus.CalculateDifficult(blockchainDatabase, block)
+	difficult := b.consensus.CalculateDifficult(b, block)
 	block.Difficulty = difficult
 
-	fillBlockProperty(blockchainDatabase, block)
+	b.fillBlockProperty(block)
 
-	if !blockchainDatabase.consensus.CheckConsensus(blockchainDatabase, block) {
+	if !b.consensus.CheckConsensus(b, block) {
 		//throw new RuntimeException("区块预检失败。")
 		return nil
 	}
 	return block
 }
-func transactionDtos2Transactions(blockchainDatabase *BlockchainDatabase, transactionDtos []*dto.TransactionDto) []*model.Transaction {
+func (b *BlockchainDatabase) transactionDtos2Transactions(transactionDtos []*dto.TransactionDto) []*model.Transaction {
 	var transactions []*model.Transaction
 	if transactionDtos != nil {
 		for _, transactionDto := range transactionDtos {
-			transaction := TransactionDto2Transaction(blockchainDatabase, transactionDto)
+			transaction := b.TransactionDto2Transaction(transactionDto)
 			transactions = append(transactions, transaction)
 		}
 	}
 	return transactions
 }
-func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transactionDto *dto.TransactionDto) *model.Transaction {
+func (b *BlockchainDatabase) TransactionDto2Transaction(transactionDto *dto.TransactionDto) *model.Transaction {
 	var inputs []*model.TransactionInput
 	transactionInputDtos := transactionDto.Inputs
 	if transactionInputDtos != nil {
 		for _, transactionInputDto := range transactionInputDtos {
-			unspentTransactionOutput := blockchainDatabase.QueryUnspentTransactionOutputByTransactionOutputId(transactionInputDto.TransactionHash, transactionInputDto.TransactionOutputIndex)
+			unspentTransactionOutput := b.QueryUnspentTransactionOutputByTransactionOutputId(transactionInputDto.TransactionHash, transactionInputDto.TransactionOutputIndex)
 			if unspentTransactionOutput == nil {
 				//throw new RuntimeException("非法交易。交易输入并不是一笔未花费交易输出。");
 				return nil
 			}
 			var transactionInput model.TransactionInput
 			transactionInput.UnspentTransactionOutput = unspentTransactionOutput
-			transactionInput.InputScript = InputScriptDto2InputScript(transactionInputDto.InputScript)
+			transactionInput.InputScript = b.InputScriptDto2InputScript(transactionInputDto.InputScript)
 			inputs = append(inputs, &transactionInput)
 		}
 	}
@@ -70,38 +70,37 @@ func TransactionDto2Transaction(blockchainDatabase *BlockchainDatabase, transact
 	transactionOutputDtos := transactionDto.Outputs
 	if transactionOutputDtos != nil {
 		for _, transactionOutputDto := range transactionOutputDtos {
-			transactionOutput := transactionOutputDto2TransactionOutput(transactionOutputDto)
+			transactionOutput := b.transactionOutputDto2TransactionOutput(transactionOutputDto)
 			outputs = append(outputs, transactionOutput)
 		}
 	}
 	transaction := new(model.Transaction)
-	transactionType := obtainTransactionDto(transactionDto)
+	transactionType := b.obtainTransactionDto(transactionDto)
 	transaction.TransactionType = transactionType
 	transaction.TransactionHash = TransactionDtoTool.CalculateTransactionHash(transactionDto)
 	transaction.Inputs = inputs
 	transaction.Outputs = outputs
 	return transaction
 }
-
-func transactionOutputDto2TransactionOutput(transactionOutputDto *dto.TransactionOutputDto) *model.TransactionOutput {
+func (b *BlockchainDatabase) transactionOutputDto2TransactionOutput(transactionOutputDto *dto.TransactionOutputDto) *model.TransactionOutput {
 	var transactionOutput model.TransactionOutput
 	publicKeyHash := ScriptDtoTool.GetPublicKeyHashFromPayToPublicKeyHashOutputScript(transactionOutputDto.OutputScript)
 	address := AccountUtil.AddressFromPublicKeyHash(publicKeyHash)
 	transactionOutput.Address = address
 	transactionOutput.Value = transactionOutputDto.Value
-	transactionOutput.OutputScript = OutputScriptDto2OutputScript(transactionOutputDto.OutputScript)
+	transactionOutput.OutputScript = b.OutputScriptDto2OutputScript(transactionOutputDto.OutputScript)
 	return &transactionOutput
 }
-func obtainTransactionDto(transactionDto *dto.TransactionDto) TransactionType.TransactionType {
+func (b *BlockchainDatabase) obtainTransactionDto(transactionDto *dto.TransactionDto) TransactionType.TransactionType {
 	if transactionDto.Inputs == nil || len(transactionDto.Inputs) == 0 {
 		return TransactionType.GENESIS_TRANSACTION
 	}
 	return TransactionType.STANDARD_TRANSACTION
 }
-func fillBlockProperty(blockchainDatabase *BlockchainDatabase, block *model.Block) {
+func (b *BlockchainDatabase) fillBlockProperty(block *model.Block) {
 	transactionIndex := uint64(0)
-	transactionHeight := blockchainDatabase.QueryBlockchainTransactionHeight()
-	transactionOutputHeight := blockchainDatabase.QueryBlockchainTransactionOutputHeight()
+	transactionHeight := b.QueryBlockchainTransactionHeight()
+	transactionOutputHeight := b.QueryBlockchainTransactionOutputHeight()
 	blockHeight := block.Height
 	blockHash := block.Hash
 	transactions := block.Transactions
@@ -133,12 +132,12 @@ func fillBlockProperty(blockchainDatabase *BlockchainDatabase, block *model.Bloc
 		}
 	}
 }
-func OutputScriptDto2OutputScript(outputScriptDto *dto.OutputScriptDto) *model.OutputScript {
+func (b *BlockchainDatabase) OutputScriptDto2OutputScript(outputScriptDto *dto.OutputScriptDto) *model.OutputScript {
 	var outputScript model.OutputScript
 	outputScript = append(outputScript, *outputScriptDto...)
 	return &outputScript
 }
-func InputScriptDto2InputScript(inputScriptDto *dto.InputScriptDto) *model.InputScript {
+func (b *BlockchainDatabase) InputScriptDto2InputScript(inputScriptDto *dto.InputScriptDto) *model.InputScript {
 	var inputScript model.InputScript
 	inputScript = append(inputScript, *inputScriptDto...)
 	return &inputScript

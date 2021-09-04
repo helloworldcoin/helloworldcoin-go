@@ -155,7 +155,7 @@ func (i *Miner) packingTransactions(blockchainDatabase *BlockchainDatabase, unco
 					unconfirmedTransactionDatabase.DeleteByTransactionHash(transactionHash)
 				}
 			}()
-			transaction := TransactionDto2Transaction(blockchainDatabase, transactionDto)
+			transaction := blockchainDatabase.TransactionDto2Transaction(transactionDto)
 			transactions = append(transactions, transaction)
 		}
 	}

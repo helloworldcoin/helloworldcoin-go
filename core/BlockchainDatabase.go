@@ -52,7 +52,7 @@ func (b *BlockchainDatabase) AddBlockDto(blockDto *dto.BlockDto) bool {
 	Mutex.Lock()
 	defer Mutex.Unlock()
 
-	block := BlockDto2Block(b, blockDto)
+	block := b.BlockDto2Block(blockDto)
 	checkBlock := b.CheckBlock(block)
 	if !checkBlock {
 		return false

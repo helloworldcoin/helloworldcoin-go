@@ -2,7 +2,6 @@ package service
 
 import (
 	"helloworld-blockchain-go/application/vo"
-	"helloworld-blockchain-go/core"
 	"helloworld-blockchain-go/core/tool/BlockTool"
 	"helloworld-blockchain-go/core/tool/ScriptTool"
 	"helloworld-blockchain-go/core/tool/SizeTool"
@@ -131,7 +130,7 @@ func (b *BlockchainBrowserApplicationService) QueryUnconfirmedTransactionByTrans
 	if transactionDto == nil {
 		return nil
 	}
-	transaction := core.TransactionDto2Transaction(b.blockchainNetCore.GetBlockchainCore().GetBlockchainDatabase(), transactionDto)
+	transaction := b.blockchainNetCore.GetBlockchainCore().GetBlockchainDatabase().TransactionDto2Transaction(transactionDto)
 	var transactionDtoVo vo.UnconfirmedTransactionVo
 	transactionDtoVo.TransactionHash = transaction.TransactionHash
 
