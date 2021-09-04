@@ -101,3 +101,9 @@ func (b *BlockchainCore) QueryTransactionByTransactionHeight(transactionHeight u
 func (b *BlockchainCore) QueryTransactionOutputByAddress(address string) *model.TransactionOutput {
 	return b.blockchainDatabase.QueryTransactionOutputByAddress(address)
 }
+func (b *BlockchainCore) BlockDto2Block(blockDto *dto.BlockDto) *model.Block {
+	return b.blockchainDatabase.BlockDto2Block(blockDto)
+}
+func (b *BlockchainCore) TransactionDto2Transaction(transactionDto *dto.TransactionDto) *model.Transaction {
+	return b.blockchainDatabase.TransactionDto2Transaction(transactionDto)
+}
