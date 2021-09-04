@@ -16,8 +16,6 @@ import (
 func TestBlockchainDataFormat(t *testing.T) {
 	FileUtil.DeleteDirectory(ResourcePathTool.GetTestDataRootPath())
 
-	//
-	//TODO 资源路径存放与java不一致
 	stringBlock1 := FileUtil.Read(SystemUtil.SystemRootDirectory() + "\\core" + "\\test\\resources\\blocks\\block1.json")
 	block1 := JsonUtil.ToObject(stringBlock1, dto.BlockDto{}).(*dto.BlockDto)
 	stringBlock2 := FileUtil.Read(SystemUtil.SystemRootDirectory() + "\\core" + "\\test\\resources\\blocks\\block2.json")
