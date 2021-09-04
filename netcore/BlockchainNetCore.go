@@ -6,9 +6,12 @@ package netcore
 
 import (
 	"helloworld-blockchain-go/core"
+	"helloworld-blockchain-go/core/tool/ResourcePathTool"
 	"helloworld-blockchain-go/netcore/configuration"
+	"helloworld-blockchain-go/netcore/dao"
 	"helloworld-blockchain-go/netcore/server"
 	"helloworld-blockchain-go/netcore/service"
+	"helloworld-blockchain-go/util/FileUtil"
 )
 
 type BlockchainNetCore struct {
@@ -32,7 +35,38 @@ type BlockchainNetCore struct {
 	unconfirmedTransactionsSearcher *UnconfirmedTransactionsSearcher
 }
 
-func NewBlockchainNetCore(netCoreConfiguration *configuration.NetCoreConfiguration, nodeService *service.NodeService,
+func NewDefaultBlockchainNetCore() *BlockchainNetCore {
+	return NewBlockchainNetCore(ResourcePathTool.GetDataRootPath())
+}
+func NewBlockchainNetCore(netcorePath string) *BlockchainNetCore {
+	netCoreConfiguration := configuration.NewNetCoreConfiguration(netcorePath)
+
+	blockchainCorePath := FileUtil.NewPath(netcorePath, "BlocoreainCore")
+	blockchainCore := core.NewBlockchainCore(blockchainCorePath)
+	slaveBlockchainCorePath := FileUtil.NewPath(netcorePath, "SlaveBlockchainCore")
+	slaveBlockchainCore := core.NewBlockchainCore(slaveBlockchainCorePath)
+
+	nodeDao := dao.NewNodeDao(netCoreConfiguration)
+	nodeService := service.NewNodeService(nodeDao)
+	nodeServer := server.NewNodeServer(netCoreConfiguration, blockchainCore, nodeService)
+
+	seedNodeInitializer := NewSeedNodeInitializer(netCoreConfiguration, nodeService)
+	nodeSearcher := NewNodeSearcher(netCoreConfiguration, nodeService)
+	nodeBroadcaster := NewNodeBroadcaster(netCoreConfiguration, nodeService)
+	nodeCleaner := NewNodeCleaner(netCoreConfiguration, nodeService)
+
+	blockchainHeightSearcher := NewBlockchainHeightSearcher(netCoreConfiguration, nodeService)
+	blockchainHeightBroadcaster := NewBlockchainHeightBroadcaster(netCoreConfiguration, blockchainCore, nodeService)
+
+	blockSearcher := NewBlockSearcher(netCoreConfiguration, blockchainCore, slaveBlockchainCore, nodeService)
+	blockBroadcaster := NewBlockBroadcaster(netCoreConfiguration, blockchainCore, nodeService)
+
+	unconfirmedTransactionsSearcher := NewUnconfirmedTransactionsSearcher(netCoreConfiguration, blockchainCore, nodeService)
+
+	blockchainNetCore := NewBlockchainNetCore0(netCoreConfiguration, nodeService, blockchainCore, nodeServer, seedNodeInitializer, nodeSearcher, nodeBroadcaster, nodeCleaner, blockchainHeightSearcher, blockchainHeightBroadcaster, blockSearcher, blockBroadcaster, unconfirmedTransactionsSearcher)
+	return blockchainNetCore
+}
+func NewBlockchainNetCore0(netCoreConfiguration *configuration.NetCoreConfiguration, nodeService *service.NodeService,
 	blockchainCore *core.BlockchainCore, nodeServer *server.NodeServer, seedNodeInitializer *SeedNodeInitializer, nodeSearcher *NodeSearcher,
 	nodeBroadcaster *NodeBroadcaster, nodeCleaner *NodeCleaner,
 	blockchainHeightSearcher *BlockchainHeightSearcher, blockchainHeightBroadcaster *BlockchainHeightBroadcaster,
@@ -58,6 +92,15 @@ func NewBlockchainNetCore(netCoreConfiguration *configuration.NetCoreConfigurati
 
 	blockchainNetCore.unconfirmedTransactionsSearcher = unconfirmedTransactionsSearcher
 	return &blockchainNetCore
+}
+func (b *BlockchainNetCore) GetBlockchainCore() *core.BlockchainCore {
+	return b.blockchainCore
+}
+func (b *BlockchainNetCore) GetNodeService() *service.NodeService {
+	return b.nodeService
+}
+func (b *BlockchainNetCore) GetNetCoreConfiguration() *configuration.NetCoreConfiguration {
+	return b.netCoreConfiguration
 }
 
 func (b *BlockchainNetCore) Start() {
@@ -87,15 +130,4 @@ func (b *BlockchainNetCore) Start() {
 
 	//未确认交易搜索器
 	go b.unconfirmedTransactionsSearcher.start()
-}
-func (b *BlockchainNetCore) GetBlockchainCore() *core.BlockchainCore {
-	return b.blockchainCore
-}
-
-func (b *BlockchainNetCore) GetNodeService() *service.NodeService {
-	return b.nodeService
-}
-
-func (b *BlockchainNetCore) GetNetCoreConfiguration() *configuration.NetCoreConfiguration {
-	return b.netCoreConfiguration
 }

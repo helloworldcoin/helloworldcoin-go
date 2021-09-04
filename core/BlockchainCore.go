@@ -7,6 +7,7 @@ package core
 import (
 	"helloworld-blockchain-go/core/model"
 	"helloworld-blockchain-go/core/tool/Model2DtoTool"
+	"helloworld-blockchain-go/core/tool/ResourcePathTool"
 	"helloworld-blockchain-go/dto"
 )
 
@@ -18,7 +19,23 @@ type BlockchainCore struct {
 	miner                          *Miner
 }
 
-func NewBlockchainCore(coreConfiguration *CoreConfiguration, blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, wallet *Wallet, miner *Miner) *BlockchainCore {
+func NewDefaultBlockchainCore() *BlockchainCore {
+	return NewBlockchainCore(ResourcePathTool.GetDataRootPath())
+}
+func NewBlockchainCore(corePath string) *BlockchainCore {
+	coreConfiguration := NewCoreConfiguration(corePath)
+	incentive := NewIncentive()
+	consensus := NewConsensus()
+	virtualMachine := NewVirtualMachine()
+	blockchainDatabase := NewBlockchainDatabase(consensus, incentive, virtualMachine, coreConfiguration)
+	unconfirmedTransactionDatabase := NewUnconfirmedTransactionDatabase(coreConfiguration)
+	wallet := NewWallet(coreConfiguration, blockchainDatabase)
+	miner := NewMiner(coreConfiguration, wallet, blockchainDatabase, unconfirmedTransactionDatabase)
+
+	blockchainCore := NewBlockchainCore0(coreConfiguration, blockchainDatabase, unconfirmedTransactionDatabase, wallet, miner)
+	return blockchainCore
+}
+func NewBlockchainCore0(coreConfiguration *CoreConfiguration, blockchainDatabase *BlockchainDatabase, unconfirmedTransactionDatabase *UnconfirmedTransactionDatabase, wallet *Wallet, miner *Miner) *BlockchainCore {
 	var blockchainCore BlockchainCore
 	blockchainCore.coreConfiguration = coreConfiguration
 	blockchainCore.blockchainDatabase = blockchainDatabase
@@ -29,6 +46,15 @@ func NewBlockchainCore(coreConfiguration *CoreConfiguration, blockchainDatabase 
 }
 func (b *BlockchainCore) GetUnconfirmedTransactionDatabase() *UnconfirmedTransactionDatabase {
 	return b.unconfirmedTransactionDatabase
+}
+func (b *BlockchainCore) GetMiner() *Miner {
+	return b.miner
+}
+func (b *BlockchainCore) GetWallet() *Wallet {
+	return b.wallet
+}
+func (b *BlockchainCore) GetBlockchainDatabase() *BlockchainDatabase {
+	return b.blockchainDatabase
 }
 
 func (b *BlockchainCore) Start() {
@@ -66,13 +92,6 @@ func (b *BlockchainCore) DeleteBlocks(blockHeight uint64) {
 	b.blockchainDatabase.DeleteBlocks(blockHeight)
 }
 
-func (b *BlockchainCore) GetMiner() *Miner {
-	return b.miner
-}
-
-func (b *BlockchainCore) GetWallet() *Wallet {
-	return b.wallet
-}
 func (b *BlockchainCore) AutoBuildTransaction(request *model.AutoBuildTransactionRequest) *model.AutoBuildTransactionResponse {
 	return b.wallet.AutoBuildTransaction(request)
 }
@@ -83,10 +102,6 @@ func (b *BlockchainCore) QueryUnconfirmedTransactions(from uint64, size uint64) 
 
 func (b *BlockchainCore) QueryBlockByBlockHash(blockHash string) *model.Block {
 	return b.blockchainDatabase.QueryBlockByBlockHash(blockHash)
-}
-
-func (b *BlockchainCore) GetBlockchainDatabase() *BlockchainDatabase {
-	return b.blockchainDatabase
 }
 
 func (b *BlockchainCore) QueryTransactionByTransactionHash(transactionHash string) *model.Transaction {
