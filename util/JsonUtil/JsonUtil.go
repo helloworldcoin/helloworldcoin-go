@@ -212,7 +212,7 @@ func ToObject(jsonString string, object interface{}) interface{} {
 		json.Unmarshal([]byte(jsonString), &_0254)
 		return &_0254
 	}
-	_0300, ok := object.(vo.AutoBuildTransactionRequest)
+	_0300, ok := object.(vo.AutomaticBuildTransactionRequest)
 	if ok {
 		json.Unmarshal([]byte(jsonString), &_0300)
 		return &_0300

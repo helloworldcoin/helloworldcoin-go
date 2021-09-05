@@ -45,7 +45,7 @@ func main() {
 	apiMux.HandleFunc(WalletApplicationApi.SAVE_ACCOUNT, walletApplicationController.SaveAccount)
 	apiMux.HandleFunc(WalletApplicationApi.DELETE_ACCOUNT, walletApplicationController.DeleteAccount)
 	apiMux.HandleFunc(WalletApplicationApi.QUERY_ALL_ACCOUNTS, walletApplicationController.QueryAllAccounts)
-	apiMux.HandleFunc(WalletApplicationApi.AUTO_BUILD_TRANSACTION, walletApplicationController.AutoBuildTransaction)
+	apiMux.HandleFunc(WalletApplicationApi.AUTOMATIC_BUILD_TRANSACTION, walletApplicationController.AutomaticBuildTransaction)
 	apiMux.HandleFunc(WalletApplicationApi.SUBMIT_TRANSACTION_TO_BLOCKCHIAIN_NEWWORK, walletApplicationController.SubmitTransactionToBlockchainNetwork)
 
 	apiMux.HandleFunc(NodeConsoleApplicationApi.IS_MINER_ACTIVE, nodeConsoleApplicationController.IsMineActive)

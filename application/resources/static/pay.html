@@ -84,7 +84,7 @@
                 });
                 let request1 = JSON.stringify({nonChangePayees})
                 let response = await $ajax({
-                    url : baseUrl() + "/Api/WalletApplication/AutoBuildTransaction",
+                    url : baseUrl() + "/Api/WalletApplication/AutomaticBuildTransaction",
                     data: request1
                 })
                 if(response.status == 'success'){

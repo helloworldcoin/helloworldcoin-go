@@ -20,7 +20,7 @@ const DELETE_ACCOUNT = "/Api/WalletApplication/DeleteAccount"
 const QUERY_ALL_ACCOUNTS = "/Api/WalletApplication/QueryAllAccounts"
 
 //构建交易
-const AUTO_BUILD_TRANSACTION = "/Api/WalletApplication/AutoBuildTransaction"
+const AUTOMATIC_BUILD_TRANSACTION = "/Api/WalletApplication/AutomaticBuildTransaction"
 
 //提交交易到区块链网络
 const SUBMIT_TRANSACTION_TO_BLOCKCHIAIN_NEWWORK = "/Api/WalletApplication/SubmitTransactionToBlockchainNetwork"

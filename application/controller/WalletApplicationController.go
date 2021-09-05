@@ -6,7 +6,6 @@ package controller
 import (
 	"helloworld-blockchain-go/application/service"
 	"helloworld-blockchain-go/application/vo"
-	"helloworld-blockchain-go/core/model"
 	"helloworld-blockchain-go/crypto/AccountUtil"
 	"helloworld-blockchain-go/netcore"
 	"helloworld-blockchain-go/util/StringUtil"
@@ -99,10 +98,10 @@ func (w *WalletApplicationController) QueryAllAccounts(rw http.ResponseWriter, r
 
 	SuccessHttpResponse(rw, "", response)
 }
-func (w *WalletApplicationController) AutoBuildTransaction(rw http.ResponseWriter, req *http.Request) {
-	request := GetRequest(req, model.AutoBuildTransactionRequest{}).(*model.AutoBuildTransactionRequest)
+func (w *WalletApplicationController) AutomaticBuildTransaction(rw http.ResponseWriter, req *http.Request) {
+	request := GetRequest(req, vo.AutomaticBuildTransactionRequest{}).(*vo.AutomaticBuildTransactionRequest)
 
-	response := w.blockchainNetCore.GetBlockchainCore().AutoBuildTransaction(request)
+	response := w.walletApplicationService.AutomaticBuildTransaction(request)
 
 	if response.BuildTransactionSuccess {
 		SuccessHttpResponse(rw, "构建交易成功", response)
@@ -112,7 +111,6 @@ func (w *WalletApplicationController) AutoBuildTransaction(rw http.ResponseWrite
 		return
 	}
 }
-
 func (w *WalletApplicationController) SubmitTransactionToBlockchainNetwork(rw http.ResponseWriter, req *http.Request) {
 	request := GetRequest(req, vo.SubmitTransactionToBlockchainNetworkRequest{}).(*vo.SubmitTransactionToBlockchainNetworkRequest)
 

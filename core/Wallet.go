@@ -107,7 +107,7 @@ func (w *Wallet) AutoBuildTransaction(request *model.AutoBuildTransactionRequest
 		}
 	}
 	//创建付款方
-	var payers []model.Payer
+	var payers []*model.Payer
 	//遍历钱包里的账户,用钱包里的账户付款
 	allAccounts := w.GetNonZeroBalanceAccounts()
 	if allAccounts != nil {
@@ -120,7 +120,7 @@ func (w *Wallet) AutoBuildTransaction(request *model.AutoBuildTransactionRequest
 			payer.TransactionHash = utxo.TransactionHash
 			payer.TransactionOutputIndex = utxo.TransactionOutputIndex
 			payer.Value = utxo.Value
-			payers = append(payers, payer)
+			payers = append(payers, &payer)
 			//设置默认手续费
 			fee := uint64(0)
 			haveEnoughMoneyToPay := w.haveEnoughMoneyToPay(payers, nonChangePayees, fee)
@@ -130,10 +130,10 @@ func (w *Wallet) AutoBuildTransaction(request *model.AutoBuildTransactionRequest
 				//创建一个找零收款方
 				changePayee := w.createChangePayee(payers, nonChangePayees, changeAccount.Address, fee)
 				//创建收款方(收款方=[非找零]收款方+[找零]收款方)
-				var payees []model.Payee
+				var payees []*model.Payee
 				payees = append(payees, nonChangePayees...)
 				if changePayee != nil {
-					payees = append(payees, *changePayee)
+					payees = append(payees, changePayee)
 				}
 				//构造交易
 				transactionDto := w.buildTransaction(payers, payees)
@@ -141,11 +141,11 @@ func (w *Wallet) AutoBuildTransaction(request *model.AutoBuildTransactionRequest
 				response.BuildTransactionSuccess = true
 				response.Message = "构建交易成功"
 				response.Transaction = transactionDto
-				response.TransactionHash = TransactionDtoTool.CalculateTransactionHash(&transactionDto)
+				response.TransactionHash = TransactionDtoTool.CalculateTransactionHash(transactionDto)
 				response.Fee = fee
 				response.Payers = payers
 				response.NonChangePayees = nonChangePayees
-				response.ChangePayee = *changePayee
+				response.ChangePayee = changePayee
 				response.Payees = payees
 				return &response
 			}
@@ -157,14 +157,14 @@ func (w *Wallet) AutoBuildTransaction(request *model.AutoBuildTransactionRequest
 	return &response
 }
 
-func (w *Wallet) haveEnoughMoneyToPay(payers []model.Payer, payees []model.Payee, fee uint64) bool {
+func (w *Wallet) haveEnoughMoneyToPay(payers []*model.Payer, payees []*model.Payee, fee uint64) bool {
 	//计算找零金额
 	changeValue := w.changeValue(payers, payees, fee)
 	//判断是否有足够的金额去支付
 	haveEnoughMoneyToPay := changeValue >= 0
 	return haveEnoughMoneyToPay
 }
-func (w *Wallet) createChangePayee(payers []model.Payer, payees []model.Payee, changeAddress string, fee uint64) *model.Payee {
+func (w *Wallet) createChangePayee(payers []*model.Payer, payees []*model.Payee, changeAddress string, fee uint64) *model.Payee {
 	//计算找零金额
 	changeValue := w.changeValue(payers, payees, fee)
 	if changeValue > 0 {
@@ -177,7 +177,7 @@ func (w *Wallet) createChangePayee(payers []model.Payer, payees []model.Payee, c
 	return nil
 }
 
-func (w *Wallet) changeValue(payers []model.Payer, payees []model.Payee, fee uint64) uint64 {
+func (w *Wallet) changeValue(payers []*model.Payer, payees []*model.Payee, fee uint64) uint64 {
 	//交易输入总金额
 	transactionInputValues := uint64(0)
 	for _, payer := range payers {
@@ -194,7 +194,7 @@ func (w *Wallet) changeValue(payers []model.Payer, payees []model.Payee, fee uin
 	changeValue := transactionInputValues - payeeValues - fee
 	return changeValue
 }
-func (w *Wallet) buildTransaction(payers []model.Payer, payees []model.Payee) dto.TransactionDto {
+func (w *Wallet) buildTransaction(payers []*model.Payer, payees []*model.Payee) *dto.TransactionDto {
 	//构建交易输入
 	var transactionInputs []*dto.TransactionInputDto
 	for _, payer := range payers {
@@ -226,5 +226,5 @@ func (w *Wallet) buildTransaction(payers []model.Payer, payees []model.Payee) dt
 		inputScript := ScriptDtoTool.CreatePayToPublicKeyHashInputScript(signature, account.PublicKey)
 		transactionInput.InputScript = inputScript
 	}
-	return transaction
+	return &transaction
 }
