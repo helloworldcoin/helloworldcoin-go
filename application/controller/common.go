@@ -19,7 +19,7 @@ func SuccessHttpResponse(rw http.ResponseWriter, message string, response interf
 	io.WriteString(rw, s)
 }
 func FailedHttpResponse(rw http.ResponseWriter, message string) {
-	s := "{\"status\":\"failed\",\"message\":\"" + message + "\",\"data\":null" + "}"
+	s := "{\"status\":\"fail\",\"message\":\"" + message + "\",\"data\":null" + "}"
 	rw.Header().Set("content-type", "text/json")
 	io.WriteString(rw, s)
 }
