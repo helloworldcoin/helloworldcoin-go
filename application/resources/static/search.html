@@ -25,7 +25,7 @@
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="./search.html">搜索</a></li>
                         <li><a href="./miner.html">挖矿</a></li>
-                        <li><a href="./unconfirm-transactions.html">未确认交易池</a></li>
+                        <li><a href="./unconfirmed-transactions.html">未确认交易池</a></li>
                         <li><a href="./pay.html">支付</a></li>
                         <li><a href="./wallet.html">钱包</a></li>
                         <li><a href="./node-management.html">节点管理</a></li>
@@ -103,7 +103,7 @@
                     url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionOutputByAddress",
                     data: request
                 });
-                if(response.data != null && response.data.transactionOutputDetail != null){
+                if(response.data != null && response.data.transactionOutput != null){
                     alert("识别为地址，点击确认按钮，跳转到地址详情页。");
                     let redirectUrl = `./address.html?address=${searchValue}`;
                     window.location.href = redirectUrl;
@@ -118,7 +118,7 @@
                 });
                 if(response.data != null && response.data.transaction != null){
                     alert("识别为未确认的交易，点击确认按钮，跳转到未确认的交易详情页。");
-                    let redirectUrl = `./unconfirm-transaction.html?transactionHash=${searchValue}`;
+                    let redirectUrl = `./unconfirmed-transaction.html?transactionHash=${searchValue}`;
                     window.location.href = redirectUrl;
                     return;
                 }

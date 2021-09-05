@@ -60,18 +60,18 @@ func (b *BlockchainBrowserApplicationController) QueryTransactionsByBlockHashTra
 func (b *BlockchainBrowserApplicationController) QueryTransactionOutputByAddress(rw http.ResponseWriter, req *http.Request) {
 	request := GetRequest(req, vo.QueryTransactionOutputByAddressRequest{}).(*vo.QueryTransactionOutputByAddressRequest)
 
-	transactionOutputDetailVo := b.blockchainBrowserApplicationService.QueryTransactionOutputByAddress(request.Address)
+	transactionOutputVo3 := b.blockchainBrowserApplicationService.QueryTransactionOutputByAddress(request.Address)
 	var response vo.QueryTransactionOutputByAddressResponse
-	response.TransactionOutputDetail = transactionOutputDetailVo
+	response.TransactionOutput = transactionOutputVo3
 
 	SuccessHttpResponse(rw, "", response)
 }
 func (b *BlockchainBrowserApplicationController) QueryTransactionOutputByTransactionOutputId(rw http.ResponseWriter, req *http.Request) {
 	request := GetRequest(req, vo.QueryTransactionOutputByTransactionOutputIdRequest{}).(*vo.QueryTransactionOutputByTransactionOutputIdRequest)
 
-	transactionOutputDetailVo := b.blockchainBrowserApplicationService.QueryTransactionOutputByTransactionOutputId(request.TransactionHash, request.TransactionOutputIndex)
+	transactionOutputVo3 := b.blockchainBrowserApplicationService.QueryTransactionOutputByTransactionOutputId(request.TransactionHash, request.TransactionOutputIndex)
 	var response vo.QueryTransactionOutputByTransactionOutputIdResponse
-	response.TransactionOutputDetail = transactionOutputDetailVo
+	response.TransactionOutput = transactionOutputVo3
 
 	SuccessHttpResponse(rw, "", response)
 }

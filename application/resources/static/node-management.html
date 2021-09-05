@@ -27,7 +27,7 @@
                     <ul class="nav navbar-nav">
                         <li><a href="./search.html">搜索</a></li>
                         <li><a href="./miner.html">挖矿</a></li>
-                        <li><a href="./unconfirm-transactions.html">未确认交易池</a></li>
+                        <li><a href="./unconfirmed-transactions.html">未确认交易池</a></li>
                         <li><a href="./pay.html">支付</a></li>
                         <li><a href="./wallet.html">钱包</a></li>
                         <li class="active"><a href="./node-management.html">节点管理</a></li>
@@ -61,7 +61,7 @@
                 let response = await $ajax({
                     url : baseUrl() + "/Api/NodeConsoleApplication/QueryAllNodes"
                 });
-                let { nodes } = response.data
+                let {nodes} = response.data
                 let $list = $('#table-node-list');
                 $(nodes).each((index, item) => {
                     $list.append(`
@@ -105,13 +105,20 @@
             });
 
             $('body').delegate('#table-add-node-button-add', 'click', async function(){
+                let ip = $('#table-add-node-text-ip').val();
+                if(ip == ""){
+                    alert("节点不能为空");
+                    return;
+                }
                 let response = await $ajax({
                     url : baseUrl() + "/Api/NodeConsoleApplication/AddNode",
-                    data: `{"ip": "${$('#table-add-node-text-ip').val()}"}`
+                    data: `{"ip": "${ip}"}`
                 });
-                alert(response.message);
                 if(response.status == 'success'){
+                    alert("节点添加成功");
                     location.reload();
+                }else {
+                    alert("节点添加失败");
                 }
             })
 
@@ -156,8 +163,12 @@
                     url : baseUrl() + "/Api/NodeConsoleApplication/UpdateNode",
                     data: `{"ip": "${$('#table-update-node-text-ip').val()}","blockchainHeight": "${$('#table-update-node-text-blockchainHeight').val()}"}`
                 });
-                alert(response.message);
-                location.reload();
+                if(response.status == 'success'){
+                    alert("节点更新成功");
+                    location.reload();
+                }else {
+                    alert("节点更新失败");
+                }
             })
 
             $('body').delegate('.delete-node', 'click', async function(){
@@ -166,7 +177,7 @@
                     url : baseUrl() + "/Api/NodeConsoleApplication/DeleteNode",
                     data: `{"ip": "${ip}"}`
                 });
-                alert(response.message);
+                alert("删除成功");
                 location.reload();
             })
         </script>

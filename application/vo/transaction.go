@@ -42,7 +42,7 @@ type TransactionVo struct {
 	InputScripts  []string `json:"inputScripts"`
 	OutputScripts []string `json:"outputScripts"`
 }
-type TransactionOutputDetailVo struct {
+type TransactionOutputVo3 struct {
 	Value           uint64 `json:"value"`
 	Spent           bool   `json:"spent"`
 	TransactionType string `json:"transactionType"`
@@ -87,14 +87,14 @@ type QueryTransactionOutputByAddressRequest struct {
 	Address string `json:"address"`
 }
 type QueryTransactionOutputByAddressResponse struct {
-	TransactionOutputDetail *TransactionOutputDetailVo `json:"transactionOutputDetail"`
+	TransactionOutput *TransactionOutputVo3 `json:"transactionOutput"`
 }
 type QueryTransactionOutputByTransactionOutputIdRequest struct {
 	TransactionHash        string `json:"transactionHash"`
 	TransactionOutputIndex uint64 `json:"transactionOutputIndex"`
 }
 type QueryTransactionOutputByTransactionOutputIdResponse struct {
-	TransactionOutputDetail *TransactionOutputDetailVo `json:"transactionOutputDetail"`
+	TransactionOutput *TransactionOutputVo3 `json:"transactionOutput"`
 }
 type QueryTransactionsByBlockHashTransactionHeightRequest struct {
 	BlockHash     string         `json:"blockHash"`
