@@ -21,6 +21,7 @@ func SystemRootDirectory() string {
 	systemRootDirectory := filepath.Join(filepath.Dir(b), "../..")
 	return systemRootDirectory
 }
+
 func CallDefaultBrowser(url string) {
 	var cmd string
 	var args []string
@@ -37,3 +38,5 @@ func CallDefaultBrowser(url string) {
 	args = append(args, url)
 	exec.Command(cmd, args...).Start()
 }
+
+var  AccessIp string

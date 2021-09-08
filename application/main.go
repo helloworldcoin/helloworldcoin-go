@@ -5,6 +5,7 @@ package main
 */
 
 import (
+	"flag"
 	"helloworld-blockchain-go/application/controller"
 	"helloworld-blockchain-go/application/service"
 	"helloworld-blockchain-go/application/vo/BlockchainBrowserApplicationApi"
@@ -69,15 +70,21 @@ func main() {
 	apiMux.HandleFunc(NodeConsoleApplicationApi.GET_MAX_BLOCK_HEIGHT, nodeConsoleApplicationController.GetMaxBlockHeight)
 	apiMux.HandleFunc(NodeConsoleApplicationApi.SET_MAX_BLOCK_HEIGHT, nodeConsoleApplicationController.SetMaxBlockHeight)
 
-	apiMux.Handle("/", http.FileServer(http.Dir(SystemUtil.SystemRootDirectory()+"\\application\\resources\\static")))
+	apiMux.Handle("/", http.FileServer(http.Dir(SystemUtil.SystemRootDirectory()+"/application/resources/static")))
 
 	ipInterceptorServeMux := http.NewServeMux()
+	var accessIp = flag.String("ip", "", "access ip")
+	flag.Parse()
+	if "" != *accessIp {
+        SystemUtil.AccessIp = *accessIp
+	}
+
 	ipInterceptorServeMux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		if req.Host != "localhost" {
-			http.Error(w, "Blocked", 401)
-			return
+		if req.Host == "localhost" ||  req.Host == "127.0.0.1"  || req.Host == SystemUtil.AccessIp   {
+				apiMux.ServeHTTP(w, req)
 		}
-		apiMux.ServeHTTP(w, req)
+		http.Error(w, "Blocked", 401)
+		return
 	}))
 
 	http.ListenAndServe(":80", ipInterceptorServeMux)
