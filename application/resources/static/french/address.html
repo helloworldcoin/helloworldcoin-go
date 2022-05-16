@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Détails de l'adresse</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">Rechercher</a></li>
+                        <li><a href="./miner.html">mineur</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">Groupe de transactions non confirmées</a></li>
+                        <li><a href="./pay.html">payer</a></li>
+                        <li><a href="./wallet.html">portefeuille</a></li>
+                        <li><a href="./node.html">nœud</a></li>
+                        <li><a href="./console.html">console</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading"></div>
+            <div id="summary"></div>
+        </div>
+
+        <br/><br/>
+        <div id="from"></div>
+        <br/><br/>
+        <div id="to"></div>
+
+
+        <script>
+            $(async function(){
+                let urlParameters = parseUrlParameters(location)
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionOutputByAddress",
+                    data: `{
+                        "address":"${urlParameters.get("address")}"
+                    }`
+                });
+                let transactionOutput = response.data.transactionOutput;
+
+                $('.panel-heading').text(`adresse ${urlParameters.get("address")}`);
+
+                $('#summary').html(`
+                    <button type="button" class="btn btn-default">Résumé</button>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td style="width:15%">Sortie de la transaction non dépensée</td>
+                            <td style="width:35%">${transactionOutput.unspentTransactionOutput ? 'Oui' : 'non'}</td>
+                            <td style="width:10%">montant</td>
+                            <td style="width:40%">${transactionOutput.value}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                `);
+
+                $('#from').html(`
+                    <button type="button" class="btn btn-default">source</button>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td style="width:15%">Hauteur du bloc</td>
+                            <td style="width:35%"><a target="_blank" href="./block.html?hash=${transactionOutput.fromBlockHash}">${transactionOutput.fromBlockHeight}</a></td>
+                            <td style="width:10%">bloquer le hachage</td>
+                            <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutput.fromBlockHash}">${transactionOutput.fromBlockHash}</a></td>
+                        </tr>
+                        <tr>
+                            <td>numéro d'index de sortie</td>
+                            <td>${transactionOutput.fromTransactionOutputIndex}</td>
+                            <td>Hachage de la transaction</td>
+                            <td><a title="Détails de la transaction" target="_blank" href="./transaction.html?transactionHash=${transactionOutput.fromTransactionHash}">${transactionOutput.fromTransactionHash}</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-default">Transaction source</button>
+                    <div>${transactionHtml(transactionOutput.inputTransaction)}</div>
+                `);
+
+                if(transactionOutput.outputTransaction != null){
+                    $('#to').html(`
+                        <button type="button" class="btn btn-default">où aller</button>
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <td style="width:15%">Hauteur du bloc</td>
+                                <td style="width:35%"><a target="_blank" href="./block.html?hash=${transactionOutput.toBlockHash}">${transactionOutput.toBlockHeight}</a></td>
+                                <td style="width:10%">bloquer le hachage</td>
+                                <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutput.toBlockHash}">${transactionOutput.toBlockHash}</a></td>
+                            </tr>
+                            <tr>
+                                <td>numéro d'index d'entrée</td>
+                                <td>${transactionOutput.toTransactionInputIndex}</td>
+                                <td>Hachage de la transaction</td>
+                                <td><a title="Détails de la transaction" target="_blank" href="./transaction.html?transactionHash=${transactionOutput.toTransactionHash}">${transactionOutput.toTransactionHash}</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-default">À la transaction</button>
+                        <div>${transactionHtml(transactionOutput.outputTransaction)}</div>
+                    `);
+                }
+            }())
+        </script>
+    </body>
+</html>

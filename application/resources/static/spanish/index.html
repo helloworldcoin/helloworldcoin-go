@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>último bloque</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+
+        <style type="text/css">
+            th,td{text-align:center;}
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div>
+                    <!-- collapse navbar-collapse -->
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">Buscar</a></li>
+                        <li><a href="./miner.html">minero</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">Grupo de transacciones sin confirmar</a></li>
+                        <li><a href="./pay.html">pagar</a></li>
+                        <li><a href="./wallet.html">billetera</a></li>
+                        <li><a href="./node.html">nodo</a></li>
+                        <li><a href="./console.html">Consola</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div class="jumbotron">
+            <h1>Hello, world, coin!&nbsp;<a class="btn btn-primary btn-lg" href="https://github.com/helloworldcoin" role="button">helloworldcoin</a></h1>
+        </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">☺último bloque☺</div>
+
+            <!-- Table -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="width:13%;">Altura del bloque</th>
+                        <th style="width:13%;">Tiempo de bloque</th>
+                        <th style="width:11%;">Bloquear incentivo</th>
+                        <th style="width:11%;">Número de transacciones</th>
+                        <th style="width:8%;">tamaño del bloque</th>
+                        <th style="width:44%;">hash de bloque</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            $(async function(){
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryLatest10Blocks"
+                })
+                $(response.data.blocks).each((index, item) => {
+                    $('tbody').append(`
+                    <tr>
+                        <td><a target="_blank" href="./block-by-height.html?height=${item.height}">${item.height}</a></td>
+                        <td>${item.time}</td>
+                        <td>${item.minerIncentiveValue}</td>
+                        <td>${item.transactionCount}</td>
+                        <td>${item.blockSize}personaje</td>
+                        <td><a target="_blank" href="./block.html?hash=${item.hash}">${item.hash}</a></td>
+                    </tr>
+                    `)
+                })
+            }())
+        </script>
+    </body>
+</html>

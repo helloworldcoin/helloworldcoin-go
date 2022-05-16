@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>支払（しはら）い</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+        <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">探（さが）す</a></li>
+                        <li><a href="./miner.html">鉱夫（こ゜ふ）</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">未確認（みかくにん）のトランザクションプール</a></li>
+                        <li class="active"><a href="./pay.html">支払（しはら）い</a></li>
+                        <li><a href="./wallet.html">財布（さいふ）</a></li>
+                        <li><a href="./node.html">ノード</a></li>
+                        <li><a href="./console.html">コンソール</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div>
+            <div class="panel panel-default">
+                <div class="panel-heading">支払（しはら）い</div>
+            </div>
+            <div id="nonChangePayees">
+            </div>
+            <div style="text-align: center;">
+                <button type="button" class="btn btn-primary" onclick="confirmPayment()">支払いを確認する</button>
+            </div>
+        </div>
+        <script>
+            function addNonChangePayee(){
+                $('#nonChangePayees').append(`
+                    <div class="panel panel-default" name="nonChangePayee">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">受取人</div>
+                        <!-- List group -->
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <div class="input-group">
+                                    <span class="input-group-addon">受取人の住所を入力してください</span>
+                                    <input type="text" class="form-control" name="address">
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="input-group">
+                                    <span class="input-group-addon">お支払い金額を入力してください</span>
+                                    <input type="number" class="form-control" name="money">
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <button class="btn btn-primary add"><i class="glyphicon glyphicon-plus"></i>&nbsp;受取人を追加</button>
+                                <button class="btn btn-primary delete" onclick="javascript:this.parentNode.parentNode.parentNode.remove()"><i class="glyphicon glyphicon-minus"></i>&nbsp;受取人を削除する</button>
+                            </li>
+                        </ul>
+                    </div>
+                `)
+            }
+
+            $('body').delegate('.add', 'click', function(){
+                addNonChangePayee();
+            });
+
+            async function confirmPayment(){
+                if(Array.from($('[name="nonChangePayee"]')).length == 0){
+                    return;
+                }
+                let nonChangePayees = [];
+                for (var item of Array.from($('[name="nonChangePayee"]'))) {
+                    let address = $(item).find('[name="address"]:first').val().trim();
+                    if(isEmpty(address)){
+                        return;
+                    }
+                    let value = parseInt($(item).find('[name="money"]:first').val());
+                    if(isEmpty(value)){
+                        return;
+                    }
+                    nonChangePayees.push({address:address,value:value})
+                }
+
+                let request1 = JSON.stringify({nonChangePayees})
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/WalletApplication/AutomaticBuildTransaction",
+                    data: request1
+                })
+                if(response.status == 'success'){
+                    let request2 = {}
+                    request2.transaction = response.data.transaction;
+                    let response2 = await $ajax({
+                        url : baseUrl() + "/Api/WalletApplication/SubmitTransactionToBlockchainNetwork",
+                        data: JSON.stringify(request2),
+                    });
+
+                    let payersHtml = response.data.payers.map((item,index) => {
+                        return `
+                        <div class="panel-heading">取引支払人${index+1}</div>
+                          <ul class="list-group">
+                            <li class="list-group-item">支払人の住所 : <a title="住所（じゅうしょ）の詳細（しょうさい）" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></li>
+                            <li class="list-group-item">支払人の価値 : ${item.value}</li>
+                          </ul>
+                        `
+                    }).join('');
+
+                    let nonChangePayeesHtml = response.data.nonChangePayees.map((item,index) => {
+                        return `
+                          <div class="panel-heading">変更なしの受取人${index+1}</div>
+                          <ul class="list-group">
+                            <li class="list-group-item">受取人の住所を変更しない : <a title="住所（じゅうしょ）の詳細（しょうさい）" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></li>
+                            <li class="list-group-item">受取人の金額を変更しない : ${item.value}</li>
+                          </ul>
+                        `
+                    }).join('');
+
+                    let changePayeeHtml = "";
+                    if(response.data.changePayee != null){
+                        changePayeeHtml = `
+                            <div class="panel panel-default">
+                              <!-- Default panel contents -->
+                              <div class="panel-heading">受取人を変更する</div>
+                              <!-- List group -->
+                              <ul class="list-group">
+                                <li class="list-group-item">受取人の住所を変更する : <a title="住所（じゅうしょ）の詳細（しょうさい）" target="_blank" href="./address.html?address=${response.data.changePayee.address}">${response.data.changePayee.address}</a></li>
+                                <li class="list-group-item">受取人の金額を変更する : ${response.data.changePayee.value}</li>
+                              </ul>
+                            </div>
+                        `;
+                    }
+
+                    let payDetailHtml = `<div>
+                        <div class="page-header" style="margin-top:0;">
+                          <h1>支払詳細</h1>
+                        </div>
+
+
+                        <div class="panel panel-default">
+                        ${payersHtml}
+                        </div>
+
+
+                        <div class="panel panel-default">
+                        ${nonChangePayeesHtml}
+                        </div>
+
+
+                        ${changePayeeHtml}
+
+
+                        <div class="panel panel-default">
+                          <!-- Default panel contents -->
+                          <div class="panel-heading">詳細（しょうさい）情報（じょうほう）</div>
+                          <!-- List group -->
+                          <ul class="list-group">
+                            <li class="list-group-item">取引（とりひき）手数（てすう）料（りょう） : ${response.data.fee}</li>
+                            <li class="list-group-item">トランザクションハッシュ : <a target="_blank" href="./transaction.html?transactionHash=${response.data.transactionHash}">${response.data.transactionHash}</a></li>
+                          </ul>
+                        </div>
+                        <div class="panel panel-default">
+                          <!-- Default panel contents -->
+                          <div class="panel-heading">到着確認方法</div>
+                          <!-- List group -->
+                          <ul class="list-group">
+                            <li class="list-group-item"><a target="_blank" href="./wallet.html">ウォレットのバランスを確認する</a></li>
+                          </ul>
+                        </div>
+                        <button type="button" class="btn btn-success" style="margin-left:45%" onclick="layer.close(layer.index);">閉（し）める</button>
+                    </div>`
+                    layer.open({
+                      closeBtn: 1,
+                      type: 1,
+                      title: false,
+                      offset:'t',
+                      scrollbar: false,
+                      area: ['100%', '100%'],
+                      closeBtn: 0,
+                      shadeClose: true,
+                      content: payDetailHtml
+                    });
+                }else {
+                    alert('サービス利用（りよう）不可（ふか）');
+                }
+            }
+
+            addNonChangePayee();
+        </script>
+    </body>
+</html>

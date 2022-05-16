@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>بحث</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="./search.html">بحث</a></li>
+                        <li><a href="./miner.html">عامل منجم</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">تجمع معاملات غير مؤكد</a></li>
+                        <li><a href="./pay.html">دفع</a></li>
+                        <li><a href="./wallet.html">المحفظة</a></li>
+                        <li><a href="./node.html">عقدة</a></li>
+                        <li><a href="./console.html">وحدة التحكم</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+
+        <div class="input-group">
+            <input id="search" type="text" class="form-control" placeholder="أدخل ارتفاع الكتلة ، تجزئة الكتلة ، تجزئة المعاملة ، العنوان ...">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="search()">Go!</button>
+            </span>
+        </div>
+
+        <script>
+            async function search(){
+                let searchValue = $("#search").val().trim();
+                if(isEmpty(searchValue)){
+                    alert("أدخل ارتفاع الكتلة ، تجزئة الكتلة ، تجزئة المعاملة ، العنوان ...");
+                    return;
+                }
+
+                let request = "" ;
+                let response = "" ;
+
+                if(!isNaN(searchValue)){
+                    //كتلة الارتفاع
+                    request = `{ "blockHeight": ${searchValue}}`;
+                    response = await $ajax({
+                        url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockByBlockHeight",
+                        data: request
+                    });
+                    if(!queryBlockByBlockHeightResponseIsEmpty(response)){
+                        let {block} = response.data;
+                        let redirectUrl = `./block.html?hash=${block.hash}`;
+                        window.location.href = redirectUrl;
+                        return;
+                    }
+                }
+
+                //كتلة التجزئة
+                request = `{ "blockHash": "${searchValue}"}`;
+                response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockByBlockHash",
+                    data: request
+                });
+                if(!queryBlockByBlockHashResponseIsEmpty(response)){
+                    let redirectUrl = `./block.html?hash=${searchValue}`;
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                //تجزئة المعاملة
+                request = `{"transactionHash":"${searchValue}"}`
+                response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionByTransactionHash",
+                    data: request
+                });
+                if(!queryTransactionByTransactionHashResponseIsEmpty(response)){
+                    let redirectUrl = `./transaction.html?transactionHash=${searchValue}`;
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                //العنوان
+                request = `{"address":"${searchValue}"}`
+                response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionOutputByAddress",
+                    data: request
+                });
+                if(response.data != null && response.data.transactionOutput != null){
+                    let redirectUrl = `./address.html?address=${searchValue}`;
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                //معاملة غير مؤكدة
+                request = `{"transactionHash":"${searchValue}"}`
+                response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryUnconfirmedTransactionByTransactionHash",
+                    data: request
+                });
+                if(!queryUnconfirmedTransactionByTransactionHashResponseIsEmpty(response)){
+                    let redirectUrl = `./unconfirmed-transaction.html?transactionHash=${searchValue}`;
+                    window.location.href = redirectUrl;
+                    return;
+                }
+                alert("يرجى التحقق من الإدخال");
+            }
+        </script>
+    </body>
+</html>

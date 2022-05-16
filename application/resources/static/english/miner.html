@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>miner</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <div>
+                    <!-- collapse navbar-collapse -->
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">search</a></li>
+                        <li class="active"><a href="./miner.html">miner</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">unconfirmed transaction pool</a></li>
+                        <li><a href="./pay.html">pay</a></li>
+                        <li><a href="./wallet.html">wallet</a></li>
+                        <li><a href="./node.html">node</a></li>
+                        <li><a href="./console.html">console</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div style="text-align:center;background-color:#eee;height:60vh;padding:10vh 0vh 10vh 0vh;">
+            <h3 id="minerStatus" style="height:10vh;">...</h3>
+            <h3 id="action" style="height:10vh;">...</h3>
+            <p style="height:20vh;"><a class="btn btn-primary btn-lg" id="minerSwitch" role="button">...</a></p>
+        </div>
+
+        <script>
+            let minerInActiveState;
+            $(async function(){
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/NodeConsoleApplication/IsMinerActive"
+                });
+                minerInActiveState = response.data.minerInActiveState;
+                $('#minerStatus').text(response.data.minerInActiveState ? "I am a miner and I am mining..." : "I am a miner and I am resting...");
+                $('#minerSwitch').text(response.data.minerInActiveState ? 'stop mining' : 'start mining');
+            }());
+
+            $('#minerSwitch').click(async function(){
+                if(minerInActiveState){
+                    await $ajax({
+                        url : baseUrl() + "/Api/NodeConsoleApplication/DeactiveMiner"
+                    });
+                }else{
+                    await $ajax({
+                        url : baseUrl() + "/Api/NodeConsoleApplication/ActiveMiner"
+                    });
+                }
+                location.reload();
+            })
+        </script>
+    </body>
+</html>

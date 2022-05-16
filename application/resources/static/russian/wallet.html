@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>кошелек</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+        <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div>
+                    <!-- collapse navbar-collapse -->
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">Поиск</a></li>
+                        <li><a href="./miner.html">майнер</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">Пул неподтвержденных транзакций</a></li>
+                        <li><a href="./pay.html">платить</a></li>
+                        <li class="active"><a href="./wallet.html">кошелек</a></li>
+                        <li><a href="./node.html">узел</a></li>
+                        <li><a href="./console.html">Консоль</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">☺кошелек☺&nbsp;&nbsp;
+                <span id="balance" class="f6">общий баланс</span>&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" onclick="saveAccount()">Добавить кошелек</button>&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" onclick="createAndSaveAccount()">Создать кошелек</button>&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" onclick="window.open('./pay.html')">платить</button>
+            </div>
+            <!-- Table -->
+            <table class="table" id="table-node-list">
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            $(async function(){
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/WalletApplication/QueryAllAccounts"
+                })
+                $("#balance").text("общий баланс "+response.data.balance);
+                let accounts = response.data.accounts
+                $(accounts).each((index, item) => {
+                    $('tbody').append(`
+                        <tr>
+                            <td style="width:80%;">
+                                адрес：<a  title="Детали адреса" target="_blank" href="./address.html?address=${item.address}">${item.address}</a><br/>
+                                закрытый ключ：${item.privateKey}<br/>
+                                баланс：${item.value}
+                            </td>
+                            <td style="width:20%;"><button type="button" class="btn btn-danger">удалить</button></td>
+                        </tr>
+                    `)
+                })
+            }())
+
+            $('body').delegate('table .btn-danger', 'click', async function(){
+                let privateKey = $(this).parent().parent().find('a').text();
+                layer.confirm('Подтвердить удаление', {
+                  title: 'информация',
+                  btn: ['удалить','Отмена']
+                }, function(){
+                    $.ajax({
+                         type: "post",
+                         url : baseUrl() + "/Api/WalletApplication/DeleteAccount",
+                         data: `{"address":"${privateKey}"}`,
+                         dataType: "json",
+                         contentType: "application/json",
+                         success(response){
+                            location.reload();
+                         }
+                     });
+                }, function(){
+                });
+            })
+
+            async function saveAccount(){
+                layer.prompt({
+                    formType: 2,
+                    title: 'введите закрытый ключ',
+                    value:'',
+                    area: ['400px', '120px'],
+                    btn: ['подтвердить','Отмена'],
+                    btn2: function(index, elem){
+                        location.reload();
+                    }
+                }, function(value, index, elem){
+                    $.ajax({
+                         type: "post",
+                         url : baseUrl() + "/Api/WalletApplication/SaveAccount",
+                         data: `{"privateKey":"${value}"}`,
+                         dataType: "json",
+                         contentType: "application/json",
+                         success(response){
+                            layer.msg(response.message);
+                            if(response.status == 'success'){
+                                layer.close(index);
+                                location.reload();
+                            }
+                         }
+                     });
+                });
+            }
+
+            async function createAndSaveAccount(){
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/WalletApplication/CreateAndSaveAccount"
+                })
+                let account = response.data.account;
+                let content = '<h2 class="red">кошелек</h2>' +
+                                 '<div><span>адрес:</span>&nbsp;&nbsp;'+account.address+'</div>' +
+                                 '<div><span>закрытый ключ:</span>&nbsp;&nbsp;'+account.privateKey+'</div>' ;
+                layer.msg(content, {
+                     time: 100000,
+                     btn: ['подтвердить'],
+                     yes: function(index, layer0){
+                        location.reload();
+                     }
+                });
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Détails du bloc</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">Rechercher</a></li>
+                        <li><a href="./miner.html">mineur</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">Groupe de transactions non confirmées</a></li>
+                        <li><a href="./pay.html">payer</a></li>
+                        <li><a href="./wallet.html">portefeuille</a></li>
+                        <li><a href="./node.html">nœud</a></li>
+                        <li><a href="./console.html">console</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div style="height:50px;"></div>
+        <div id="box">
+        </div>
+
+        <div align="center">
+            <button id="button-load" class="btn btn-primary" onclick="loadTransactions()">Charger plus de transactions</button>
+        </div>
+
+        <script>
+            let urlParameters = parseUrlParameters(location)
+
+            let request1 = `{ "blockHash": "${urlParameters.get("hash")}"}`;
+            $(async function(){
+                let response1 = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockByBlockHash",
+                    data: request1
+                });
+                if(queryBlockByBlockHashResponseIsEmpty(response1)){
+                    return
+                }
+                let {block} = response1.data;
+                $('#box').append(`
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">bloquer le hachage&nbsp;${block.hash}</div>
+                    <button type="button" class="btn btn-default">Résumé</button>
+                    <!-- Table -->
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td style="width:15%">Hauteur du bloc</td>
+                                <td style="width:31%"><a target="_blank" href="./block-by-height.html?height=${block.height}">${block.height}</a></td>
+                                <td style="width:14%">Difficulté minière</td>
+                                <td style="width:40%">${block.difficulty}</td>
+                            </tr>
+                            <tr>
+                                <td>Nombre de confirmations de blocage</td>
+                                <td>${block.blockConfirmations}</td>
+                                <td>nombre aléatoire</td>
+                                <td>${block.nonce}</td>
+                            </tr>
+                            <tr>
+                                <td>taille du bloc</td>
+                                <td>${block.blockSize}caractère</td>
+                                <td>bloquer le hachage</td>
+                                <td>${block.hash}</td>
+                            </tr>
+                            <tr>
+                                <td>Nombre de transactions</td>
+                                <td>${block.transactionCount}</td>
+                                <td>hachage du bloc précédent</td>
+                                <td><a href='./block.html?hash=${block.previousBlockHash}'>${block.previousBlockHash}</a></td>
+                            </tr>
+                            <tr>
+                                <td>Temps de blocage</td>
+                                <td>${block.time}</td>
+                                <td>hachage du bloc suivant</td>
+                                <td><a href='./block.html?hash=${block.nextBlockHash}'>${block.nextBlockHash || ''}</a></td>
+                            </tr>
+                            <tr>
+                                <td>Incitation pour les mineurs</td>
+                                <td>${block.minerIncentiveValue}</td>
+                                <td>Racine de l'arbre Merkle</td>
+                                <td>${block.merkleTreeRoot}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>`)
+                $('#box').append(`<br/><br/><button type="button" class="btn btn-default">Liste des transactions</button>`)
+            }())
+
+            let request2 = `{"blockHash":"${urlParameters.get("hash")}","pageCondition":{"from":1,"size":10}}`;
+            async function loadTransactions(){
+                let response2 = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionsByBlockHashTransactionHeight",
+                    data: request2
+                });
+                if(queryTransactionsByBlockHashTransactionHeightResponseIsEmpty(response2)){
+                    $("#button-load").html("Charger les transactions terminées");
+                    return;
+                }
+                let transactions = response2.data.transactions;
+                $(transactions).each((index, item) => {
+                    $('#box').append(transactionHtml(item))
+                })
+
+                let jsonObjectRequest2 = JSON.parse(request2);
+                jsonObjectRequest2.pageCondition.from += jsonObjectRequest2.pageCondition.size;
+                request2 = JSON.stringify(jsonObjectRequest2);
+            }
+
+            $(loadTransactions())
+        </script>
+    </body>
+</html>

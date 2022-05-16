@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>支付</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+        <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">搜索</a></li>
+                        <li><a href="./miner.html">矿工</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">未确认交易池</a></li>
+                        <li class="active"><a href="./pay.html">支付</a></li>
+                        <li><a href="./wallet.html">钱包</a></li>
+                        <li><a href="./node.html">节点</a></li>
+                        <li><a href="./console.html">控制台</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div>
+            <div class="panel panel-default">
+                <div class="panel-heading">支付</div>
+            </div>
+            <div id="nonChangePayees">
+            </div>
+            <div style="text-align: center;">
+                <button type="button" class="btn btn-primary" onclick="confirmPayment()">确认支付</button>
+            </div>
+        </div>
+        <script>
+            function addNonChangePayee(){
+                $('#nonChangePayees').append(`
+                    <div class="panel panel-default" name="nonChangePayee">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">收款方</div>
+                        <!-- List group -->
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <div class="input-group">
+                                    <span class="input-group-addon">输入收款方地址</span>
+                                    <input type="text" class="form-control" name="address">
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="input-group">
+                                    <span class="input-group-addon">输入付款的金额</span>
+                                    <input type="number" class="form-control" name="money">
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <button class="btn btn-primary add"><i class="glyphicon glyphicon-plus"></i>&nbsp;增加收款方</button>
+                                <button class="btn btn-primary delete" onclick="javascript:this.parentNode.parentNode.parentNode.remove()"><i class="glyphicon glyphicon-minus"></i>&nbsp;删除收款方</button>
+                            </li>
+                        </ul>
+                    </div>
+                `)
+            }
+
+            $('body').delegate('.add', 'click', function(){
+                addNonChangePayee();
+            });
+
+            async function confirmPayment(){
+                if(Array.from($('[name="nonChangePayee"]')).length == 0){
+                    return;
+                }
+                let nonChangePayees = [];
+                for (var item of Array.from($('[name="nonChangePayee"]'))) {
+                    let address = $(item).find('[name="address"]:first').val().trim();
+                    if(isEmpty(address)){
+                        return;
+                    }
+                    let value = parseInt($(item).find('[name="money"]:first').val());
+                    if(isEmpty(value)){
+                        return;
+                    }
+                    nonChangePayees.push({address:address,value:value})
+                }
+
+                let request1 = JSON.stringify({nonChangePayees})
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/WalletApplication/AutomaticBuildTransaction",
+                    data: request1
+                })
+                if(response.status == 'success'){
+                    let request2 = {}
+                    request2.transaction = response.data.transaction;
+                    let response2 = await $ajax({
+                        url : baseUrl() + "/Api/WalletApplication/SubmitTransactionToBlockchainNetwork",
+                        data: JSON.stringify(request2),
+                    });
+
+                    let payersHtml = response.data.payers.map((item,index) => {
+                        return `
+                        <div class="panel-heading">交易付款方${index+1}</div>
+                          <ul class="list-group">
+                            <li class="list-group-item">付款地址 : <a title="地址详情" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></li>
+                            <li class="list-group-item">付款金额 : ${item.value}</li>
+                          </ul>
+                        `
+                    }).join('');
+
+                    let nonChangePayeesHtml = response.data.nonChangePayees.map((item,index) => {
+                        return `
+                          <div class="panel-heading">非找零收款方${index+1}</div>
+                          <ul class="list-group">
+                            <li class="list-group-item">收款地址 : <a title="地址详情" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></li>
+                            <li class="list-group-item">收款金额 : ${item.value}</li>
+                          </ul>
+                        `
+                    }).join('');
+
+                    let changePayeeHtml = "";
+                    if(response.data.changePayee != null){
+                        changePayeeHtml = `
+                            <div class="panel panel-default">
+                              <!-- Default panel contents -->
+                              <div class="panel-heading">找零收款方</div>
+                              <!-- List group -->
+                              <ul class="list-group">
+                                <li class="list-group-item">找零地址 : <a title="地址详情" target="_blank" href="./address.html?address=${response.data.changePayee.address}">${response.data.changePayee.address}</a></li>
+                                <li class="list-group-item">找零金额 : ${response.data.changePayee.value}</li>
+                              </ul>
+                            </div>
+                        `;
+                    }
+
+                    let payDetailHtml = `<div>
+                        <div class="page-header" style="margin-top:0;">
+                          <h1>支付详情</h1>
+                        </div>
+
+
+                        <div class="panel panel-default">
+                        ${payersHtml}
+                        </div>
+
+
+                        <div class="panel panel-default">
+                        ${nonChangePayeesHtml}
+                        </div>
+
+
+                        ${changePayeeHtml}
+
+
+                        <div class="panel panel-default">
+                          <!-- Default panel contents -->
+                          <div class="panel-heading">更多信息</div>
+                          <!-- List group -->
+                          <ul class="list-group">
+                            <li class="list-group-item">交易手续费 : ${response.data.fee}</li>
+                            <li class="list-group-item">交易哈希 : <a target="_blank" href="./transaction.html?transactionHash=${response.data.transactionHash}">${response.data.transactionHash}</a></li>
+                          </ul>
+                        </div>
+                        <div class="panel panel-default">
+                          <!-- Default panel contents -->
+                          <div class="panel-heading">到账确认方式</div>
+                          <!-- List group -->
+                          <ul class="list-group">
+                            <li class="list-group-item"><a target="_blank" href="./wallet.html">查看钱包余额</a></li>
+                          </ul>
+                        </div>
+                        <button type="button" class="btn btn-success" style="margin-left:45%" onclick="layer.close(layer.index);">关闭</button>
+                    </div>`
+                    layer.open({
+                      closeBtn: 1,
+                      type: 1,
+                      title: false,
+                      offset:'t',
+                      scrollbar: false,
+                      area: ['100%', '100%'],
+                      closeBtn: 0,
+                      shadeClose: true,
+                      content: payDetailHtml
+                    });
+                }else {
+                    alert('服务不可用');
+                }
+            }
+
+            addNonChangePayee();
+        </script>
+    </body>
+</html>

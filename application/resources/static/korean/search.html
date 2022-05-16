@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>검색</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="./search.html">검색</a></li>
+                        <li><a href="./miner.html">광부</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">확인되지 않은 트랜잭션 풀</a></li>
+                        <li><a href="./pay.html">지불</a></li>
+                        <li><a href="./wallet.html">지갑</a></li>
+                        <li><a href="./node.html">노드</a></li>
+                        <li><a href="./console.html">콘솔</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+
+        <div class="input-group">
+            <input id="search" type="text" class="form-control" placeholder="블록 높이, 블록 해시, 트랜잭션 해시, 주소 입력...">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="search()">Go!</button>
+            </span>
+        </div>
+
+        <script>
+            async function search(){
+                let searchValue = $("#search").val().trim();
+                if(isEmpty(searchValue)){
+                    alert("블록 높이, 블록 해시, 트랜잭션 해시, 주소 입력...");
+                    return;
+                }
+
+                let request = "" ;
+                let response = "" ;
+
+                if(!isNaN(searchValue)){
+                    //블록 높이
+                    request = `{ "blockHeight": ${searchValue}}`;
+                    response = await $ajax({
+                        url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockByBlockHeight",
+                        data: request
+                    });
+                    if(!queryBlockByBlockHeightResponseIsEmpty(response)){
+                        let {block} = response.data;
+                        let redirectUrl = `./block.html?hash=${block.hash}`;
+                        window.location.href = redirectUrl;
+                        return;
+                    }
+                }
+
+                //블록 해시
+                request = `{ "blockHash": "${searchValue}"}`;
+                response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockByBlockHash",
+                    data: request
+                });
+                if(!queryBlockByBlockHashResponseIsEmpty(response)){
+                    let redirectUrl = `./block.html?hash=${searchValue}`;
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                //거래 해시시
+                request = `{"transactionHash":"${searchValue}"}`
+                response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionByTransactionHash",
+                    data: request
+                });
+                if(!queryTransactionByTransactionHashResponseIsEmpty(response)){
+                    let redirectUrl = `./transaction.html?transactionHash=${searchValue}`;
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                //주소
+                request = `{"address":"${searchValue}"}`
+                response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionOutputByAddress",
+                    data: request
+                });
+                if(response.data != null && response.data.transactionOutput != null){
+                    let redirectUrl = `./address.html?address=${searchValue}`;
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                //확인되지 않은 거래
+                request = `{"transactionHash":"${searchValue}"}`
+                response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryUnconfirmedTransactionByTransactionHash",
+                    data: request
+                });
+                if(!queryUnconfirmedTransactionByTransactionHashResponseIsEmpty(response)){
+                    let redirectUrl = `./unconfirmed-transaction.html?transactionHash=${searchValue}`;
+                    window.location.href = redirectUrl;
+                    return;
+                }
+                alert("입력을 확인하십시오");
+            }
+        </script>
+    </body>
+</html>

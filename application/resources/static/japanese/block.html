@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ブロックの詳細（しょうさい）</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">探（さが）す</a></li>
+                        <li><a href="./miner.html">鉱夫（こ゜ふ）</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">未確認（みかくにん）のトランザクションプール</a></li>
+                        <li><a href="./pay.html">支払（しはら）い</a></li>
+                        <li><a href="./wallet.html">財布（さいふ）</a></li>
+                        <li><a href="./node.html">ノード</a></li>
+                        <li><a href="./console.html">コンソール</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div style="height:50px;"></div>
+        <div id="box">
+        </div>
+
+        <div align="center">
+            <button id="button-load" class="btn btn-primary" onclick="loadTransactions()">ロードもっとトランザクション</button>
+        </div>
+
+        <script>
+            let urlParameters = parseUrlParameters(location)
+
+            let request1 = `{ "blockHash": "${urlParameters.get("hash")}"}`;
+            $(async function(){
+                let response1 = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockByBlockHash",
+                    data: request1
+                });
+                if(queryBlockByBlockHashResponseIsEmpty(response1)){
+                    return
+                }
+                let {block} = response1.data;
+                $('#box').append(`
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">ブロックハッシュ&nbsp;${block.hash}</div>
+                    <button type="button" class="btn btn-default">サマリ</button>
+                    <!-- Table -->
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td style="width:15%">ブロックの高（たか）さ</td>
+                                <td style="width:31%"><a target="_blank" href="./block-by-height.html?height=${block.height}">${block.height}</a></td>
+                                <td style="width:14%">採掘（さいくつ）の難（むずか）しさ</td>
+                                <td style="width:40%">${block.difficulty}</td>
+                            </tr>
+                            <tr>
+                                <td>ブロック 確認（かくにん）カウント</td>
+                                <td>${block.blockConfirmations}</td>
+                                <td>ノンス</td>
+                                <td>${block.nonce}</td>
+                            </tr>
+                            <tr>
+                                <td>ブロックサイズ</td>
+                                <td>${block.blockSize}キャラクタ</td>
+                                <td>ブロックハッシュ</td>
+                                <td>${block.hash}</td>
+                            </tr>
+                            <tr>
+                                <td>トランザクションカウント</td>
+                                <td>${block.transactionCount}</td>
+                                <td>前（まえ）のブロックハッシュ</td>
+                                <td><a href='./block.html?hash=${block.previousBlockHash}'>${block.previousBlockHash}</a></td>
+                            </tr>
+                            <tr>
+                                <td>ブロック時間（じかん）</td>
+                                <td>${block.time}</td>
+                                <td>次（次のブロックハッシュ）のブロックハッシュ</td>
+                                <td><a href='./block.html?hash=${block.nextBlockHash}'>${block.nextBlockHash || ''}</a></td>
+                            </tr>
+                            <tr>
+                                <td>鉱夫（こ゜ふ）への報酬（ほうしゅう）</td>
+                                <td>${block.minerIncentiveValue}</td>
+                                <td>マークルツリールート</td>
+                                <td>${block.merkleTreeRoot}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>`)
+                $('#box').append(`<br/><br/><button type="button" class="btn btn-default">取引（とりひき）リスト</button>`)
+            }())
+
+            let request2 = `{"blockHash":"${urlParameters.get("hash")}","pageCondition":{"from":1,"size":10}}`;
+            async function loadTransactions(){
+                let response2 = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionsByBlockHashTransactionHeight",
+                    data: request2
+                });
+                if(queryTransactionsByBlockHashTransactionHeightResponseIsEmpty(response2)){
+                    $("#button-load").html("トランザクションのロードが完了しました");
+                    return;
+                }
+                let transactions = response2.data.transactions;
+                $(transactions).each((index, item) => {
+                    $('#box').append(transactionHtml(item))
+                })
+
+                let jsonObjectRequest2 = JSON.parse(request2);
+                jsonObjectRequest2.pageCondition.from += jsonObjectRequest2.pageCondition.size;
+                request2 = JSON.stringify(jsonObjectRequest2);
+            }
+
+            $(loadTransactions())
+        </script>
+    </body>
+</html>

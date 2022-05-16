@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>تفاصيل العنوان</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">بحث</a></li>
+                        <li><a href="./miner.html">عامل منجم</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">تجمع معاملات غير مؤكد</a></li>
+                        <li><a href="./pay.html">دفع</a></li>
+                        <li><a href="./wallet.html">المحفظة</a></li>
+                        <li><a href="./node.html">عقدة</a></li>
+                        <li><a href="./console.html">وحدة التحكم</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading"></div>
+            <div id="summary"></div>
+        </div>
+
+        <br/><br/>
+        <div id="from"></div>
+        <br/><br/>
+        <div id="to"></div>
+
+
+        <script>
+            $(async function(){
+                let urlParameters = parseUrlParameters(location)
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionOutputByAddress",
+                    data: `{
+                        "address":"${urlParameters.get("address")}"
+                    }`
+                });
+                let transactionOutput = response.data.transactionOutput;
+
+                $('.panel-heading').text(`العنوان ${urlParameters.get("address")}`);
+
+                $('#summary').html(`
+                    <button type="button" class="btn btn-default">ملخص</button>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td style="width:15%">إخراج المعاملة غير المنفق</td>
+                            <td style="width:35%">${transactionOutput.unspentTransactionOutput ? 'نعم' : 'لا'}</td>
+                            <td style="width:10%">القيمة</td>
+                            <td style="width:40%">${transactionOutput.value}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                `);
+
+                $('#from').html(`
+                    <button type="button" class="btn btn-default">من</button>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td style="width:15%">كتلة الارتفاع</td>
+                            <td style="width:35%"><a target="_blank" href="./block.html?hash=${transactionOutput.fromBlockHash}">${transactionOutput.fromBlockHeight}</a></td>
+                            <td style="width:10%">كتلة التجزئة</td>
+                            <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutput.fromBlockHash}">${transactionOutput.fromBlockHash}</a></td>
+                        </tr>
+                        <tr>
+                            <td>رقم فهرس الإخراج</td>
+                            <td>${transactionOutput.fromTransactionOutputIndex}</td>
+                            <td>تجزئة المعاملة</td>
+                            <td><a title="تفاصيل الصفقة" target="_blank" href="./transaction.html?transactionHash=${transactionOutput.fromTransactionHash}">${transactionOutput.fromTransactionHash}</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-default">معاملة المصدر</button>
+                    <div>${transactionHtml(transactionOutput.inputTransaction)}</div>
+                `);
+
+                if(transactionOutput.outputTransaction != null){
+                    $('#to').html(`
+                        <button type="button" class="btn btn-default">إلى</button>
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <td style="width:15%">كتلة الارتفاع</td>
+                                <td style="width:35%"><a target="_blank" href="./block.html?hash=${transactionOutput.toBlockHash}">${transactionOutput.toBlockHeight}</a></td>
+                                <td style="width:10%">كتلة التجزئة</td>
+                                <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutput.toBlockHash}">${transactionOutput.toBlockHash}</a></td>
+                            </tr>
+                            <tr>
+                                <td>رقم فهرس الإدخال</td>
+                                <td>${transactionOutput.toTransactionInputIndex}</td>
+                                <td>تجزئة المعاملة</td>
+                                <td><a title="تفاصيل الصفقة" target="_blank" href="./transaction.html?transactionHash=${transactionOutput.toTransactionHash}">${transactionOutput.toTransactionHash}</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-default">إلى المعاملة</button>
+                        <div>${transactionHtml(transactionOutput.outputTransaction)}</div>
+                    `);
+                }
+            }())
+        </script>
+    </body>
+</html>

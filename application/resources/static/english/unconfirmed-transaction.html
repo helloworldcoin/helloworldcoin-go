@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>unconfirmed transaction details</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+        <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">search</a></li>
+                        <li><a href="./miner.html">miner</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">unconfirmed transaction pool</a></li>
+                        <li><a href="./pay.html">pay</a></li>
+                        <li><a href="./wallet.html">wallet</a></li>
+                        <li><a href="./node.html">node</a></li>
+                        <li><a href="./console.html">console</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="panel panel-default">
+            <div class="panel-heading">unconfirmed transaction</div>
+        </div>
+        <div style="width: 100%;" id="container">
+        </div>
+        <div style="margin-top: 10px; " class="page" id="page"><button class="btn btn-success" onclick="refresh()">refresh</button></div>
+        <script>
+            let urlParameters = parseUrlParameters(location)
+            refresh();
+            async function refresh(){
+                //transaction hash
+                let request = `{"transactionHash":"${urlParameters.get("transactionHash")}"}`
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionByTransactionHash",
+                    data: request
+                });
+                if(!queryTransactionByTransactionHashResponseIsEmpty(response)){
+                    let {blockDto} = response.data;
+                    let redirectUrl = `./transaction.html?transactionHash=${urlParameters.get("transactionHash")}`;
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                //unconfirmed transaction hash
+                response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryUnconfirmedTransactionByTransactionHash",
+                    data: request
+                });
+                if(!queryUnconfirmedTransactionByTransactionHashResponseIsEmpty(response)){
+                    let {transaction} = response.data;
+                    $('#container').html(unconfirmedTransactionHtml(transaction))
+                    return;
+                }
+                alert("transaction was not found");
+            }
+        </script>
+    </body>
+</html>

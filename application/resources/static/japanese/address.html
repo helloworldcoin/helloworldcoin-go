@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>住所（じゅうしょ）の詳細（しょうさい）</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">探（さが）す</a></li>
+                        <li><a href="./miner.html">鉱夫（こ゜ふ）</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">未確認（みかくにん）のトランザクションプール</a></li>
+                        <li><a href="./pay.html">支払（しはら）い</a></li>
+                        <li><a href="./wallet.html">財布（さいふ）</a></li>
+                        <li><a href="./node.html">ノード</a></li>
+                        <li><a href="./console.html">コンソール</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading"></div>
+            <div id="summary"></div>
+        </div>
+
+        <br/><br/>
+        <div id="from"></div>
+        <br/><br/>
+        <div id="to"></div>
+
+
+        <script>
+            $(async function(){
+                let urlParameters = parseUrlParameters(location)
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionOutputByAddress",
+                    data: `{
+                        "address":"${urlParameters.get("address")}"
+                    }`
+                });
+                let transactionOutput = response.data.transactionOutput;
+
+                $('.panel-heading').text(`住所（じゅうしょ） ${urlParameters.get("address")}`);
+
+                $('#summary').html(`
+                    <button type="button" class="btn btn-default">サマリ</button>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td style="width:15%">未（み）使用（しよう）トランザクション出力（しゅつりょく）</td>
+                            <td style="width:35%">${transactionOutput.unspentTransactionOutput ? 'はい' : 'いいえ'}</td>
+                            <td style="width:10%">値（ち）</td>
+                            <td style="width:40%">${transactionOutput.value}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                `);
+
+                $('#from').html(`
+                    <button type="button" class="btn btn-default">から</button>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td style="width:15%">ブロックの高（たか）さ</td>
+                            <td style="width:35%"><a target="_blank" href="./block.html?hash=${transactionOutput.fromBlockHash}">${transactionOutput.fromBlockHeight}</a></td>
+                            <td style="width:10%">ブロックハッシュ</td>
+                            <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutput.fromBlockHash}">${transactionOutput.fromBlockHash}</a></td>
+                        </tr>
+                        <tr>
+                            <td>出力（しゅつりょく）指数（しすう）</td>
+                            <td>${transactionOutput.fromTransactionOutputIndex}</td>
+                            <td>トランザクションハッシュ</td>
+                            <td><a title="取引（とりひき）の詳細（しょうさい）" target="_blank" href="./transaction.html?transactionHash=${transactionOutput.fromTransactionHash}">${transactionOutput.fromTransactionHash}</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-default">取引（とりひき）から</button>
+                    <div>${transactionHtml(transactionOutput.inputTransaction)}</div>
+                `);
+
+                if(transactionOutput.outputTransaction != null){
+                    $('#to').html(`
+                        <button type="button" class="btn btn-default">に</button>
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <td style="width:15%">ブロックの高（たか）さ</td>
+                                <td style="width:35%"><a target="_blank" href="./block.html?hash=${transactionOutput.toBlockHash}">${transactionOutput.toBlockHeight}</a></td>
+                                <td style="width:10%">ブロックハッシュ</td>
+                                <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutput.toBlockHash}">${transactionOutput.toBlockHash}</a></td>
+                            </tr>
+                            <tr>
+                                <td>入力（しゅつりょく）指数（しすう）</td>
+                                <td>${transactionOutput.toTransactionInputIndex}</td>
+                                <td>トランザクションハッシュ</td>
+                                <td><a title="取引（とりひき）の詳細（しょうさい）" target="_blank" href="./transaction.html?transactionHash=${transactionOutput.toTransactionHash}">${transactionOutput.toTransactionHash}</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-default">取引（とりひき）する</button>
+                        <div>${transactionHtml(transactionOutput.outputTransaction)}</div>
+                    `);
+                }
+            }())
+        </script>
+    </body>
+</html>

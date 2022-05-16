@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Пул неподтвержденных транзакций</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+        <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">Поиск</a></li>
+                        <li><a href="./miner.html">майнер</a></li>
+                        <li class="active"><a href="./unconfirmed-transaction-pool.html">Пул неподтвержденных транзакций</a></li>
+                        <li><a href="./pay.html">платить</a></li>
+                        <li><a href="./wallet.html">кошелек</a></li>
+                        <li><a href="./node.html">узел</a></li>
+                        <li><a href="./console.html">Консоль</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="panel panel-default">
+            <div class="panel-heading">список неподтвержденных транзакций</div>
+        </div>
+        <div style="width: 100%;" id="container">
+        </div>
+        <div style="margin-top: 10px; " class="page" id="page"><button class="btn btn-primary" onclick="load()">Загрузить больше</button></div>
+        <script>
+            let request = `{"pageCondition":{"from":1,"size":10}}`
+            load();
+            async function load(){
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryUnconfirmedTransactions",
+                    data: request
+                });
+                if(queryUnconfirmedTransactionsResponseIsEmpty(response)){
+                    $("#page button").html("Загрузка неподтвержденной транзакции завершена");
+                }
+
+                let {unconfirmedTransactions} = response.data;
+                if(!isNull(unconfirmedTransactions)){
+                    unconfirmedTransactions.forEach(item => {
+                        $('#container').append(unconfirmedTransactionHtml(item))
+                    })
+                }
+
+                let jsonObjectRequest = JSON.parse(request);
+                jsonObjectRequest.pageCondition.from += jsonObjectRequest.pageCondition.size;
+                request = JSON.stringify(jsonObjectRequest);
+            }
+        </script>
+    </body>
+</html>

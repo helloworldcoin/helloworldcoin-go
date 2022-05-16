@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>transaction details</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">search</a></li>
+                        <li><a href="./miner.html">miner</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">unconfirmed transaction pool</a></li>
+                        <li><a href="./pay.html">pay</a></li>
+                        <li><a href="./wallet.html">wallet</a></li>
+                        <li><a href="./node.html">node</a></li>
+                        <li><a href="./console.html">console</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div class="box">
+            <div class="panel panel-default">
+                <div class="panel-heading fwb"></div>
+                <button type="button" class="btn btn-default btn-lg Summary">summary</button>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td style="width:15%">block height</td>
+                            <td style="width:35%" class="blockHeight"></td>
+                            <td style="width:40%">transaction fee</td>
+                            <td style="width:10%" class="transactionFee"></td>
+                        </tr>
+                        <tr>
+                            <td>block hash</td>
+                            <td class="blockHash"></td>
+                            <td>transaction input count</td>
+                            <td class="transactionInputCount"></td>
+                        </tr>
+                        <tr>
+                            <td>block confirmation</td>
+                            <td class="blockConfirmations"></td>
+                            <td>transaction input value</td>
+                            <td class="transactionInputValues"></td>
+                        </tr>
+                        <tr>
+                            <td>transaction type</td>
+                            <td class="transactionType"></td>
+                            <td>transaction output count</td>
+                            <td class="transactionOutputCount"></td>
+                        </tr>
+                        <tr>
+                            <td>block time</td>
+                            <td class="blockTime"></td>
+                            <td>transaction output value</td>
+                            <td class="transactionOutputValues"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" class="btn btn-default btn-lg Summary">transaction</button>
+            <div id="transaction-list-container"></div>
+        </div>
+
+        <table class="table table1 table-hover">
+            <tr class="success">
+                <td>input script</td>
+            </tr>
+        </table>
+
+        <table class="table table2 table-hover">
+            <tr class="success">
+                <td>output script</td>
+            </tr>
+        </table>
+
+        <script>
+            $(async function(){
+                let urlParameters = parseUrlParameters(location)
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionByTransactionHash",
+                    data: `{"transactionHash":"${urlParameters.get("transactionHash")}"}`
+                });
+                if(queryTransactionByTransactionHashResponseIsEmpty(response)){
+                    return;
+                }
+
+                let {inputScripts, outputScripts, transactionHash, transactionOutputValues, blockHeight, blockHash,transactionFee, blockConfirmations, transactionInputCount, transactionType, blockTime, transactionInputValues, transactionOutputCount} = response.data.transaction;
+                $('.panel-heading').text("transaction hash " + transactionHash);
+                $('.blockHeight').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHeight}</a>`);
+                $('.blockHash').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHash}</a>`);
+                $('.transactionFee').text(transactionFee);
+                $('.blockConfirmations').text(blockConfirmations);
+                $('.transactionInputCount').text(transactionInputCount);
+                $('.transactionType').text(getTransactionTypeName(transactionType));
+                $('.transactionInputValues').text(transactionInputValues);
+                $('.blockTime').text(blockTime);
+                $('.transactionOutputValues').text(transactionOutputValues);
+                $('.transactionOutputCount').text(transactionOutputCount);
+
+                let item = response.data.transaction;
+                $('#transaction-list-container').append(transactionHtml(item))
+
+                if(!isNull(inputScripts)){
+                    inputScripts.forEach(item => {
+                        $('.table1 tbody').append(`
+                            <tr class="info">
+                                <td>${item}</td>
+                            </tr>
+                        `);
+                    })
+                }
+
+                if(!isNull(outputScripts)){
+                    outputScripts.forEach(item => {
+                        $('.table2 tbody').append(`
+                            <tr class="warning">
+                                <td>${item}</td>
+                            </tr>
+                        `)
+                    })
+                }
+            }())
+        </script>
+    </body>
+</html>

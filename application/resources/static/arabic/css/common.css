@@ -1,0 +1,10 @@
+body{
+    font-family: "宋体"
+}
+i {
+  color: black;
+}
+table {
+  table-layout:fixed;
+  word-break:break-all;
+}

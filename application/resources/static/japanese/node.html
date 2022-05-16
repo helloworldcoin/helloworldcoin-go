@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ノード</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+        <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
+
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">helloworldcoin</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div>
+                    <!-- collapse navbar-collapse -->
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">探（さが）す</a></li>
+                        <li><a href="./miner.html">鉱夫（こ゜ふ）</a></li>
+                        <li><a href="./unconfirmed-transaction-pool.html">未確認（みかくにん）のトランザクションプール</a></li>
+                        <li><a href="./pay.html">支払（しはら）い</a></li>
+                        <li><a href="./wallet.html">財布（さいふ）</a></li>
+                        <li class="active"><a href="./node.html">ノード</a></li>
+                        <li><a href="./console.html">コンソール</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">☺ノードリスト☺&nbsp;&nbsp;<button type="button" class="btn btn-default" id="show-add-page">追加（ついか）</button></div>
+            <!-- Table -->
+            <table class="table" id="table-node-list">
+                <thead>
+                <tr>
+                    <th style="width:30%;">住所（じゅうしょ）</th>
+                    <th style="width:10%;">高（たか）さ</th>
+                    <th style="width:30%;">管理（かんり）</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+
+        <script type="text/javascript">
+            $(async function(){
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/NodeConsoleApplication/QueryAllNodes"
+                });
+                let {nodes} = response.data
+                $(nodes).each((index, item) => {
+                    $('#table-node-list').append(`
+                        <tr>
+                            <td>${item.ip}</td>
+                            <td>${item.blockchainHeight}</td>
+                            <td>
+                                <button type="submit" ip="${item.ip}" class="btn btn-default update-node">更新（こうしん）</button>
+                                <button type="submit" class="btn btn-danger delete-node" name="">デリート</button>
+                            </td>
+                        </tr>
+                    `)
+                })
+            }());
+
+            $('#show-add-page').click(async function(){
+                let str = `
+                <table class="table" id="table-add-node">
+                    <tbody>
+                        <tr>
+                            <th style="width:25%">住所（じゅうしょ）：</th>
+                            <th style="width:75%"><input type="text" placeholder="ノードIPを入力します" id="table-add-node-text-ip"></th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>
+                                <button type="button" class="btn btn-primary" id="table-add-node-button-add">確認（かくにん）</button>
+                                <button type="button" class="btn btn-primary" onclick="layer.close(layer.index);">取消（とりけし）</button>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>`
+
+                var layIndex = layer.open({
+                  title:"ノードを追加",
+                  type: 1,
+                  closeBtn: 1,
+                  shadeClose: true,
+                  content: str
+                });
+            });
+
+            $('body').delegate('#table-add-node-button-add', 'click', async function(){
+                let ip = $('#table-add-node-text-ip').val();
+                if(isEmpty(ip)){
+                    alert("失敗（しっぱい）");
+                    return;
+                }
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/NodeConsoleApplication/AddNode",
+                    data: `{"ip": "${ip}"}`
+                });
+                if(response.status == 'success'){
+                    location.reload();
+                }else {
+                    alert("失敗（しっぱい）");
+                }
+            })
+
+            $('body').delegate('.update-node', 'click', async function(){
+                let str = `
+                <table class="table" id="table-add-node">
+                    <tbody>
+                        <tr>
+                            <th style="width:25%">住所（じゅうしょ）：</th>
+                            <th style="width:75%"><input type="text" placeholder="ノードIPを入力します" id="table-update-node-text-ip" readonly="readonly"></th>
+                        </tr>
+                        <tr>
+                            <th>高（たか）さ：</th>
+                            <th>
+                                <input type="text" placeholder="ノードの高さを入力" id="table-update-node-text-blockchainHeight">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>
+                                <button type="button" class="btn btn-primary" id="table-update-node-button-add">確認（かくにん）</button>
+                                <button type="button" class="btn btn-primary" onclick="layer.close(layer.index);">取消（とりけし）</button>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>`
+
+                var layIndex = layer.open({
+                  type: 1,
+                  title: '更新ノード',
+                  closeBtn: 1,
+                  shadeClose: true,
+                  content: str
+                });
+
+                $('#table-update-node-text-ip').val($(this).parent().parent().children().eq(0).text());
+                $('#table-update-node-text-blockchainHeight').val($(this).parent().parent().children().eq(1).text());
+            });
+
+            $('body').delegate('#table-update-node-button-add', 'click', async function(){
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/NodeConsoleApplication/UpdateNode",
+                    data: `{"ip": "${$('#table-update-node-text-ip').val()}","blockchainHeight": ${$('#table-update-node-text-blockchainHeight').val()}}`
+                });
+                if(response.status == 'success'){
+                    location.reload();
+                }else {
+                    alert("失敗（しっぱい）");
+                }
+            })
+
+            $('body').delegate('.delete-node', 'click', async function(){
+                let ip = $(this).parent().parent().children(":first").text();
+                let response = await $ajax({
+                    url : baseUrl() + "/Api/NodeConsoleApplication/DeleteNode",
+                    data: `{"ip": "${ip}"}`
+                });
+                if(response.status == 'success'){
+                    location.reload();
+                }else {
+                    alert("失敗（しっぱい）");
+                }
+            })
+        </script>
+    </body>
+</html>
