@@ -119,10 +119,10 @@ type SubmitTransactionToBlockchainNetworkRequest struct {
 	Transaction *dto.TransactionDto `json:"transaction"`
 }
 type SubmitTransactionToBlockchainNetworkResponse struct {
-	//交易
+	//transaction
 	Transaction *dto.TransactionDto `json:"transaction"`
-	//交易成功提交的节点
+	//successfully submitted nodes
 	SuccessSubmitNodes []string `json:"successSubmitNodes"`
-	//交易提交失败的节点
+	//Commit failed node
 	FailedSubmitNodes []string `json:"failedSubmitNodes"`
 }

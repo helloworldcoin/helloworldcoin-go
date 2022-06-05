@@ -65,7 +65,6 @@ func (n *NodeConsoleApplicationController) AddNode(rw http.ResponseWriter, req *
 
 	ip := request.Ip
 	if n.blockchainNetCore.GetNodeService().QueryNode(ip) != nil {
-		//节点存在，认为是成功添加。
 		var response vo.AddNodeResponse
 		response.AddNodeSuccess = true
 		success(rw, response)

@@ -24,7 +24,6 @@ func NewBlockchainBrowserApplicationService(blockchainNetCore *netcore.Blockchai
 	return &b
 }
 func (b *BlockchainBrowserApplicationService) QueryTransactionOutputByTransactionOutputId(transactionHash string, transactionOutputIndex uint64) *vo.TransactionOutputVo3 {
-	//查询交易输出
 	transactionOutput := b.blockchainNetCore.GetBlockchainCore().GetBlockchainDatabase().QueryTransactionOutputByTransactionOutputId(transactionHash, transactionOutputIndex)
 	if transactionOutput == nil {
 		return nil
@@ -38,16 +37,13 @@ func (b *BlockchainBrowserApplicationService) QueryTransactionOutputByTransactio
 	transactionOutputVo3.FromOutputScript = ScriptTool.OutputScript2String(transactionOutput.OutputScript)
 	transactionOutputVo3.FromTransactionOutputIndex = transactionOutput.TransactionOutputIndex
 
-	//是否是未花费输出
 	transactionOutputTemp := b.blockchainNetCore.GetBlockchainCore().GetBlockchainDatabase().QueryUnspentTransactionOutputByTransactionOutputId(transactionOutput.TransactionHash, transactionOutput.TransactionOutputIndex)
 	transactionOutputVo3.UnspentTransactionOutput = transactionOutputTemp != nil
 
-	//来源
 	inputTransactionVo := b.QueryTransactionByTransactionHash(transactionOutput.TransactionHash)
 	transactionOutputVo3.InputTransaction = inputTransactionVo
 	transactionOutputVo3.TransactionType = inputTransactionVo.TransactionType
 
-	//去向
 	var outputTransactionVo *vo.TransactionVo
 	if transactionOutputTemp == nil {
 		destinationTransaction := b.blockchainNetCore.GetBlockchainCore().GetBlockchainDatabase().QueryDestinationTransactionByTransactionOutputId(transactionOutput.TransactionHash, transactionOutput.TransactionOutputIndex)
