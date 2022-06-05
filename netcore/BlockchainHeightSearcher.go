@@ -28,7 +28,7 @@ func NewBlockchainHeightSearcher(netCoreConfiguration *configuration.NetCoreConf
 func (b *BlockchainHeightSearcher) start() {
 	defer func() {
 		if e := recover(); e != nil {
-			LogUtil.Error("在区块链网络中搜索节点的高度异常", e)
+			LogUtil.Error("'search for node‘s Blockchain Height in the blockchain network' error.", e)
 		}
 	}()
 	for {

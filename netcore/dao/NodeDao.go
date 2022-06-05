@@ -45,7 +45,6 @@ func (n *NodeDao) DeleteNode(ip string) {
 
 func (n *NodeDao) QueryAllNodes() []*po.NodePo {
 	var nodePos []*po.NodePo
-	//获取所有
 	bytesNodePos := KvDbUtil.Gets(n.getNodeDatabasePath(), 1, 100000000)
 	if bytesNodePos != nil {
 		for e := bytesNodePos.Front(); e != nil; e = e.Next() {

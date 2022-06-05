@@ -31,7 +31,7 @@ func NewBlockchainHeightBroadcaster(netCoreConfiguration *configuration.NetCoreC
 func (b *BlockchainHeightBroadcaster) start() {
 	defer func() {
 		if e := recover(); e != nil {
-			LogUtil.Error("在区块链网络中广播自身区块链高度异常", e)
+			LogUtil.Error("'broadcast the blockchain height to the whole network' error.", e)
 		}
 	}()
 	for {

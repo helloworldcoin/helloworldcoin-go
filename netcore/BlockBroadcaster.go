@@ -32,7 +32,7 @@ func NewBlockBroadcaster(netCoreConfiguration *configuration.NetCoreConfiguratio
 func (b *BlockBroadcaster) start() {
 	defer func() {
 		if e := recover(); e != nil {
-			LogUtil.Error("在区块链网络中广播自己的区块出现异常", e)
+			LogUtil.Error("'broadcast it's latest block to the whole network' error.", e)
 		}
 	}()
 	for {

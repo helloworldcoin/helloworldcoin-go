@@ -31,7 +31,7 @@ func NewUnconfirmedTransactionsSearcher(netCoreConfiguration *configuration.NetC
 func (u *UnconfirmedTransactionsSearcher) start() {
 	defer func() {
 		if e := recover(); e != nil {
-			LogUtil.Error("在区块链网络中搜寻未确认交易出现异常", e)
+			LogUtil.Error("'search for unconfirmed transactions in the blockchain network' error.", e)
 		}
 	}()
 	for {

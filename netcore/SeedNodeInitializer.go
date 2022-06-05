@@ -28,7 +28,7 @@ func NewSeedNodeInitializer(netCoreConfiguration *configuration.NetCoreConfigura
 func (s *SeedNodeInitializer) start() {
 	defer func() {
 		if e := recover(); e != nil {
-			LogUtil.Error("定时将种子节点加入区块链网络出现异常", e)
+			LogUtil.Error("'add seed nodes' error.", e)
 		}
 	}()
 	for {
@@ -47,6 +47,5 @@ func (s *SeedNodeInitializer) addSeedNodes() {
 		node.Ip = seedNode
 		node.BlockchainHeight = 0
 		s.nodeService.AddNode(&node)
-		LogUtil.Debug("种子节点初始化器提示您:种子节点[" + node.Ip + "]加入了区块链网络。")
 	}
 }

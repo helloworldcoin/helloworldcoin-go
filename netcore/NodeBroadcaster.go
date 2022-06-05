@@ -28,7 +28,7 @@ func NewNodeBroadcaster(netCoreConfiguration *configuration.NetCoreConfiguration
 func (b *NodeBroadcaster) start() {
 	defer func() {
 		if e := recover(); e != nil {
-			LogUtil.Error("在区块链网络中广播自己出现异常", e)
+			LogUtil.Error("'broadcasts itself to the whole network' error.", e)
 		}
 	}()
 	for {

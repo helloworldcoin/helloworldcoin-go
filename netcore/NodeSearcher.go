@@ -29,7 +29,7 @@ func NewNodeSearcher(netCoreConfiguration *configuration.NetCoreConfiguration, n
 func (b *NodeSearcher) start() {
 	defer func() {
 		if e := recover(); e != nil {
-			LogUtil.Error("在区块链网络中搜索新的节点出现异常", e)
+			LogUtil.Error("'search for nodes in the blockchain network' error.", e)
 		}
 	}()
 	for {
@@ -79,7 +79,6 @@ func (b *NodeSearcher) handleGetNodesResponse(getNodesResponse *dto.GetNodesResp
 			n.Ip = node.Ip
 			n.BlockchainHeight = 0
 			b.nodeService.AddNode(&n)
-			LogUtil.Debug("自动机制发现节点[" + node.Ip + "]，已在节点数据库中添加了该节点。")
 		}
 	}
 }

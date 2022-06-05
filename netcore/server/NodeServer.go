@@ -15,7 +15,6 @@ import (
 	"helloworldcoin-go/netcore/service"
 	"helloworldcoin-go/setting/BlockSetting"
 	"helloworldcoin-go/util/JsonUtil"
-	"helloworldcoin-go/util/LogUtil"
 	"helloworldcoin-go/util/SystemUtil"
 	"io"
 	"io/ioutil"
@@ -117,13 +116,11 @@ func (b *NodeServer) ping(w http.ResponseWriter, req *http.Request) {
 	requestIp := getIP(req)
 	fmt.Println(request)
 
-	//将ping的来路作为区块链节点
 	if b.netCoreConfiguration.IsAutoSearchNode() {
 		var node model.Node
 		node.Ip = requestIp
 		node.BlockchainHeight = 0
 		b.nodeService.AddNode(&node)
-		LogUtil.Debug("发现节点[" + requestIp + "]在Ping本地节点，已将发现的节点放入了节点数据库。")
 	}
 	var response dto.PingResponse
 	w.Header().Set("content-type", "text/json")

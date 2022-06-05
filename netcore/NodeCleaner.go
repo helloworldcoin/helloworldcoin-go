@@ -28,7 +28,7 @@ func NewNodeCleaner(netCoreConfiguration *configuration.NetCoreConfiguration, no
 func (b *NodeCleaner) start() {
 	defer func() {
 		if e := recover(); e != nil {
-			LogUtil.Error("清理死亡节点出现异常", e)
+			LogUtil.Error("'clean up dead nodes' error.", e)
 		}
 	}()
 	for {
@@ -49,7 +49,6 @@ func (b *NodeCleaner) cleanDeadNodes() {
 		pingResponse := nodeClient.PingNode(pingRequest)
 		if pingResponse == nil {
 			b.nodeService.DeleteNode(node.Ip)
-			LogUtil.Debug("节点清理器发现死亡节点[" + node.Ip + "]，已在节点数据库中将该节点删除了。")
 		}
 	}
 }
