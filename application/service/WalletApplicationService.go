@@ -23,9 +23,9 @@ func NewWalletApplicationService(blockchainNetCore *netcore.BlockchainNetCore) *
 
 func (w *WalletApplicationService) SubmitTransactionToBlockchainNetwork(request *vo.SubmitTransactionToBlockchainNetworkRequest) *vo.SubmitTransactionToBlockchainNetworkResponse {
 	transactionDto := request.Transaction
-	//将交易提交到本地区块链
+	//post to local blockchain
 	w.blockchainNetCore.GetBlockchainCore().PostTransaction(transactionDto)
-	//提交交易到网络
+	//post to other blockchain
 	nodes := w.blockchainNetCore.GetNodeService().QueryAllNodes()
 	var successSubmitNodes []string
 	var failedSubmitNodes []string

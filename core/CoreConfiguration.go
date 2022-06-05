@@ -20,19 +20,14 @@ func NewCoreConfiguration(corePath string) *CoreConfiguration {
 	return &coreConfiguration
 }
 
-//配置数据库名字
 const CONFIGURATION_DATABASE_NAME = "ConfigurationDatabase"
 
-//'矿工是否是激活状态'存入到数据库时的主键
 const MINE_OPTION_KEY = "IS_MINER_ACTIVE"
 
-//'矿工可挖的最高区块高度'存入到数据库时的主键
 const MINER_MINE_MAX_BLOCK_HEIGHT_KEY = "MINER_MINE_MAX_BLOCK_HEIGHT"
 
-//'矿工是否是激活状态'的默认值
 const MINE_OPTION_DEFAULT_VALUE = false
 
-//这个时间间隔更新一次正在被挖矿的区块的交易。如果时间太长，可能导致新提交的交易延迟被确认。
 const MINE_TIMESTAMP_PER_ROUND = uint64(1000) * uint64(10)
 
 func (c *CoreConfiguration) getCorePath() string {
@@ -62,7 +57,6 @@ func (c *CoreConfiguration) setMinerMineMaxBlockHeight(maxHeight uint64) {
 func (c *CoreConfiguration) getMinerMineMaxBlockHeight() uint64 {
 	bytesMineMaxBlockHeight := c.getConfigurationValue(ByteUtil.StringToUtf8Bytes(MINER_MINE_MAX_BLOCK_HEIGHT_KEY))
 	if bytesMineMaxBlockHeight == nil {
-		//设置默认值，这是一个十分巨大的数字，矿工永远挖不到的高度
 		return uint64(10000000000000000)
 	}
 	return ByteUtil.BytesToUint64(bytesMineMaxBlockHeight)

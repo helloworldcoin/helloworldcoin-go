@@ -84,7 +84,7 @@ func CheckTransactionSize(transactionDto *dto.TransactionDto) bool {
 		}
 	}
 
-	//校验整笔交易大小十分合法
+	//Check transaction size
 	transactionSize := CalculateTransactionSize(transactionDto)
 	if transactionSize > TransactionSetting.TRANSACTION_MAX_CHARACTER_COUNT {
 		LogUtil.Debug("Transaction size exceeds limit.")

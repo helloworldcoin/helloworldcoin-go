@@ -96,115 +96,116 @@ func (b *BlockchainDatabase) DeleteBlocks(blockHeight uint64) {
 
 func (b *BlockchainDatabase) CheckBlock(block *model.Block) bool {
 
+	//check block structure
 	if !StructureTool.CheckBlockStructure(block) {
-		LogUtil.Debug("区块数据异常，请校验区块的结构。")
+		LogUtil.Debug("The block data is abnormal. Please verify the block structure.")
 		return false
 	}
-	//校验区块的大小
+	//check block size
 	if !SizeTool.CheckBlockSize(block) {
-		LogUtil.Debug("区块数据异常，请校验区块的大小。")
+		LogUtil.Debug("The block data is abnormal, please check the size of the block.")
 		return false
 	}
 
-	//校验业务
+	//check business
 	previousBlock := b.QueryTailBlock()
-	//校验区块高度的连贯性
+	//check block height
 	if !BlockTool.CheckBlockHeight(previousBlock, block) {
-		LogUtil.Debug("区块写入的区块高度出错。")
+		LogUtil.Debug("Wrong block height for block write.")
 		return false
 	}
-	//校验区块的前区块哈希
+	//check previous block hash
 	if !BlockTool.CheckPreviousBlockHash(previousBlock, block) {
-		LogUtil.Debug("区块写入的前区块哈希出错。")
+		LogUtil.Debug("The previous block hash of the block write was wrong.")
 		return false
 	}
-	//校验区块时间
+	//check block timestamp
 	if !BlockTool.CheckBlockTimestamp(previousBlock, block) {
-		LogUtil.Debug("区块生成的时间太滞后。")
+		LogUtil.Debug("Block generation is too late.")
 		return false
 	}
 
-	//校验新产生的哈希
+	//check block new hash
 	if !b.checkBlockNewHash(block) {
-		LogUtil.Debug("区块数据异常，区块中新产生的哈希异常。")
+		LogUtil.Debug("The block data is abnormal, and the newly generated hash in the block is abnormal.")
 		return false
 	}
-	//校验新产生的地址
+	//check block new address
 	if !b.checkBlockNewAddress(block) {
-		LogUtil.Debug("区块数据异常，区块中新产生的哈希异常。")
+		LogUtil.Debug("The block data is abnormal, and the newly generated hash in the block is abnormal.")
 		return false
 	}
 
-	//校验双花
+	//check block double spend
 	if !b.checkBlockDoubleSpend(block) {
-		LogUtil.Debug("区块数据异常，检测到双花攻击。")
+		LogUtil.Debug("The block data is abnormal, and a double-spending attack is detected.")
 		return false
 	}
-	//校验共识
+	//check consensus
 	if !b.consensus.CheckConsensus(b, block) {
-		LogUtil.Debug("区块数据异常，未满足共识规则。")
+		LogUtil.Debug("The block data is abnormal and the consensus rules are not met.")
 		return false
 	}
-	//校验激励
+	//check incentive
 	if !b.incentive.CheckIncentive(b, block) {
-		LogUtil.Debug("区块数据异常，激励校验失败。")
+		LogUtil.Debug("The block data is abnormal, and the incentive verification fails.")
 		return false
 	}
-	//从交易角度校验每一笔交易
+	//check transaction
 	for _, transaction := range block.Transactions {
 		transactionCanAddToNextBlock := b.CheckTransaction(transaction)
 		if !transactionCanAddToNextBlock {
-			LogUtil.Debug("区块数据异常，交易异常。")
+			LogUtil.Debug("The block data is abnormal, and the transaction is abnormal.")
 			return false
 		}
 	}
 	return true
 }
 func (b *BlockchainDatabase) CheckTransaction(transaction *model.Transaction) bool {
-	//校验交易的结构
+	//check Transaction Structure
 	if !StructureTool.CheckTransactionStructure(transaction) {
-		LogUtil.Debug("交易数据异常，请校验交易的结构。")
+		LogUtil.Debug("The transaction data is abnormal, please verify the structure of the transaction.")
 		return false
 	}
-	//校验交易的大小
+	//check Transaction Size
 	if !SizeTool.CheckTransactionSize(transaction) {
-		LogUtil.Debug("交易数据异常，请校验交易的大小。")
+		LogUtil.Debug("The transaction data is abnormal, please check the size of the transaction.")
 		return false
 	}
 
-	//校验交易中的地址是否是P2PKH地址
+	//Check if the address in the transaction is a P2PKH address
 	if !TransactionTool.CheckPayToPublicKeyHashAddress(transaction) {
 		return false
 	}
-	//校验交易中的脚本是否是P2PKH脚本
+	//Check if the address in the transaction is a P2PKH address
 	if !TransactionTool.CheckPayToPublicKeyHashScript(transaction) {
 		return false
 	}
 
-	//业务校验
-	//校验新产生的哈希
+	//business verification
+	//check Transaction New Hash
 	if !b.checkTransactionNewHash(transaction) {
-		LogUtil.Debug("区块数据异常，区块中新产生的哈希异常。")
+		LogUtil.Debug("The block data is abnormal, and the newly generated hash in the block is abnormal.")
 		return false
 	}
-	//校验新产生的地址
+	//check Transaction New Address
 	if !b.checkTransactionNewAddress(transaction) {
-		LogUtil.Debug("区块数据异常，区块中新产生的哈希异常。")
+		LogUtil.Debug("The block data is abnormal, and the newly generated hash in the block is abnormal.")
 		return false
 	}
-	//校验交易金额
+	//check Transaction Value
 	if !TransactionTool.CheckTransactionValue(transaction) {
-		LogUtil.Debug("交易金额不合法")
+		LogUtil.Debug("The block data is abnormal and the transaction amount is illegal")
 		return false
 	}
-	//校验双花
+	//check Transaction Double Spend
 	if !b.checkTransactionDoubleSpend(transaction) {
-		LogUtil.Debug("交易数据异常，检测到双花攻击。")
+		LogUtil.Debug("The transaction data is abnormal, and a double-spending attack is detected.")
 		return false
 	}
-	//校验脚本
+	//check Transaction Script
 	if !b.checkTransactionScript(transaction) {
-		LogUtil.Debug("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。")
+		LogUtil.Debug("Transaction verification failed: transaction [input script] unlock transaction [output script] exception.")
 		return false
 	}
 	return true
@@ -709,25 +710,21 @@ func (b *BlockchainDatabase) storeAddressToSpentTransactionOutputHeight(kvWriteB
 	}
 }
 
+//region block hash related
 /**
- * 校验区块新产生的哈希
+ * check Block New Hash
  */
 func (b *BlockchainDatabase) checkBlockNewHash(block *model.Block) bool {
-	//校验哈希作为主键的正确性
-	//新产生的哈希不能有重复
 	if BlockTool.IsExistDuplicateNewHash(block) {
-		LogUtil.Debug("区块数据异常，区块中新产生的哈希有重复。")
+		LogUtil.Debug("The block data is abnormal, exist duplicate hash.")
 		return false
 	}
 
-	//新产生的哈希不能被区块链使用过了
-	//校验区块Hash是否已经被使用了
 	blockHash := block.Hash
 	if b.isHashUsed(blockHash) {
-		LogUtil.Debug("区块数据异常，区块Hash已经被使用了。")
+		LogUtil.Debug("The block data is abnormal, and the block hash has been used.")
 		return false
 	}
-	//校验每一笔交易新产生的Hash是否正确
 	blockTransactions := block.Transactions
 	if blockTransactions != nil {
 		for _, transaction := range blockTransactions {
@@ -738,37 +735,23 @@ func (b *BlockchainDatabase) checkBlockNewHash(block *model.Block) bool {
 	}
 	return true
 }
-
-/**
- * 区块中校验新产生的哈希
- */
 func (b *BlockchainDatabase) checkTransactionNewHash(transaction *model.Transaction) bool {
-	//校验哈希作为主键的正确性
-	//校验交易Hash是否已经被使用了
 	transactionHash := transaction.TransactionHash
 	if b.isHashUsed(transactionHash) {
-		LogUtil.Debug("交易数据异常，交易Hash已经被使用了。")
 		return false
 	}
 	return true
 }
-
-/**
- * 哈希是否已经被区块链系统使用了？
- */
 func (b *BlockchainDatabase) isHashUsed(hash string) bool {
 	bytesHash := KvDbUtil.Get(b.getBlockchainDatabasePath(), BlockchainDatabaseKeyTool.BuildHashKey(hash))
 	return bytesHash != nil
 }
 
-/**
- * 校验区块新产生的地址
- */
+//endregion
+
+//region address related
 func (b *BlockchainDatabase) checkBlockNewAddress(block *model.Block) bool {
-	//校验地址作为主键的正确性
-	//新产生的地址不能有重复
 	if BlockTool.IsExistDuplicateNewAddress(block) {
-		LogUtil.Debug("区块数据异常，区块中新产生的地址有重复。")
 		return false
 	}
 	transactions := block.Transactions
@@ -781,22 +764,15 @@ func (b *BlockchainDatabase) checkBlockNewAddress(block *model.Block) bool {
 	}
 	return true
 }
-
-/**
- * 区块中校验新产生的哈希
- */
 func (b *BlockchainDatabase) checkTransactionNewAddress(transaction *model.Transaction) bool {
-	//区块新产生的地址不能有重复
 	if TransactionTool.IsExistDuplicateNewAddress(transaction) {
 		return false
 	}
-	//区块新产生的地址不能被使用过了
 	outputs := transaction.Outputs
 	if outputs != nil {
 		for _, output := range outputs {
 			address := output.Address
 			if b.isAddressUsed(address) {
-				LogUtil.Debug("区块数据异常，地址[" + address + "]重复。")
 				return false
 			}
 		}
@@ -808,22 +784,19 @@ func (b *BlockchainDatabase) isAddressUsed(address string) bool {
 	return bytesAddress != nil
 }
 
-//region 双花攻击
-/**
- * 校验双花
- * 双花指的是同一笔UTXO被花费两次或多次。
- */
+//endregion
+
+//region Double spend attack
 func (b *BlockchainDatabase) checkBlockDoubleSpend(block *model.Block) bool {
-	//双花交易：区块内部存在重复的[未花费交易输出]
 	if BlockTool.IsExistDuplicateUtxo(block) {
-		LogUtil.Debug("区块数据异常：发生双花交易。")
+		LogUtil.Debug("Abnormal block data: a double-spend transaction occurred.")
 		return false
 	}
 	transactions := block.Transactions
 	if transactions != nil {
 		for _, transaction := range transactions {
 			if !b.checkTransactionDoubleSpend(transaction) {
-				LogUtil.Debug("区块数据异常：发生双花交易。")
+				LogUtil.Debug("Abnormal block data: a double-spend transaction occurred.")
 				return false
 			}
 		}
@@ -832,24 +805,24 @@ func (b *BlockchainDatabase) checkBlockDoubleSpend(block *model.Block) bool {
 }
 
 /**
- * 校验双花
+ * check Transaction Double Spend
  */
 func (b *BlockchainDatabase) checkTransactionDoubleSpend(transaction *model.Transaction) bool {
-	//双花交易：交易内部存在重复的[未花费交易输出]
+	//Double spend transaction: there is a duplicate [unspent transaction output] inside the transaction
 	if TransactionTool.IsExistDuplicateUtxo(transaction) {
-		LogUtil.Debug("交易数据异常，检测到双花攻击。")
+		LogUtil.Debug("The transaction data is abnormal, and a double-spending attack is detected.")
 		return false
 	}
-	//双花交易：交易内部使用了[已经花费的[未花费交易输出]]
+	//Double spend transaction: transaction uses [spent [unspent transaction output]] inside the transaction
 	if !b.checkStxoIsUtxo(transaction) {
-		LogUtil.Debug("交易数据异常：发生双花交易。")
+		LogUtil.Debug("The transaction data is abnormal, and a double-spending attack is detected.")
 		return false
 	}
 	return true
 }
 
 /**
- * 检查[花费的交易输出]是否都是[未花费的交易输出]
+ * Check if [spent transaction outputs] are all [unspent transaction outputs] ?
  */
 func (b *BlockchainDatabase) checkStxoIsUtxo(transaction *model.Transaction) bool {
 	inputs := transaction.Inputs
@@ -858,7 +831,7 @@ func (b *BlockchainDatabase) checkStxoIsUtxo(transaction *model.Transaction) boo
 			unspentTransactionOutput := transactionInput.UnspentTransactionOutput
 			transactionOutput := b.QueryUnspentTransactionOutputByTransactionOutputId(unspentTransactionOutput.TransactionHash, unspentTransactionOutput.TransactionOutputIndex)
 			if transactionOutput == nil {
-				LogUtil.Debug("交易数据异常：交易输入不是未花费交易输出。")
+				LogUtil.Debug("Transaction data exception: transaction input is not unspent transaction output.")
 				return false
 			}
 		}
@@ -867,29 +840,15 @@ func (b *BlockchainDatabase) checkStxoIsUtxo(transaction *model.Transaction) boo
 }
 
 //endregion
-/**
- * 检验交易脚本，即校验交易输入能解锁交易输出吗？即用户花费的是自己的钱吗？
- * 校验用户花费的是自己的钱吗，用户只可以花费自己的钱。专业点的说法，校验UTXO所有权，用户只可以花费自己拥有的UTXO。
- * 用户如何能证明自己拥有这个UTXO，只要用户能创建出一个能解锁(该UTXO对应的交易输出脚本)的交易输入脚本，就证明了用户拥有该UTXO。
- * 这是因为锁(交易输出脚本)是用户创建的，自然只有该用户有对应的钥匙(交易输入脚本)，自然意味着有钥匙的用户拥有这把锁的所有权。
- */
+
 func (b *BlockchainDatabase) checkTransactionScript(transaction *model.Transaction) bool {
 	inputs := transaction.Inputs
 	if inputs != nil && len(inputs) != 0 {
 		for _, transactionInput := range inputs {
-			//锁(交易输出脚本)
 			outputScript := transactionInput.UnspentTransactionOutput.OutputScript
-			//钥匙(交易输入脚本)
 			inputScript := transactionInput.InputScript
-			//完整脚本
 			script := ScriptTool.CreateScript(inputScript, outputScript)
-			//执行脚本
 			result := b.virtualMachine.Execute(transaction, script)
-			/*fmt.Println(ByteUtil.HexStringToBytes(*scriptExecuteResult.Pop()))
-			fmt.Println(BooleanCode.TRUE.Code)*/
-
-			//脚本执行结果是个栈，如果栈有且只有一个元素，且这个元素是0x01，则解锁成功。
-			//executeSuccess := scriptExecuteResult.Size() == 1 && ByteUtil.Equals(BooleanCode.TRUE.Code, ByteUtil.HexStringToBytes(*scriptExecuteResult.Pop()))
 			//TODO java...
 			executeSuccess := result.Size() == 1 && StringUtil.Equals(ByteUtil.BytesToHexString(BooleanCode.TRUE.Code), *result.Pop())
 			if !executeSuccess {
@@ -926,7 +885,7 @@ func (b *BlockchainDatabase) BlockDto2Block(blockDto *dto.BlockDto) *model.Block
 	b.fillBlockProperty(block)
 
 	if !b.consensus.CheckConsensus(b, block) {
-		//throw new RuntimeException("区块预检失败。")
+		//TODO throw new RuntimeException("Check Block Consensus Failed.")
 		return nil
 	}
 	return block
@@ -948,7 +907,7 @@ func (b *BlockchainDatabase) TransactionDto2Transaction(transactionDto *dto.Tran
 		for _, transactionInputDto := range transactionInputDtos {
 			unspentTransactionOutput := b.QueryUnspentTransactionOutputByTransactionOutputId(transactionInputDto.TransactionHash, transactionInputDto.TransactionOutputIndex)
 			if unspentTransactionOutput == nil {
-				//throw new RuntimeException("非法交易。交易输入并不是一笔未花费交易输出。");
+				//TODO throw new RuntimeException("Illegal transaction. the transaction input is not an unspent transaction output.");
 				return nil
 			}
 			var transactionInput model.TransactionInput
